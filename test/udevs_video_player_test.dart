@@ -39,12 +39,15 @@ void main() {
               isSerial: false,
               seasons: [],
               isLive: false,
+              tvProgramsText: '',
               programsInfoList: [],
               showController: false,
               playVideoFromAsset: false,
               assetPath: '',
               seasonIndex: 0,
               episodeIndex: 0,
+              episodeText: 'Episode',
+              seasonText: 'Season',
             )),
         '42');
   });

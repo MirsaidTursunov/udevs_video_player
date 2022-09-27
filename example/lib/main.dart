@@ -27,7 +27,6 @@ class _MyAppState extends State<MyApp> {
       'После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей.',
       image:
       'https://cdn.uzd.udevs.io/uzdigital/images/ec80c248-ddb8-4b68-98b1-0d59e9a1acdd.jpg',
-      duration: 2122,
       resolutions: {
         'Auto':
         'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8',
@@ -49,7 +48,6 @@ class _MyAppState extends State<MyApp> {
       'После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей.',
       image:
       'https://cdn.uzd.udevs.io/uzdigital/images/ec80c248-ddb8-4b68-98b1-0d59e9a1acdd.jpg',
-      duration: 1669,
       resolutions: {
         'Auto':
         'https://cdn.uzd.udevs.io/uzdigital/videos/a298d71ece9105727c7c2e3bc219ef86/master.m3u8',
@@ -90,14 +88,11 @@ class _MyAppState extends State<MyApp> {
             },
             qualityText: 'Quality',
             speedText: 'Speed',
-            lastPosition: 1000,
+            lastPosition: 0,
             title: 'Женщина-Халк: Адвокат',
             isSerial: true,
-            episodeButtonText: 'Episodes',
-            nextButtonText: 'Next',
             seasons: seasons,
             isLive: false,
-            tvProgramsText: 'Programs',
             programsInfoList: programsInfoList,
             showController: true,
             playVideoFromAsset: false,
@@ -122,7 +117,6 @@ class _MyAppState extends State<MyApp> {
       'После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей.',
       image:
       'https://cdn.uzd.udevs.io/uzdigital/images/ec80c248-ddb8-4b68-98b1-0d59e9a1acdd.jpg',
-      duration: 2122,
       resolutions: {
         'Auto':
         'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8',
@@ -144,7 +138,6 @@ class _MyAppState extends State<MyApp> {
       'После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей.',
       image:
       'https://cdn.uzd.udevs.io/uzdigital/images/ec80c248-ddb8-4b68-98b1-0d59e9a1acdd.jpg',
-      duration: 1669,
       resolutions: {
         'Auto':
         'https://cdn.uzd.udevs.io/uzdigital/videos/a298d71ece9105727c7c2e3bc219ef86/master.m3u8',
@@ -290,14 +283,11 @@ class _MyAppState extends State<MyApp> {
             },
             qualityText: 'Quality',
             speedText: 'Speed',
-            lastPosition: 1000,
+            lastPosition: 0,
             title: 'Женщина-Халк: Адвокат',
             isSerial: false,
-            episodeButtonText: 'Episodes',
-            nextButtonText: 'Next',
             seasons: seasons,
             isLive: true,
-            tvProgramsText: 'Programs',
             programsInfoList: programsInfoList,
             showController: true,
             playVideoFromAsset: false,

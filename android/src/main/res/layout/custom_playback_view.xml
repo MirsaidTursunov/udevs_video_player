@@ -2,105 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/custom_playback"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:gravity="center"
+        android:orientation="vertical"
         android:visibility="visible">
-
-        <ImageView
-            android:id="@+id/video_close"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:padding="15dp"
-            android:src="@drawable/ic_close"
-            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/video_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="@font/semibold"
             android:gravity="center_horizontal"
             android:maxLines="2"
-            android:text="Avengers: End game"
+            android:text="Белый Воротничок"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
 
-        <ImageView
-            android:id="@+id/video_more"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:padding="5dp"
-            android:src="@drawable/ic_more" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/video_bottom_bar"
-        android:layout_below="@id/top_bar"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/video_subtitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/video_rewind"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_rewind" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/video_play_pause"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:src="@drawable/ic_pause"
-                android:visibility="gone" />
-
-            <ProgressBar
-                android:id="@+id/video_progress_bar"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/video_forward"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_forward" />
-
-        </LinearLayout>
+            android:ellipsize="end"
+            android:fontFamily="@font/regular"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:text="1 серия 4 сезон"
+            android:textColor="@color/grey10"
+            android:textSize="17sp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
@@ -114,200 +56,138 @@
         android:visibility="visible">
 
         <LinearLayout
-            android:id="@+id/bottom_top"
+            android:id="@+id/timer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingHorizontal="15dp">
 
-            <LinearLayout
-                android:id="@+id/timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/exo_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/semibold"
-                    android:text="00:00"
-                    android:textColor="@color/white"
-                    android:textSize="15dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/semibold"
-                    android:text=" / "
-                    android:textColor="@color/white"
-                    android:textSize="15dp" />
-
-                <TextView
-                    android:id="@+id/exo_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:fontFamily="@font/semibold"
-                    android:text="35:22"
-                    android:textColor="@color/white"
-                    android:textSize="15dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/live"
+            <TextView
+                android:id="@+id/exo_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:visibility="gone">
+                android:fontFamily="@font/semibold"
+                android:text="00:00"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_circle" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:fontFamily="@font/semibold"
-                    android:text="LIVE"
-                    android:textColor="@color/red"
-                    android:textFontWeight="900"
-                    android:textSize="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical|end">
+                android:fontFamily="@font/semibold"
+                android:text=" / "
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
 
-                <LinearLayout
-                    android:id="@+id/button_episodes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="12dp"
-                    android:gravity="center_vertical"
-                    android:visibility="gone">
+            <TextView
+                android:id="@+id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/semibold"
+                android:text="00:00"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_playlist" />
-
-                    <TextView
-                        android:id="@+id/text_episodes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="@font/semibold"
-                        android:text="Episodes"
-                        android:textColor="@color/white"
-                        android:textSize="15dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/button_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="12dp"
-                    android:gravity="center_vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="3dp"
-                        android:src="@drawable/ic_next" />
-
-                    <TextView
-                        android:id="@+id/text_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="@font/semibold"
-                        android:text="Nxt ep"
-                        android:textColor="@color/white"
-                        android:textSize="15dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/button_tv_programs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="12dp"
-                    android:gravity="center_vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="7dp"
-                        android:src="@drawable/ic_tv_programs" />
-
-                    <TextView
-                        android:id="@+id/text_tv_programs"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:fontFamily="@font/semibold"
-                        android:text="TV programmes"
-                        android:textColor="@color/white"
-                        android:textSize="15dp" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/zoom"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="5dp"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_zoom"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/orientation"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_landscape" />
-
-            </LinearLayout>
         </LinearLayout>
 
         <androidx.media3.ui.DefaultTimeBar
             android:id="@+id/exo_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bottom_top"
-            android:layout_centerVertical="true"
+            android:nextFocusDown="@id/quality_button"
             android:paddingHorizontal="7dp"
-            app:played_color="@color/white"
+            app:played_color="@color/blue"
             app:scrubber_color="@color/blue"
-            app:unplayed_color="@color/grey10" />
+            app:unplayed_color="@color/white" />
 
-        <SeekBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <!--        <SeekBar-->
+        <!--            android:id="@+id/progress_bar"-->
+        <!--            style="?android:attr/progressBarStyleHorizontal"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:focusable="false"-->
+        <!--            android:maxHeight="5dp"-->
+        <!--            android:layout_marginTop="5dp"-->
+        <!--            android:layout_marginBottom="15dp"-->
+        <!--            android:paddingHorizontal="15dp"-->
+        <!--            android:progress="0"-->
+        <!--            android:progressDrawable="@drawable/custom_progress_bar"-->
+        <!--            android:thumb="@drawable/custom_thumb"-->
+        <!--            android:visibility="visible" />-->
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="5dp"
-            android:paddingHorizontal="15dp"
-            android:progress="100"
-            android:progressDrawable="@drawable/custom_progress_bar"
-            android:thumb="@drawable/custom_thumb"
-            android:visibility="gone" />
+            android:paddingHorizontal="10dp">
+
+            <Button
+                android:id="@+id/quality_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:drawableStart="@drawable/ic_settings"
+                android:drawablePadding="10dp"
+                android:focusable="true"
+                android:fontFamily="@font/semibold"
+                android:nextFocusDown="@id/speed_button"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="Quality"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:ignore="ContentDescription,HardcodedText" />
+
+
+            <Button
+                android:id="@+id/speed_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:background="@color/transparent"
+                android:drawableStart="@drawable/ic_speed"
+                android:drawablePadding="10dp"
+                android:focusable="true"
+                android:fontFamily="@font/semibold"
+                android:nextFocusDown="@id/video_previous"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="Speed"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:ignore="ContentDescription,HardcodedText" />
+
+            <LinearLayout
+                android:id="@+id/nav_controller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end">
+
+                <ImageButton
+                    android:id="@+id/video_previous"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/transparent"
+                    android:focusable="true"
+                    android:nextFocusDown="@id/video_next"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_previous"
+                    tools:ignore="ContentDescription" />
+
+                <ImageButton
+                    android:id="@+id/video_next"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@color/transparent"
+                    android:focusable="true"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_next"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

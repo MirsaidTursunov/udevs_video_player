@@ -11,11 +11,8 @@ class PlayerConfiguration {
   int lastPosition;
   String title;
   bool isSerial;
-  String episodeButtonText;
-  String nextButtonText;
   List<Season> seasons;
   bool isLive;
-  String tvProgramsText;
   List<ProgramsInfo> programsInfoList;
   bool showController;
   bool playVideoFromAsset;
@@ -32,11 +29,8 @@ class PlayerConfiguration {
     map['lastPosition'] = lastPosition;
     map['title'] = title;
     map['isSerial'] = isSerial;
-    map['episodeButtonText'] = episodeButtonText;
-    map['nextButtonText'] = nextButtonText;
     map['seasons'] = seasons.map((v) => v.toJson()).toList();
     map['isLive'] = isLive;
-    map['tvProgramsText'] = tvProgramsText;
     map['programsInfoList'] = programsInfoList.map((v) => v.toJson()).toList();
     map['showController'] = showController;
     map['playVideoFromAsset'] = playVideoFromAsset;
@@ -48,7 +42,7 @@ class PlayerConfiguration {
 
   @override
   String toString() {
-    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, episodeButtonText: $episodeButtonText, nextButtonText: $nextButtonText, seasons: $seasons, isLive: $isLive, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex}';
+    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isLive: $isLive, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex}';
   }
 
   PlayerConfiguration({
@@ -59,11 +53,8 @@ class PlayerConfiguration {
     required this.lastPosition,
     required this.title,
     required this.isSerial,
-    required this.episodeButtonText,
-    required this.nextButtonText,
     required this.seasons,
     required this.isLive,
-    required this.tvProgramsText,
     required this.programsInfoList,
     required this.showController,
     required this.playVideoFromAsset,

@@ -10,8 +10,6 @@ data class Movie(
     val description: String,
     @SerializedName("image")
     val image: String,
-    @SerializedName("duration")
-    val duration: Long,
     @SerializedName("resolutions")
     val resolutions: HashMap<String, String>
 ) : Serializable

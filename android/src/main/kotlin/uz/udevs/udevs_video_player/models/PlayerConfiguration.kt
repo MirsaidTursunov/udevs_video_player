@@ -18,16 +18,10 @@ data class PlayerConfiguration(
     val title: String,
     @SerializedName("isSerial")
     val isSerial: Boolean,
-    @SerializedName("episodeButtonText")
-    val episodeButtonText: String,
-    @SerializedName("nextButtonText")
-    val nextButtonText: String,
     @SerializedName("seasons")
     val seasons: List<Season>,
     @SerializedName("isLive")
     val isLive: Boolean,
-    @SerializedName("tvProgramsText")
-    val tvProgramsText: String,
     @SerializedName("programsInfoList")
     val programsInfoList: List<ProgramsInfo>,
     @SerializedName("showController")

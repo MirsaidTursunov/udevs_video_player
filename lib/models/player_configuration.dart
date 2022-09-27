@@ -13,12 +13,15 @@ class PlayerConfiguration {
   bool isSerial;
   List<Season> seasons;
   bool isLive;
+  String tvProgramsText;
   List<ProgramsInfo> programsInfoList;
   bool showController;
   bool playVideoFromAsset;
   String assetPath;
   int seasonIndex;
   int episodeIndex;
+  String episodeText;
+  String seasonText;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
@@ -31,12 +34,15 @@ class PlayerConfiguration {
     map['isSerial'] = isSerial;
     map['seasons'] = seasons.map((v) => v.toJson()).toList();
     map['isLive'] = isLive;
+    map['tvProgramsText'] = tvProgramsText;
     map['programsInfoList'] = programsInfoList.map((v) => v.toJson()).toList();
     map['showController'] = showController;
     map['playVideoFromAsset'] = playVideoFromAsset;
     map['assetPath'] = assetPath;
     map['seasonIndex'] = seasonIndex;
     map['episodeIndex'] = episodeIndex;
+    map['episodeText'] = episodeText;
+    map['seasonText'] = seasonText;
     return map;
   }
 
@@ -55,11 +61,14 @@ class PlayerConfiguration {
     required this.isSerial,
     required this.seasons,
     required this.isLive,
+    required this.tvProgramsText,
     required this.programsInfoList,
     required this.showController,
     required this.playVideoFromAsset,
     required this.assetPath,
     required this.seasonIndex,
     required this.episodeIndex,
+    required this.episodeText,
+    required this.seasonText,
   });
 }

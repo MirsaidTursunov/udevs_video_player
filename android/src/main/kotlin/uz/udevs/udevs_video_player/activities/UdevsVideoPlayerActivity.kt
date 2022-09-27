@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -39,15 +40,19 @@ class UdevsVideoPlayerActivity : Activity() {
     private var title: TextView? = null
     private var subtitle: TextView? = null
     private var playPause: ImageView? = null
+    private var exoProgress: DefaultTimeBar? = null
+    private var customSeekBar: SeekBar? = null
     private var timer: LinearLayout? = null
+    private var live: LinearLayout? = null
     private var qualityButton: Button? = null
     private var speedButton: Button? = null
+    private var tvButton: Button? = null
     private var previousButton: ImageButton? = null
     private var nextButton: ImageButton? = null
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player_activity)
@@ -63,19 +68,36 @@ class UdevsVideoPlayerActivity : Activity() {
         subtitle = findViewById(R.id.video_subtitle)
         title?.text = playerConfiguration?.title
 
-        playPause = findViewById(R.id.video_play_pause)
         timer = findViewById(R.id.timer)
-        if (playerConfiguration?.isLive == true) {
-            timer?.visibility = View.GONE
-        }
+        live = findViewById(R.id.live)
+        playPause = findViewById(R.id.video_play_pause)
+        exoProgress = findViewById(R.id.exo_progress)
+        customSeekBar = findViewById(R.id.progress_bar)
+        customSeekBar?.isEnabled = false
         qualityButton = findViewById(R.id.quality_button)
         speedButton = findViewById(R.id.speed_button)
-
+        tvButton = findViewById(R.id.tv_button)
         previousButton = findViewById(R.id.video_previous)
         nextButton = findViewById(R.id.video_next)
-        if (playerConfiguration?.isSerial == true) {
-            previousButton?.visibility = View.VISIBLE
+        if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
+                    episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
+        ) {
             nextButton?.visibility = View.VISIBLE
+        }
+        if (playerConfiguration?.isSerial == true && (seasonIndex == 0 && episodeIndex != 0 || seasonIndex > 0)) {
+            previousButton?.visibility = View.VISIBLE
+        }
+        if (playerConfiguration?.isSerial == true) {
+            subtitle?.visibility = View.VISIBLE
+            subtitle?.text =
+                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
+        }
+        if (playerConfiguration?.isLive == true) {
+            live?.visibility = View.VISIBLE
+            timer?.visibility = View.GONE
+            exoProgress?.visibility = View.GONE
+            customSeekBar?.visibility = View.VISIBLE
+            tvButton?.visibility = View.VISIBLE
         }
 
         initializeClickListeners()
@@ -200,6 +222,13 @@ class UdevsVideoPlayerActivity : Activity() {
                 nextButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
+        tvButton?.setOnFocusChangeListener { _, b ->
+            if (b) {
+                tvButton?.setBackgroundResource(R.drawable.focus_background)
+            } else {
+                tvButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+            }
+        }
         qualityButton?.setOnClickListener {
             showQualitySpeedSheet(
                 currentQuality,
@@ -211,21 +240,19 @@ class UdevsVideoPlayerActivity : Activity() {
             showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
         }
         previousButton?.setOnClickListener {
-            if (seasonIndex < playerConfiguration!!.seasons.size) {
-                if (episodeIndex < playerConfiguration!!.seasons[seasonIndex].movies.size - 1) {
-                    episodeIndex++
-                } else {
-                    seasonIndex++
-                }
+            if (episodeIndex > 0) {
+                episodeIndex--
+            } else {
+                seasonIndex--
+                episodeIndex = playerConfiguration!!.seasons[seasonIndex].movies.size - 1
             }
-            if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
-                episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
+            nextButton?.visibility = View.VISIBLE
+            if (seasonIndex == 0 && episodeIndex == 0
             ) {
-                nextButton?.visibility = View.GONE
+                previousButton?.visibility = View.INVISIBLE
             }
-            title?.text =
-                "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                        playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+            subtitle?.text =
+                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
             val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
             val hlsMediaSource: HlsMediaSource =
                 HlsMediaSource.Factory(dataSourceFactory)
@@ -242,14 +269,14 @@ class UdevsVideoPlayerActivity : Activity() {
                     seasonIndex++
                 }
             }
+            previousButton?.visibility = View.VISIBLE
             if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
                 episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
             ) {
-                nextButton?.visibility = View.GONE
+                nextButton?.visibility = View.INVISIBLE
             }
-            title?.text =
-                "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                        playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+            subtitle?.text =
+                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
             val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
             val hlsMediaSource: HlsMediaSource =
                 HlsMediaSource.Factory(dataSourceFactory)

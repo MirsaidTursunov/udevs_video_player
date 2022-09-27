@@ -42,6 +42,7 @@
             android:text="1 серия 4 сезон"
             android:textColor="@color/grey10"
             android:textSize="17sp"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>
@@ -52,8 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/timer"
@@ -94,6 +94,34 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="15dp"
+            android:visibility="gone"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_circle"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/semibold"
+                android:text="LIVE"
+                android:textColor="@color/red"
+                android:textFontWeight="900"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText,UnusedAttribute" />
+
+        </LinearLayout>
+
         <androidx.media3.ui.DefaultTimeBar
             android:id="@+id/exo_progress"
             android:layout_width="match_parent"
@@ -104,24 +132,25 @@
             app:scrubber_color="@color/blue"
             app:unplayed_color="@color/white" />
 
-        <!--        <SeekBar-->
-        <!--            android:id="@+id/progress_bar"-->
-        <!--            style="?android:attr/progressBarStyleHorizontal"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:focusable="false"-->
-        <!--            android:maxHeight="5dp"-->
-        <!--            android:layout_marginTop="5dp"-->
-        <!--            android:layout_marginBottom="15dp"-->
-        <!--            android:paddingHorizontal="15dp"-->
-        <!--            android:progress="0"-->
-        <!--            android:progressDrawable="@drawable/custom_progress_bar"-->
-        <!--            android:thumb="@drawable/custom_thumb"-->
-        <!--            android:visibility="visible" />-->
+        <SeekBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:maxHeight="5dp"
+            android:nextFocusDown="@id/quality_button"
+            android:paddingHorizontal="15dp"
+            android:progress="100"
+            android:progressDrawable="@drawable/custom_progress_bar"
+            android:thumb="@drawable/custom_thumb"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:paddingHorizontal="10dp">
 
             <Button
@@ -130,64 +159,85 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:drawableStart="@drawable/ic_settings"
-                android:drawablePadding="10dp"
+                android:drawablePadding="3dp"
                 android:focusable="true"
                 android:fontFamily="@font/semibold"
                 android:nextFocusDown="@id/speed_button"
                 android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
                 android:text="Quality"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:ignore="ContentDescription,HardcodedText" />
-
 
             <Button
                 android:id="@+id/speed_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="20dp"
                 android:background="@color/transparent"
                 android:drawableStart="@drawable/ic_speed"
-                android:drawablePadding="10dp"
+                android:drawablePadding="3dp"
                 android:focusable="true"
                 android:fontFamily="@font/semibold"
                 android:nextFocusDown="@id/video_previous"
                 android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
                 android:text="Speed"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:ignore="ContentDescription,HardcodedText" />
 
             <LinearLayout
                 android:id="@+id/nav_controller"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="end">
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="horizontal"
+                android:visibility="visible" />
 
-                <ImageButton
-                    android:id="@+id/video_previous"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@color/transparent"
-                    android:focusable="true"
-                    android:nextFocusDown="@id/video_next"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_previous"
-                    tools:ignore="ContentDescription" />
+            <ImageButton
+                android:id="@+id/video_previous"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/transparent"
+                android:focusable="true"
+                android:nextFocusDown="@id/video_next"
+                android:padding="10dp"
+                android:src="@drawable/ic_previous"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
 
-                <ImageButton
-                    android:id="@+id/video_next"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@color/transparent"
-                    android:focusable="true"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_next"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/video_next"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/transparent"
+                android:focusable="true"
+                android:padding="10dp"
+                android:src="@drawable/ic_next"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+            <Button
+                android:id="@+id/tv_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:background="@color/transparent"
+                android:drawableStart="@drawable/ic_tv"
+                android:drawablePadding="3dp"
+                android:focusable="true"
+                android:fontFamily="@font/semibold"
+                android:paddingHorizontal="10dp"
+                android:text="Programs"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,HardcodedText" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

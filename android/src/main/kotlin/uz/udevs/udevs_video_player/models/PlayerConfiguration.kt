@@ -22,6 +22,8 @@ data class PlayerConfiguration(
     val seasons: List<Season>,
     @SerializedName("isLive")
     val isLive: Boolean,
+    @SerializedName("tvProgramsText")
+    val tvProgramsText: String,
     @SerializedName("programsInfoList")
     val programsInfoList: List<ProgramsInfo>,
     @SerializedName("showController")
@@ -34,4 +36,8 @@ data class PlayerConfiguration(
     val seasonIndex: Int,
     @SerializedName("episodeIndex")
     val episodeIndex: Int,
+    @SerializedName("episodeText")
+    val episodeText: String,
+    @SerializedName("seasonText")
+    val seasonText: String,
 ) : Serializable

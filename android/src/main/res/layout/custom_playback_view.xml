@@ -129,6 +129,7 @@
             android:nextFocusDown="@id/quality_button"
             android:paddingHorizontal="7dp"
             app:played_color="@color/blue"
+            app:scrubber_dragged_size="20dp"
             app:scrubber_color="@color/blue"
             app:unplayed_color="@color/white" />
 

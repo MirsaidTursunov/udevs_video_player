@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import androidx.media3.common.MediaItem
@@ -30,6 +31,7 @@ import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
+import uz.udevs.udevs_video_player.models.CurrentFocus
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 
 class UdevsVideoPlayerActivity : Activity() {
@@ -51,6 +53,7 @@ class UdevsVideoPlayerActivity : Activity() {
     private var nextButton: ImageButton? = null
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
+    private var currentFocus = CurrentFocus.NONE
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +75,7 @@ class UdevsVideoPlayerActivity : Activity() {
         live = findViewById(R.id.live)
         playPause = findViewById(R.id.video_play_pause)
         exoProgress = findViewById(R.id.exo_progress)
+        exoProgress?.setKeyTimeIncrement(15000)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
         qualityButton = findViewById(R.id.quality_button)
@@ -107,6 +111,42 @@ class UdevsVideoPlayerActivity : Activity() {
         } else {
             playVideo()
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_CENTER -> {
+                if (currentFocus == CurrentFocus.EXO_PROGRESS) {
+                    playPause?.visibility = View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        playPause?.visibility = View.GONE
+                    }, 1000)
+                    if (player?.isPlaying == true) {
+                        player?.pause()
+                        playPause?.setImageResource(R.drawable.ic_pause)
+                    } else {
+                        player?.play()
+                        playPause?.setImageResource(R.drawable.ic_play)
+                    }
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_BACK -> {
+                if (player?.isPlaying == true) {
+                    player?.stop()
+                }
+                var seconds = 0L
+                if (player?.currentPosition != null) {
+                    seconds = player?.currentPosition!! / 1000
+                }
+                val intent = Intent()
+                intent.putExtra("position", seconds.toString())
+                setResult(PLAYER_ACTIVITY_FINISH, intent)
+                finish()
+                return true
+            }
+        }
+        return false
     }
 
     override fun onBackPressed() {
@@ -171,16 +211,6 @@ class UdevsVideoPlayerActivity : Activity() {
                 override fun onPlayerError(error: PlaybackException) {
                     println(error.errorCode)
                 }
-
-                override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    if (isPlaying) {
-                        playPause?.setImageResource(R.drawable.ic_pause)
-                    } else {
-                        playPause?.setImageResource(R.drawable.ic_play)
-                    }
-                    Handler(Looper.getMainLooper()).postDelayed({
-                    }, 300)
-                }
             })
         player?.playWhenReady = true
     }
@@ -194,8 +224,14 @@ class UdevsVideoPlayerActivity : Activity() {
                 player?.play()
             }
         }
+        exoProgress?.setOnFocusChangeListener { _, b ->
+            if (b) {
+                currentFocus = CurrentFocus.EXO_PROGRESS
+            }
+        }
         qualityButton?.setOnFocusChangeListener { _, b ->
             if (b) {
+                currentFocus = CurrentFocus.QUALITY
                 qualityButton?.setBackgroundResource(R.drawable.focus_background)
             } else {
                 qualityButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
@@ -203,6 +239,7 @@ class UdevsVideoPlayerActivity : Activity() {
         }
         speedButton?.setOnFocusChangeListener { _, b ->
             if (b) {
+                currentFocus = CurrentFocus.SPEED
                 speedButton?.setBackgroundResource(R.drawable.focus_background)
             } else {
                 speedButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
@@ -210,6 +247,7 @@ class UdevsVideoPlayerActivity : Activity() {
         }
         previousButton?.setOnFocusChangeListener { _, b ->
             if (b) {
+                currentFocus = CurrentFocus.PREVIOUS_BTN
                 previousButton?.setBackgroundResource(R.drawable.focus_background)
             } else {
                 previousButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
@@ -217,6 +255,7 @@ class UdevsVideoPlayerActivity : Activity() {
         }
         nextButton?.setOnFocusChangeListener { _, b ->
             if (b) {
+                currentFocus = CurrentFocus.NEXT_BTN
                 nextButton?.setBackgroundResource(R.drawable.focus_background)
             } else {
                 nextButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
@@ -224,6 +263,7 @@ class UdevsVideoPlayerActivity : Activity() {
         }
         tvButton?.setOnFocusChangeListener { _, b ->
             if (b) {
+                currentFocus = CurrentFocus.TV_BTN
                 tvButton?.setBackgroundResource(R.drawable.focus_background)
             } else {
                 tvButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))

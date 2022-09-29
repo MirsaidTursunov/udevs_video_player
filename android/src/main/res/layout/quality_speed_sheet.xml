@@ -7,32 +7,17 @@
     android:orientation="vertical"
     android:paddingVertical="10dp">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/quality_speed_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:id="@+id/quality_speed_sheet_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/transparent"
-            android:focusable="true"
-            android:padding="10dp"
-            android:src="@drawable/ic_back"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:id="@+id/quality_speed_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/semibold"
-            android:gravity="center"
-            android:paddingVertical="10dp"
-            android:text="Quality"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/semibold"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:text="Quality"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quality_speed_listview"

@@ -3,7 +3,7 @@ package uz.udevs.udevs_video_player.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -33,8 +33,10 @@ import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
+import uz.udevs.udevs_video_player.adapters.TvProgramsRvAdapter
 import uz.udevs.udevs_video_player.models.CurrentFocus
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.TvProgram
 
 class UdevsVideoPlayerActivity : Activity() {
 
@@ -327,6 +329,9 @@ class UdevsVideoPlayerActivity : Activity() {
             player?.prepare()
             player?.playWhenReady
         }
+        tvButton?.setOnClickListener {
+            showTvProgramsBottomSheet()
+        }
     }
 
     private var speeds =
@@ -336,7 +341,6 @@ class UdevsVideoPlayerActivity : Activity() {
     private var qualityText: TextView? = null
     private var speedText: TextView? = null
 
-    private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(
         initialValue: String,
         list: ArrayList<String>,
@@ -346,26 +350,10 @@ class UdevsVideoPlayerActivity : Activity() {
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
-        backButtonQualitySpeedBottomSheet =
-            bottomSheetDialog.findViewById(R.id.quality_speed_sheet_back)
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            backButtonQualitySpeedBottomSheet?.visibility = View.GONE
-        } else {
-            backButtonQualitySpeedBottomSheet?.visibility = View.VISIBLE
-        }
-        backButtonQualitySpeedBottomSheet?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-        backButtonQualitySpeedBottomSheet?.setOnFocusChangeListener { _, b ->
-            if (b) {
-                backButtonQualitySpeedBottomSheet?.setBackgroundResource(R.drawable.focus_border)
-            } else {
-                backButtonQualitySpeedBottomSheet?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
-            }
-        }
         bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
             playerConfiguration!!.qualityText
-        val recyclerView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
+        val recyclerView =
+            bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val adapter = QualitySpeedAdapter(
             initialValue,
@@ -393,6 +381,19 @@ class UdevsVideoPlayerActivity : Activity() {
             })
         )
         recyclerView.adapter = adapter
+        bottomSheetDialog.show()
+    }
+
+    private fun showTvProgramsBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetDialog.setContentView(R.layout.tv_programs_sheet)
+        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.tv_programs_rv)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv?.layoutManager = layoutManager
+        rv?.adapter = TvProgramsRvAdapter(playerConfiguration!!.programsInfoList)
         bottomSheetDialog.show()
     }
 }

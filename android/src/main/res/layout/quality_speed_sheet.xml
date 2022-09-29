@@ -11,10 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/quality_speed_sheet_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="@color/transparent"
+            android:focusable="true"
             android:padding="10dp"
             android:src="@drawable/ic_back"
             tools:ignore="ContentDescription" />
@@ -32,9 +34,10 @@
             tools:ignore="HardcodedText" />
     </RelativeLayout>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quality_speed_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:itemCount="7"
         tools:listitem="@layout/quality_speed_item" />
 </LinearLayout>

@@ -25,6 +25,8 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
@@ -354,20 +356,24 @@ class UdevsVideoPlayerActivity : Activity() {
         backButtonQualitySpeedBottomSheet?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
+        backButtonQualitySpeedBottomSheet?.setOnFocusChangeListener { _, b ->
+            if (b) {
+                backButtonQualitySpeedBottomSheet?.setBackgroundResource(R.drawable.focus_border)
+            } else {
+                backButtonQualitySpeedBottomSheet?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+            }
+        }
         bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
             playerConfiguration!!.qualityText
-        val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
+        val recyclerView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val adapter = QualitySpeedAdapter(
             initialValue,
-            this,
             list, (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
                         currentQuality = list[position]
                         qualityText?.text = currentQuality
-                        if (player?.isPlaying == true) {
-                            player?.pause()
-                        }
                         val currentPosition = player?.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
@@ -386,7 +392,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 }
             })
         )
-        listView.adapter = adapter
+        recyclerView.adapter = adapter
         bottomSheetDialog.show()
     }
 }

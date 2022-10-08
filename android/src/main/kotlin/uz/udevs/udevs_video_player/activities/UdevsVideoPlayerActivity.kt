@@ -29,14 +29,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsRvAdapter
 import uz.udevs.udevs_video_player.models.CurrentFocus
+import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.TvProgram
+import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.retrofit.Common
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 
 class UdevsVideoPlayerActivity : Activity() {
 
@@ -58,6 +64,7 @@ class UdevsVideoPlayerActivity : Activity() {
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
     private var currentFocus = CurrentFocus.NONE
+    private var retrofitService: RetrofitService? = null
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +115,7 @@ class UdevsVideoPlayerActivity : Activity() {
             tvButton?.visibility = View.VISIBLE
         }
 
+        retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         initializeClickListeners()
 
         if (playerConfiguration?.playVideoFromAsset == true) {
@@ -297,13 +305,19 @@ class UdevsVideoPlayerActivity : Activity() {
             }
             subtitle?.text =
                 "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
-            val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-            val hlsMediaSource: HlsMediaSource =
-                HlsMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-            player?.setMediaSource(hlsMediaSource)
-            player?.prepare()
-            player?.playWhenReady
+            if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
+                getMegogoStream()
+            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
+                getPremierStream()
+            } else {
+                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                val hlsMediaSource: HlsMediaSource =
+                    HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                player?.setMediaSource(hlsMediaSource)
+                player?.prepare()
+                player?.playWhenReady
+            }
         }
         nextButton?.setOnClickListener {
             if (seasonIndex < playerConfiguration!!.seasons.size) {
@@ -321,17 +335,99 @@ class UdevsVideoPlayerActivity : Activity() {
             }
             subtitle?.text =
                 "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
-            val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-            val hlsMediaSource: HlsMediaSource =
-                HlsMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-            player?.setMediaSource(hlsMediaSource)
-            player?.prepare()
-            player?.playWhenReady
+            if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
+                getMegogoStream()
+            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
+                getPremierStream()
+            } else {
+                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                val hlsMediaSource: HlsMediaSource =
+                    HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                player?.setMediaSource(hlsMediaSource)
+                player?.prepare()
+                player?.playWhenReady
+            }
         }
         tvButton?.setOnClickListener {
             showTvProgramsBottomSheet()
         }
+    }
+
+    private fun getMegogoStream() {
+        retrofitService?.getMegogoStream(
+            playerConfiguration!!.authorization,
+            playerConfiguration!!.sessionId,
+            playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].id,
+            playerConfiguration!!.megogoAccessToken
+        )?.enqueue(object : Callback<MegogoStreamResponse> {
+            override fun onResponse(
+                call: Call<MegogoStreamResponse>,
+                response: Response<MegogoStreamResponse>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    val map: HashMap<String, String> = hashMapOf()
+                    map[playerConfiguration!!.autoText] = body.data!!.src!!
+                    body.data.bitrates?.forEach {
+                        map["${it!!.bitrate}p"] = it.src!!
+                    }
+                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions =
+                        map
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource =
+                        HlsMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                    player?.setMediaSource(hlsMediaSource)
+                    player?.prepare()
+                    player?.playWhenReady
+                }
+            }
+
+            override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun getPremierStream() {
+        retrofitService?.getPremierStream(
+            playerConfiguration!!.authorization,
+            playerConfiguration!!.sessionId,
+            playerConfiguration!!.videoId,
+            playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].id,
+        )?.enqueue(object : Callback<PremierStreamResponse> {
+            override fun onResponse(
+                call: Call<PremierStreamResponse>,
+                response: Response<PremierStreamResponse>
+            ) {
+                val body = response.body()
+                println(body.toString())
+                if (body != null) {
+                    val map: HashMap<String, String> = hashMapOf()
+                    body.file_info?.forEach {
+                        if (it!!.quality == "auto") {
+                            map[playerConfiguration!!.autoText] = it.file_name!!
+                        } else {
+                            map[it.quality!!] = it.file_name!!
+                        }
+                    }
+                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions =
+                        map
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource =
+                        HlsMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                    player?.setMediaSource(hlsMediaSource)
+                    player?.prepare()
+                    player?.playWhenReady
+                }
+            }
+
+            override fun onFailure(call: Call<PremierStreamResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
     }
 
     private var speeds =
@@ -355,9 +451,37 @@ class UdevsVideoPlayerActivity : Activity() {
         val recyclerView =
             bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        //sorting
+        val l = mutableListOf<String>()
+        var auto = ""
+        list.forEach {
+            if (it.substring(0, it.length - 1).toIntOrNull() != null) {
+                l.add(it)
+            } else {
+                auto = it
+            }
+        }
+        for (i in 0 until l.size) {
+            for (j in i until l.size) {
+                val first = l[i]
+                val second = l[j]
+                if (first.substring(0, first.length - 1).toInt() < second.substring(
+                        0,
+                        second.length - 1
+                    ).toInt()
+                ) {
+                    val a = l[i]
+                    l[i] = l[j]
+                    l[j] = a
+                }
+            }
+        }
+        if (auto.isNotEmpty()) {
+            l.add(0, auto)
+        }
         val adapter = QualitySpeedAdapter(
             initialValue,
-            list, (object : QualitySpeedAdapter.OnClickListener {
+            l as ArrayList<String>, (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
                         currentQuality = list[position]

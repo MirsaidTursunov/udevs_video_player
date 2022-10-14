@@ -17,7 +17,7 @@ protocol FileViewControllerDelegate: AnyObject {
 
 final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    let file: VideoFile
+    let file: Story
     
     weak var postDelegate: FileViewControllerDelegate?
     weak var delegate: VideoPlayerDelegate?
@@ -34,17 +34,19 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         return button
     }()
     
+    private let playButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Смотреть  фильм", for: .normal)
+        button.tintColor = .white
+        button.layer.cornerRadius = 4
+        button.backgroundColor = Colors.assets
+        button.imageView?.contentMode = .scaleAspectFit
+        return button
+    }()
+    
     public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
-        return imageView
-    }()
-    
-    public let avatarImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
-        imageView.layer.cornerRadius = 25
-        imageView.layer.masksToBounds = true
         return imageView
     }()
     
@@ -57,14 +59,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var player: AVPlayer?
     
-    public let usernameLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .left
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.numberOfLines = 1
-        //        label.textColor = .systemBackground
-        return label
-    }()
     
     public let progressView: UIProgressView = {
         let progressView = UIProgressView()
@@ -93,7 +87,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: Init
     
-    init(file: VideoFile) {
+    init(file: Story) {
         self.file = file
         super.init(nibName: nil, bundle: nil)
     }
@@ -110,8 +104,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         view.addGestureRecognizer(tapGesture)
         
         closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(playClose), for: .touchUpInside)
         
-        configurePlayer(with: file.link)
+        configurePlayer(with: file.fileName)
         configureTimer()
         
         NotificationCenter.default.addObserver(self,
@@ -124,9 +119,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         view.addSubview(imageView)
         view.addSubview(playerView)
         view.addSubview(closeButton)
-        view.addSubview(usernameLabel)
         view.addSubview(progressView)
-        view.addSubview(avatarImageView)
+        view.addSubview(playButton)
     }
     
     override func viewDidLayoutSubviews() {
@@ -134,22 +128,15 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         let window = UIApplication.shared.keyWindow
         let topPadding: Int = Int(window?.safeAreaInsets.top ?? 0)
         let bottomPadding:Int = Int(window?.safeAreaInsets.bottom ?? 0)
-        usernameLabel.sizeToFit()
-        
-        avatarImageView.frame = CGRect(x: 10,
-                                       y: 30+topPadding,
-                                       width: 50,
-                                       height: 50)
-        
-        usernameLabel.frame = CGRect(x: avatarImageView.right+10,
-                                     y: avatarImageView.top+15+CGFloat(topPadding),
-                                     width: usernameLabel.width,
-                                     height: usernameLabel.height)
         
         closeButton.frame = CGRect(x: Int(view.width) - 45,
                                    y: 30+topPadding,
                                    width: 25,
                                    height: 25)
+        playButton.frame = CGRect(x: 20,
+                                  y: view.height-CGFloat(bottomPadding+topPadding),
+                                  width: view.width-40,
+                                  height: 42)
         
         imageView.frame = CGRect(x: 0,
                                  y: 0,
@@ -171,7 +158,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         timer = nil
         player?.cancelPendingPrerolls()
         player?.pause()
-        delegate?.close()
     }
     
     private func configureTimer() {
@@ -198,8 +184,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         player?.play()
     }
     
-    //MARK: Actions
-    
     @objc private func storyDidEnd(notification: Notification) {
         if let playerItem = notification.object as? AVPlayerItem {
             playerItem.seek(to: CMTime.zero, completionHandler: nil)
@@ -216,6 +200,17 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc private func didTapClose() {
+        self.dismiss(animated: true)
+        delegate?.close(args: nil)
+    }
+    
+    @objc private func playClose() {
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title]) {
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                delegate?.close(args: jsonString)
+            }
+        }
         self.dismiss(animated: true)
     }
 }

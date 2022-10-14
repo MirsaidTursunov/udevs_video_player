@@ -9,7 +9,7 @@ import Foundation
 
 protocol VideoPlayerDelegate: AnyObject {
     func getDuration(duration: Double)
-    func close()
+    func close(args:String?)
 }
 protocol QualityDelegate {
     func qualityBottomSheet()

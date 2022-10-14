@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +23,7 @@ class _MyAppState extends State<MyApp> {
   playVideo() async {
     List<Season> seasons = [];
     List<Movie> movies1 = [];
+    List<Story> story = [];
     movies1.add(Movie(
       id: '22109',
       title: 'Женщина-Халк: Адвокат',
@@ -67,331 +70,56 @@ class _MyAppState extends State<MyApp> {
             'https://cdn.uzd.udevs.io/uzdigital/videos/a298d71ece9105727c7c2e3bc219ef86/240p/index.m3u8',
       },
     ));
+    story.add(
+      Story(
+        id: "6343dbbf190cf6f120114de7",
+        title: "test2",
+        slug: "test2",
+        quality: "auto",
+        fileName:
+            'https://cdn.sharqtv.udevs.io/sharqtv/videos/d4b2982e213c9c201de32589183d929a/master.m3u8',
+        duration: 139,
+      ),
+    );
+    story.add(
+      Story(
+        id: "6343db82190cf6f120114971",
+        title: "test",
+        slug: "test-Gqt8Ye69v",
+        quality: "auto",
+        fileName:
+            "https://cdn.sharqtv.udevs.io/sharqtv/videos/9bcb4e58ff4241173d105ae1feac8f37/master.m3u8",
+        duration: 139,
+      ),
+    );
+    story.add(
+      Story(
+        id: "6343da92190cf6f1201131b9",
+        title: "Game Of Thrones",
+        slug: "game-of-thrones-u3lUc0ND6",
+        quality: "auto",
+        fileName:
+            "https://cdn.sharqtv.udevs.io/sharqtv/videos/835670534eb8c561b112389f55885415/master.m3u8",
+        duration: 208,
+      ),
+    );
+    story.add(
+      Story(
+        id: "633be08b1999749a268caac2",
+        title: "minions",
+        slug: "minions",
+        quality: "auto",
+        fileName:
+            "https://cdn.sharqtv.udevs.io/sharqtv/videos/c4ad656b0e0d344ccf6597e39344b9ab/master.m3u8",
+        duration: 660,
+      ),
+    );
     seasons.add(Season(title: '1 Season', movies: movies1));
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
             isStory: true,
-            story: [
-              {
-                "id": 1526909,
-                "width": 1920,
-                "height": 1080,
-                "duration": 10,
-                "tags": [],
-                "url":
-                    "https://www.pexels.com/video/seal-on-the-beach-1526909/",
-                "image":
-                    "https://images.pexels.com/videos/1526909/free-video-1526909.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-                "user": {
-                  "id": 574687,
-                  "name": "Ruvim Miksanskiy",
-                  "url": "https://www.pexels.com/@digitech"
-                },
-                "video_files": [
-                  {
-                    "id": 61368,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link":
-                        "https://player.vimeo.com/external/296210754.sd.mp4?s=9db41d71fa61a2cc19757f656fc5c5c5ef9f69ec&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61369,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link":
-                        "https://player.vimeo.com/external/299968768.sd.mp4?s=b0bf33e4823817a366f1a8672e9a913e7b70c8b0&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61370,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link":
-                        "https://player.vimeo.com/external/289258217.sd.mp4?s=50b11b521df767740fa56e4743159474f540afa2&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61371,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link":
-                        "https://player.vimeo.com/external/189545487.sd.mp4?s=8cd2af1ec08f7ce121a5a6a09c78c05237943524&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61372,
-                    "quality": "hls",
-                    "file_type": "video/mp4",
-                    "width": 0,
-                    "height": 0,
-                    "link":
-                        "https://player.vimeo.com/external/297927791.sd.mp4?s=5ceeec8c83fcb634312c157cc101b8bd19969b61&profile_id=165&oauth2_token_id=57447761"
-                  }
-                ]
-              },
-              {
-                "id": 1409899,
-                "width": 3840,
-                "height": 2160,
-                "duration": 21,
-                "full_res": null,
-                "tags": [],
-                "url":
-                    "https://www.pexels.com/video/waves-rushing-and-splashing-to-the-shore-1409899/",
-                "image":
-                    "https://images.pexels.com/videos/1409899/free-video-1409899.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-                "user": {
-                  "id": 439094,
-                  "name": "Michal Marek",
-                  "url": "https://www.pexels.com/@michalmarek"
-                },
-                "video_files": [
-                  {
-                    "id": 61368,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link":
-                        "https://player.vimeo.com/external/296210754.sd.mp4?s=9db41d71fa61a2cc19757f656fc5c5c5ef9f69ec&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61369,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link":
-                        "https://player.vimeo.com/external/299968768.sd.mp4?s=b0bf33e4823817a366f1a8672e9a913e7b70c8b0&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61370,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link":
-                        "https://player.vimeo.com/external/289258217.sd.mp4?s=50b11b521df767740fa56e4743159474f540afa2&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61371,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link":
-                        "https://player.vimeo.com/external/189545487.sd.mp4?s=8cd2af1ec08f7ce121a5a6a09c78c05237943524&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61372,
-                    "quality": "hls",
-                    "file_type": "video/mp4",
-                    "width": 0,
-                    "height": 0,
-                    "link":
-                        "https://player.vimeo.com/external/297927791.sd.mp4?s=5ceeec8c83fcb634312c157cc101b8bd19969b61&profile_id=165&oauth2_token_id=57447761"
-                  }
-                ]
-              },
-              {
-                "id": 857251,
-                "width": 1920,
-                "height": 1280,
-                "duration": 14,
-                "tags": [],
-                "url":
-                    "https://www.pexels.com/video/beautiful-timelapse-of-the-night-sky-with-reflections-in-a-lake-857251/",
-                "image":
-                    "https://images.pexels.com/videos/857251/free-video-857251.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-                "user": {
-                  "id": 121938,
-                  "name": "eberhard grossgasteiger",
-                  "url": "https://www.pexels.com/@eberhardgross"
-                },
-                "video_files": [
-                  {
-                    "id": 61368,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link":
-                        "https://player.vimeo.com/external/296210754.sd.mp4?s=9db41d71fa61a2cc19757f656fc5c5c5ef9f69ec&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61369,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link":
-                        "https://player.vimeo.com/external/299968768.sd.mp4?s=b0bf33e4823817a366f1a8672e9a913e7b70c8b0&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61370,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link":
-                        "https://player.vimeo.com/external/289258217.sd.mp4?s=50b11b521df767740fa56e4743159474f540afa2&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61371,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link":
-                        "https://player.vimeo.com/external/189545487.sd.mp4?s=8cd2af1ec08f7ce121a5a6a09c78c05237943524&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61372,
-                    "quality": "hls",
-                    "file_type": "video/mp4",
-                    "width": 0,
-                    "height": 0,
-                    "link":
-                        "https://player.vimeo.com/external/297927791.sd.mp4?s=5ceeec8c83fcb634312c157cc101b8bd19969b61&profile_id=165&oauth2_token_id=57447761"
-                  }
-                ]
-              },
-              {
-                "id": 856973,
-                "width": 4096,
-                "height": 2304,
-                "duration": 14,
-                "full_res": 0,
-                "tags": [],
-                "url":
-                    "https://www.pexels.com/video/time-lapse-video-sunset-856973/",
-                "image":
-                    "https://images.pexels.com/videos/856973/free-video-856973.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-                "avg_color": 0,
-                "user": {
-                  "id": 2659,
-                  "name": "Pixabay",
-                  "url": "https://www.pexels.com/@pixabay"
-                },
-                "video_files": [
-                  {
-                    "id": 61368,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link":
-                        "https://player.vimeo.com/external/296210754.sd.mp4?s=9db41d71fa61a2cc19757f656fc5c5c5ef9f69ec&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61369,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link":
-                        "https://player.vimeo.com/external/299968768.sd.mp4?s=b0bf33e4823817a366f1a8672e9a913e7b70c8b0&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61370,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link":
-                        "https://player.vimeo.com/external/289258217.sd.mp4?s=50b11b521df767740fa56e4743159474f540afa2&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61371,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link":
-                        "https://player.vimeo.com/external/189545487.sd.mp4?s=8cd2af1ec08f7ce121a5a6a09c78c05237943524&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61372,
-                    "quality": "hls",
-                    "file_type": "video/mp4",
-                    "width": 0,
-                    "height": 0,
-                    "link":
-                        "https://player.vimeo.com/external/297927791.sd.mp4?s=5ceeec8c83fcb634312c157cc101b8bd19969b61&profile_id=165&oauth2_token_id=57447761"
-                  }
-                ]
-              },
-              {
-                "id": 857195,
-                "width": 1280,
-                "height": 720,
-                "duration": 7,
-                "tags": [],
-                "url":
-                    "https://www.pexels.com/video/time-lapse-video-of-night-sky-857195/",
-                "image":
-                    "https://images.pexels.com/videos/857195/free-video-857195.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-                "user": {
-                  "id": 290933,
-                  "name": "Vimeo",
-                  "url": "https://www.pexels.com/@vimeo"
-                },
-                "video_files": [
-                  {
-                    "id": 61368,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link":
-                        "https://player.vimeo.com/external/296210754.sd.mp4?s=9db41d71fa61a2cc19757f656fc5c5c5ef9f69ec&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61369,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link":
-                        "https://player.vimeo.com/external/299968768.sd.mp4?s=b0bf33e4823817a366f1a8672e9a913e7b70c8b0&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61370,
-                    "quality": "hd",
-                    "file_type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link":
-                        "https://player.vimeo.com/external/289258217.sd.mp4?s=50b11b521df767740fa56e4743159474f540afa2&profile_id=164&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61371,
-                    "quality": "sd",
-                    "file_type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link":
-                        "https://player.vimeo.com/external/189545487.sd.mp4?s=8cd2af1ec08f7ce121a5a6a09c78c05237943524&profile_id=165&oauth2_token_id=57447761"
-                  },
-                  {
-                    "id": 61372,
-                    "quality": "hls",
-                    "file_type": "video/mp4",
-                    "width": 0,
-                    "height": 0,
-                    "link":
-                        "https://player.vimeo.com/external/297927791.sd.mp4?s=5ceeec8c83fcb634312c157cc101b8bd19969b61&profile_id=165&oauth2_token_id=57447761"
-                  }
-                ]
-              }
-            ],
+            story: story,
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {
               "Автонастройка":
@@ -438,8 +166,14 @@ class _MyAppState extends State<MyApp> {
             autoText: 'Автонастройка',
           )) ??
           'nothing';
+      if(s == 'nothing') {
+        print('nothing');
+      } else {
+        Map<String, dynamic> t = jsonDecode(s);
+        print(t);
+      }
       if (kDebugMode) {
-        print('result: $s');
+        print('result123: $s 1');
       }
     } on PlatformException {
       debugPrint('Failed to get platform version.');

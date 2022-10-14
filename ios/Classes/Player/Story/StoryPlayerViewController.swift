@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VideoViewController: UIViewController {
+class StoryPlayerViewController: UIViewController {
     let video: Video
     weak var delegate: VideoPlayerDelegate?
     
@@ -39,7 +39,6 @@ class VideoViewController: UIViewController {
         guard let file = video.videoFiles.first else { return }
         
         let vc = configureFileViewController(with: file)
-
         pagingController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
 
         pagingController.dataSource = self
@@ -52,7 +51,7 @@ class VideoViewController: UIViewController {
     }
 }
 
-extension VideoViewController: UIPageViewControllerDataSource {
+extension StoryPlayerViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let viewController = (viewController as? FileViewController)?.file else { return nil }
 
@@ -87,17 +86,15 @@ extension VideoViewController: UIPageViewControllerDataSource {
         return configureFileViewController(with: file)
     }
     
-    private func configureFileViewController(with file: VideoFile) -> UIViewController {
+    private func configureFileViewController(with file: Story) -> UIViewController {
         let vc = FileViewController(file: file)
-        vc.usernameLabel.text = video.user.name
-//        vc.avatarImageView.downloadImageFrom(link: URL(string: video.image)!)
         vc.postDelegate = self
         vc.delegate = self.delegate
         return vc
     }
 }
 
-extension VideoViewController: FileViewControllerDelegate {
+extension StoryPlayerViewController: FileViewControllerDelegate {
     
     func didLongPress(_ vc: FileViewController, sender: UILongPressGestureRecognizer) {
         if sender.state == .began ||  sender.state == .ended {

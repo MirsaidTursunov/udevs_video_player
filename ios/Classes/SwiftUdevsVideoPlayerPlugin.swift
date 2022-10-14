@@ -46,15 +46,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.programs = playerConfiguration.programsInfoList
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
             } else if (playerConfiguration.isStory){
-//                let vc = StoryPlayerViewController()
-//                vc.modalPresentationStyle = .fullScreen
-//                vc.delegate = self
-//                vc.playerConfiguration = playerConfiguration
-//                SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
-                print("KKKKKKKKKKK")
-                let video = playerConfiguration.videos[0]
-                print(video)
-                let vc = VideoViewController(video: video)
+                let vc = StoryPlayerViewController(video: Video(videoFiles: playerConfiguration.story))
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
@@ -84,7 +76,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
         flutterResult!("\(duration)")
     }
     
-    func close() {
-        flutterResult!("close")
+    func close(args:String?) {
+        flutterResult!(args)
     }
 }

@@ -2,11 +2,13 @@ import 'dart:core';
 
 import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
+import 'package:udevs_video_player/models/story.dart';
+
 
 class PlayerConfiguration {
   Map<String, String> initialResolution;
   Map<String, String> resolutions;
-  List<Map<String, dynamic>> story;
+  List<Story> story;
   String qualityText;
   String speedText;
   int lastPosition;

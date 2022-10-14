@@ -192,3 +192,64 @@ extension String {
         return (self as NSString).floatValue
     }
 }
+
+extension Bundle {
+    
+    func loadAndDecodeJSON<D: Decodable>(filename: String) throws -> D? {
+        guard let url = self.url(forResource: filename, withExtension: "json") else {
+            return nil
+        }
+        
+        let data = try Data(contentsOf: url)
+                
+        do {
+            let decoder = JSONDecoder()
+            let messages = try decoder.decode(D.self, from: data)
+            print(messages)
+            return messages
+        } catch DecodingError.dataCorrupted(let context) {
+            print(context)
+        } catch DecodingError.keyNotFound(let key, let context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch DecodingError.valueNotFound(let value, let context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch DecodingError.typeMismatch(let type, let context) {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch {
+            print("error: ", error)
+        }
+        
+        let jsonDecoder = JSONDecoder()
+        let decodedModel = try jsonDecoder.decode(D.self, from: data)
+        return decodedModel
+    }
+}
+
+extension UIView {
+    public var width: CGFloat {
+        return frame.size.width
+    }
+    
+    public var height: CGFloat {
+        return frame.size.height
+    }
+    
+    public var top: CGFloat {
+        return frame.origin.y
+    }
+    
+    public var bottom: CGFloat {
+        return frame.size.height + frame.origin.y
+    }
+    
+    public var left: CGFloat {
+        return frame.origin.x
+    }
+    
+    public var right: CGFloat {
+        return frame.size.width + frame.origin.x
+    }
+}

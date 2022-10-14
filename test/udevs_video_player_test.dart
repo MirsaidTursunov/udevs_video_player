@@ -49,6 +49,8 @@ void main() {
                 seasonIndex: 0,
                 episodeIndex: 0,
                 isMegogo: false,
+                isStory: false,
+                story: [],
                 isPremier: false,
                 videoId: '',
                 sessionId: '',

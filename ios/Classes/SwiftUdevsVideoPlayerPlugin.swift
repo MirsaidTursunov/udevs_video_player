@@ -3,10 +3,6 @@ import UIKit
 
 public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDelegate {
     
-    func getDuration(duration: Double) {
-        flutterResult!("\(duration)")
-    }
-    
     public static var viewController = FlutterViewController()
     public var flutterResult: FlutterResult?
     
@@ -32,11 +28,11 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             }
             let playerConfiguration : PlayerConfiguration = PlayerConfiguration.fromMap(map: json)
             
+            guard URL(string: playerConfiguration.url) != nil else {
+                return
+            }
+            let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
             if (playerConfiguration.isLive){
-                guard URL(string: playerConfiguration.url) != nil else {
-                    return
-                }
-                let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
                 let vc = TVVideoPlayerViewController()
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
@@ -49,11 +45,20 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.showsBtnText = playerConfiguration.tvProgramsText
                 vc.programs = playerConfiguration.programsInfoList
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
+            } else if (playerConfiguration.isStory){
+//                let vc = StoryPlayerViewController()
+//                vc.modalPresentationStyle = .fullScreen
+//                vc.delegate = self
+//                vc.playerConfiguration = playerConfiguration
+//                SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
+                print("KKKKKKKKKKK")
+                let video = playerConfiguration.videos[0]
+                print(video)
+                let vc = VideoViewController(video: video)
+                vc.modalPresentationStyle = .fullScreen
+                vc.delegate = self
+                SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
             } else {
-                guard URL(string: playerConfiguration.url) != nil else {
-                    return
-                }
-                let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
                 let vc = VideoPlayerViewController()
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
@@ -73,5 +78,13 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
         } else {
             result("iOS " + UIDevice.current.systemVersion);
         }
+    }
+    
+    func getDuration(duration: Double) {
+        flutterResult!("\(duration)")
+    }
+    
+    func close() {
+        flutterResult!("close")
     }
 }

@@ -18,6 +18,7 @@ struct PlayerConfiguration{
     var episodeButtonText: String
     var nextButtonText: String
     var seasons: [Season]
+    let videos: [Video]
     var isLive: Bool
     var tvProgramsText: String
     var programsInfoList: [ProgramsInfo]
@@ -27,6 +28,7 @@ struct PlayerConfiguration{
     var seasonIndex: Int
     var episodeIndex: Int
     var isMegogo: Bool
+    var isStory: Bool
     var isPremier: Bool
     var videoId: String
     var sessionId: String
@@ -35,7 +37,7 @@ struct PlayerConfiguration{
     var autoText: String
     var baseUrl: String
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, videos: [Video]) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -63,15 +65,20 @@ struct PlayerConfiguration{
         self.autoText = autoText
         self.baseUrl = baseUrl
         self.url = url
+        self.isStory = isStory
+        self.videos = videos
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
         var season : [Season] = []
+        var video : [Video] = []
         var programInfos: [ProgramsInfo] = []
         var programsInfoListMap : [Dictionary<String, Any>]?
         var seasonsMap : [Dictionary<String, Any>]?
-        programsInfoListMap = map["programsInfoList"] as! [Dictionary<String, Any>]
-        seasonsMap = map["seasons"] as! [Dictionary<String, Any>]
+        var videoMap : [Dictionary<String, Any>]?
+        programsInfoListMap = map["programsInfoList"] as? [Dictionary<String, Any>]
+        seasonsMap = map["seasons"] as? [Dictionary<String, Any>]
+        videoMap = map["story"] as? [Dictionary<String, Any>]
         programsInfoListMap?.forEach({ data in
             let program = ProgramsInfo.fromMap(map: data)
             programInfos.append(program)
@@ -79,6 +86,10 @@ struct PlayerConfiguration{
         seasonsMap?.forEach({ data in
             let program = Season.fromMap(map: data)
             season.append(program)
+        })
+        videoMap?.forEach({ data in
+            let v = Video.fromMap(map: data)
+            video.append(v)
         })
         
         return PlayerConfiguration(initialResolution: map["initialResolution"] as! [String:String],
@@ -107,12 +118,12 @@ struct PlayerConfiguration{
                                    authorization: map["authorization"] as! String,
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
-                                   url: (map["initialResolution"] as! [String:String]).values.first ?? ""
+                                   url: (map["initialResolution"] as! [String:String]).values.first ?? "",
+                                   isStory: map["isStory"] as! Bool, videos: video
                                    
         )
     }
 }
-
 
 struct Season {
     var title: String?
@@ -186,4 +197,88 @@ struct TvProgram{
     static func fromMap(map : [String:String])->TvProgram{
         return TvProgram(scheduledTime: map["scheduledTime"]!, programTitle: map["programTitle"]!)
     }
+}
+
+struct Video {
+    let id, width, height, duration: Int
+    let url: String
+    let image: String
+    let user: User
+    let videoFiles: [VideoFile]
+    
+    init(id: Int, width: Int, height: Int, duration: Int, url: String, image: String, user: User, videoFiles: [VideoFile]) {
+        self.id = id
+        self.width = width
+        self.height = height
+        self.duration = duration
+        self.url = url
+        self.image = image
+        self.user = user
+        self.videoFiles = videoFiles
+    }
+    static func fromMap(map : [String:Any])->Video{
+        var tv: [VideoFile] = []
+        var tvPrograms: [Dictionary<String, Any>]?
+        tvPrograms = map["video_files"] as! [Dictionary<String, Any>]?
+        tvPrograms?.forEach { data in
+            print("TTTTTTTTT")
+            print(data)
+            let tvProgram = VideoFile.fromMap(map: data)
+            tv.append(tvProgram)
+        }
+        return Video(
+            id: map["id"] as! Int, width: map["width"] as! Int, height: map["height"] as! Int, duration: map["duration"] as! Int, url: map["url"] as! String, image: map["image"] as! String, user: User.fromMap(map: map["user"] as! [String : Any]), videoFiles: tv
+        )
+    }
+}
+
+// MARK: - User
+struct User {
+    let id: Int
+    let name: String
+    let url: String
+    
+    init(id: Int, name: String, url: String) {
+        self.id = id
+        self.name = name
+        self.url = url
+    }
+    
+    static func fromMap(map : [String:Any])-> User {
+        return User(id: map["id"] as! Int, name: map["name"] as! String, url: map["url"] as! String)
+    }
+}
+
+// MARK: - VideoFile
+struct VideoFile {
+    let id: Int
+    let quality: String
+    let fileType: String
+    let width, height: Int?
+    let link: String
+
+    init(id: Int, quality: String, fileType: String, width: Int?, height: Int?, link: String) {
+        self.id = id
+        self.quality = quality
+        self.fileType = fileType
+        self.width = width
+        self.height = height
+        self.link = link
+    }
+    
+    static func fromMap(map : [String:Any])-> VideoFile {
+        print(map)
+        print(map["id"])
+        return VideoFile(id: map["id"] as! Int, quality: map["quality"] as! String, fileType: map["file_type"] as! String, width: map["width"] as? Int, height: map["height"] as? Int, link: map["link"] as! String)
+    }
+}
+
+enum FileType: String {
+    case videoMp4 = "video/mp4"
+}
+
+enum Quality: String {
+    case hd = "hd"
+    case hls = "hls"
+    case sd = "sd"
 }

@@ -187,7 +187,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.tintColor = .white
         button.backgroundColor = .clear
         button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(exitButtonPressed(_:)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(exitButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -199,7 +199,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.imageView?.contentMode = .scaleAspectFit
         button.imageEdgeInsets = UIEdgeInsets(top: Constants.controlButtonInset, left: Constants.controlButtonInset, bottom: Constants.controlButtonInset, right: Constants.controlButtonInset)
         button.size(CGSize(width: 48, height: 48))
-        button.addTarget(self, action: #selector(playButtonPressed(_:)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(playButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -210,7 +210,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.layer.zPosition = 3
         button.imageView?.contentMode = .scaleAspectFit
         button.size(CGSize(width: 48, height: 48))
-        button.addTarget(self, action: #selector(skipForwardButtonPressed(_:)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(skipForwardButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -221,7 +221,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.layer.zPosition = 3
         button.size(CGSize(width: 48, height: 48))
         button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(skipBackButtonPressed(_:)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(skipBackButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -236,7 +236,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
         button.imageEdgeInsets = UIEdgeInsets(top: Constants.bottomViewButtonInset + 6, left: 0, bottom: Constants.bottomViewButtonInset, right: 0)
         button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
         button.isHidden = false
         return button
     }()
@@ -248,7 +248,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
         button.imageEdgeInsets = UIEdgeInsets(top: Constants.bottomViewButtonInset, left: 0, bottom: Constants.bottomViewButtonInset, right: 0)
         button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(settingPressed(_ :)), for: .touchUpInside)
+        button.addTarget(VideoPlayerViewController.self, action: #selector(settingPressed(_ :)), for: .touchUpInside)
         button.isHidden = false
         return button
     }()

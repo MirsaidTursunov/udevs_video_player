@@ -6,6 +6,7 @@ import 'package:udevs_video_player/models/season.dart';
 class PlayerConfiguration {
   Map<String, String> initialResolution;
   Map<String, String> resolutions;
+  List<Map<String, dynamic>> story;
   String qualityText;
   String speedText;
   int lastPosition;
@@ -15,6 +16,7 @@ class PlayerConfiguration {
   String nextButtonText;
   List<Season> seasons;
   bool isLive;
+  bool isStory;
   String tvProgramsText;
   List<ProgramsInfo> programsInfoList;
   bool showController;
@@ -59,6 +61,8 @@ class PlayerConfiguration {
     map['authorization'] = authorization;
     map['autoText'] = autoText;
     map['baseUrl'] = baseUrl;
+    map['isStory'] = isStory;
+    map['story'] = story;
     return map;
   }
 
@@ -94,5 +98,7 @@ class PlayerConfiguration {
     required this.authorization,
     required this.autoText,
     required this.baseUrl,
+    required this.isStory,
+    required this.story,
   });
 }

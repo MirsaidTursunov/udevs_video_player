@@ -26,7 +26,6 @@ protocol TVVideoPlayerDelegate: AnyObject {
 
 class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelegate, BottomSheetCellDelegate {
     
-    
     private var speedList = ["0.25","0.5","0.75","1.0"].sorted()
     private var player = AVPlayer()
     private var playerLayer =  AVPlayerLayer()

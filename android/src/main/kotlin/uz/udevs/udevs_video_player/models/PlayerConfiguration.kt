@@ -24,6 +24,8 @@ data class PlayerConfiguration(
     val nextButtonText: String,
     @SerializedName("seasons")
     val seasons: List<Season>,
+    @SerializedName("story")
+    val story: List<Story>,
     @SerializedName("isLive")
     val isLive: Boolean,
     @SerializedName("tvProgramsText")
@@ -42,6 +44,8 @@ data class PlayerConfiguration(
     val episodeIndex: Int,
     @SerializedName("isMegogo")
     val isMegogo: Boolean,
+    @SerializedName("isStory")
+    val isStory: Boolean,
     @SerializedName("isPremier")
     val isPremier: Boolean,
     @SerializedName("videoId")

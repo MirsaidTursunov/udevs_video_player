@@ -2,6 +2,7 @@ package uz.udevs.udevs_video_player
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.NonNull
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
@@ -13,6 +14,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
+import uz.udevs.udevs_video_player.activities.StoryVideoPlayerActivity
 import uz.udevs.udevs_video_player.activities.UdevsVideoPlayerActivity
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 
@@ -36,10 +38,18 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             if (call.hasArgument("playerConfigJsonString")) {
                 val playerConfigJsonString = call.argument("playerConfigJsonString") as String?
                 val gson = Gson()
-                val playerConfiguration = gson.fromJson(playerConfigJsonString, PlayerConfiguration::class.java)
-                val intent = Intent(activity?.applicationContext, UdevsVideoPlayerActivity::class.java)
-                intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
-                activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
+                val playerConfiguration =
+                    gson.fromJson(playerConfigJsonString, PlayerConfiguration::class.java)
+                if (playerConfiguration.isStory) {
+                    val intent = Intent(activity, StoryVideoPlayerActivity::class.java)
+                    intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
+                    activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
+                } else {
+                    val intent =
+                        Intent(activity?.applicationContext, UdevsVideoPlayerActivity::class.java)
+                    intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
+                    activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
+                }
                 resultMethod = result
             }
         } else {
@@ -74,8 +84,15 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if(requestCode == PLAYER_ACTIVITY && resultCode == PLAYER_ACTIVITY_FINISH) {
-            resultMethod?.success(data?.getStringExtra("position"))
+        if (requestCode == PLAYER_ACTIVITY && resultCode == PLAYER_ACTIVITY_FINISH) {
+            if (data == null || data.extras == null) {
+                resultMethod?.success(null)
+            } else if (data.getStringExtra("position") == null) {
+                val json = Gson().toJson(mapOf("slug" to data.getStringExtra("slug"), "title" to data.getStringExtra("title")))
+                resultMethod?.success(json)
+            } else {
+                resultMethod?.success(data.getStringExtra("position"))
+            }
         }
         return true
     }

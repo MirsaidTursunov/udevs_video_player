@@ -100,7 +100,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         player?.playWhenReady = true
     }
 
-    private fun backPressed(){
+    private fun backPressed() {
         if (player?.isPlaying == true) {
             player?.stop()
         }
@@ -115,6 +115,8 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         if (playerConfiguration!!.story.size > storyIndex + 1) {
             storyIndex++
             playStory(storyIndex)
+        } else {
+            backPressed()
         }
     }
 
@@ -163,21 +165,17 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     when (playbackState) {
                         Player.STATE_BUFFERING -> {
-//                            playPause?.visibility = View.GONE
-//                            progressbar?.visibility = View.VISIBLE
-//                            if (playerView?.isControllerFullyVisible == false) {
-//                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
-//                            }
+                            if (playerView?.isControllerFullyVisible == false) {
+                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+                            }
                         }
                         Player.STATE_READY -> {
-//                            playPause?.visibility = View.VISIBLE
-//                            progressbar?.visibility = View.GONE
-//                            if (playerView?.isControllerFullyVisible == false) {
-//                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
-//                            }
+                            if (playerView?.isControllerFullyVisible == false) {
+                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
+                            }
                         }
                         Player.STATE_ENDED -> {
-//                            playPause?.setImageResource(R.drawable.ic_play)
+                            skip()
                         }
                         Player.STATE_IDLE -> {}
                     }
@@ -214,7 +212,6 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     }
 
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
-
         return false
     }
 

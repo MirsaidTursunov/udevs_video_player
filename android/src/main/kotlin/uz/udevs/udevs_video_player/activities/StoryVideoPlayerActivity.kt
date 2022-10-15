@@ -115,8 +115,6 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         if (playerConfiguration!!.story.size > storyIndex + 1) {
             storyIndex++
             playStory(storyIndex)
-        } else {
-            backPressed()
         }
     }
 
@@ -147,19 +145,24 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    Thread(Runnable {
-                        while (progressBarStatus <= max) {
-                            try {
-                                progressBarStatus += 1
-                                Thread.sleep(1000)
-                            } catch (e: InterruptedException) {
-                                e.printStackTrace()
-                            }
-                            val num = progressBarStatus.toDouble() * 100 / (max.toDouble())
-                            storiesProgressView?.progress =
-                                num.toInt()
+                    if (isPlaying) {
+                        if(max != player!!.duration.toInt()/1000){
+                            max = player!!.duration.toInt()/1000
                         }
-                    }).start()
+                        storiesProgressView?.max = max
+                        storiesProgressView?.progress = progressBarStatus
+                        Thread(Runnable {
+                            while (progressBarStatus < max) {
+                                progressBarStatus += 1
+                                try {
+                                    Thread.sleep(1000)
+                                } catch (e: InterruptedException) {
+                                    e.printStackTrace()
+                                }
+                                storiesProgressView?.progress = progressBarStatus
+                            }
+                        }).start()
+                    }
                 }
 
                 override fun onPlaybackStateChanged(playbackState: Int) {
@@ -175,7 +178,12 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                             }
                         }
                         Player.STATE_ENDED -> {
-                            skip()
+                            if (playerConfiguration!!.story.size > storyIndex + 1) {
+                                storyIndex++
+                                playStory(storyIndex)
+                            } else {
+                                backPressed()
+                            }
                         }
                         Player.STATE_IDLE -> {}
                     }

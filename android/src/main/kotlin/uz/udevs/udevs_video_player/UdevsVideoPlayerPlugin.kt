@@ -2,7 +2,6 @@ package uz.udevs.udevs_video_player
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.annotation.NonNull
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity

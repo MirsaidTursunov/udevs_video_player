@@ -90,7 +90,9 @@ class UdevsVideoPlayerActivity : Activity() {
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
         qualityButton = findViewById(R.id.quality_button)
+        qualityButton?.text = playerConfiguration!!.qualityText
         speedButton = findViewById(R.id.speed_button)
+        speedButton?.text = playerConfiguration!!.speedText
         tvButton = findViewById(R.id.tv_button)
         previousButton = findViewById(R.id.video_previous)
         nextButton = findViewById(R.id.video_next)
@@ -453,31 +455,35 @@ class UdevsVideoPlayerActivity : Activity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         //sorting
         val l = mutableListOf<String>()
-        var auto = ""
-        list.forEach {
-            if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-                l.add(it)
-            } else {
-                auto = it
-            }
-        }
-        for (i in 0 until l.size) {
-            for (j in i until l.size) {
-                val first = l[i]
-                val second = l[j]
-                if (first.substring(0, first.length - 1).toInt() < second.substring(
-                        0,
-                        second.length - 1
-                    ).toInt()
-                ) {
-                    val a = l[i]
-                    l[i] = l[j]
-                    l[j] = a
+        if(fromQuality) {
+            var auto = ""
+            list.forEach {
+                if (it.substring(0, it.length - 1).toIntOrNull() != null) {
+                    l.add(it)
+                } else {
+                    auto = it
                 }
             }
-        }
-        if (auto.isNotEmpty()) {
-            l.add(0, auto)
+            for (i in 0 until l.size) {
+                for (j in i until l.size) {
+                    val first = l[i]
+                    val second = l[j]
+                    if (first.substring(0, first.length - 1).toInt() < second.substring(
+                            0,
+                            second.length - 1
+                        ).toInt()
+                    ) {
+                        val a = l[i]
+                        l[i] = l[j]
+                        l[j] = a
+                    }
+                }
+            }
+            if (auto.isNotEmpty()) {
+                l.add(0, auto)
+            }
+        } else {
+            l.addAll(list)
         }
         val adapter = QualitySpeedAdapter(
             initialValue,

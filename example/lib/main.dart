@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8'
             },
             resolutions: {
-              'Auto':
+              'Автонастройка':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8',
               '1080p':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/1080p/index.m3u8',
@@ -87,8 +87,8 @@ class _MyAppState extends State<MyApp> {
               '240p':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/240p/index.m3u8',
             },
-            qualityText: 'Quality',
-            speedText: 'Speed',
+            qualityText: 'Качество',
+            speedText: 'Скорость',
             lastPosition: 0,
             title: 'She-Hulk: Lawyer',
             isSerial: true,
@@ -149,11 +149,11 @@ class _MyAppState extends State<MyApp> {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
             initialResolution: {
-              'Auto':
+              'Автонастройка':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8'
             },
             resolutions: {
-              'Auto':
+              'Автонастройка':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8',
               '1080p':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/1080p/index.m3u8',
@@ -166,8 +166,8 @@ class _MyAppState extends State<MyApp> {
               '240p':
                   'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/240p/index.m3u8',
             },
-            qualityText: 'Quality',
-            speedText: 'Speed',
+            qualityText: 'Качество',
+            speedText: 'Скорость',
             lastPosition: 0,
             title: 'Женщина-Халк: Адвокат',
             isSerial: false,

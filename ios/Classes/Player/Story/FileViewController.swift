@@ -2,7 +2,7 @@
 //  FilesViewController.swift
 //  Stories
 //
-//  Created by Nadheer on 27/06/2022.
+//  Created by Sunnatillo Shavkatov on 27/06/2022.
 //
 
 import Foundation

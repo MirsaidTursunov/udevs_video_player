@@ -2,7 +2,7 @@
 //  PlayerConfiguration.swift
 //  udevs_video_player
 //
-//  Created by Udevs on 08/10/22.
+//  Created by Sunnatillo Shavkatov on 08/10/22.
 //
 
 import Foundation
@@ -207,23 +207,6 @@ struct Video {
     }
 }
 
-// MARK: - User
-//struct User {
-//    let id: Int
-//    let name: String
-//    let url: String
-//
-//    init(id: Int, name: String, url: String) {
-//        self.id = id
-//        self.name = name
-//        self.url = url
-//    }
-//
-//    static func fromMap(map : [String:Any])-> User {
-//        return User(id: map["id"] as! Int, name: map["name"] as! String, url: map["url"] as! String)
-//    }
-//}
-
 // MARK: - VideoFile
 struct Story {
     let id: String
@@ -246,13 +229,3 @@ struct Story {
         return Story(id:map["id"] as! String, title: map["title"] as! String, quality: map["quality"] as! String, duration: map["duration"] as! Int, slug: map["slug"] as! String, fileName:  map["fileName"] as! String)
     }
 }
-
-//enum FileType: String {
-//    case videoMp4 = "video/mp4"
-//}
-//
-//enum Quality: String {
-//    case hd = "hd"
-//    case hls = "hls"
-//    case sd = "sd"
-//}

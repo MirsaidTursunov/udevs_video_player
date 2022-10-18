@@ -61,15 +61,6 @@ extension MegogoStreamResponse {
     }
 }
 
-//
-// To read values from URLs:
-//
-//   let task = URLSession.shared.dataClassTask(with: url) { dataClass, response, error in
-//     if let dataClass = dataClass {
-//       ...
-//     }
-//   }
-//   task.resume()
 
 // MARK: - DataClass
 struct DataClass: Codable {

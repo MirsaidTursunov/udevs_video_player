@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            isStory: true,
+            isStory: false,
             story: story,
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {

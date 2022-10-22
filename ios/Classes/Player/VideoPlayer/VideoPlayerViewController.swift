@@ -277,7 +277,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
         player.addObserver(self, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(playerEndedPlaying), name: Notification.Name("AVPlayerItemDidPlayToEndTimeNotification"), object: nil)
-
+        
         self.titleLabel.text = title ?? ""
         addTimeObserver()
         playerLayer = AVPlayerLayer(player: player)
@@ -539,6 +539,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         portraitConstraints.deActivate()
         landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
+    
     func addVideoPortaitConstraints() {
         landscapeConstraints.deActivate()
         let width = view.frame.width
@@ -616,7 +617,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                     print(windowScene.effectiveGeometry)
                 }
             })
-        } else{
+        } else {
             UIViewController.attemptRotationToDeviceOrientation()
         }
     }

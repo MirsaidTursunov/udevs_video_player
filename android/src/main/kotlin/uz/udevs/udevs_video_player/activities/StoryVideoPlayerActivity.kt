@@ -68,9 +68,11 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             onBackPressed()
         }
         val storyMovie = findViewById<Button>(R.id.story_movie)
+        storyMovie.text = playerConfiguration?.storyButtonText
         storyMovie.setOnClickListener { // inside on click we are
             backPressed()
         }
+
         /// play video
         playVideo()
     }
@@ -146,8 +148,8 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
-                        if(max != player!!.duration.toInt()/1000){
-                            max = player!!.duration.toInt()/1000
+                        if (max != player!!.duration.toInt() / 1000) {
+                            max = player!!.duration.toInt() / 1000
                         }
                         storiesProgressView?.max = max
                         storiesProgressView?.progress = progressBarStatus

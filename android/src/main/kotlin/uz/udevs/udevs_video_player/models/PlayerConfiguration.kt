@@ -16,6 +16,8 @@ data class PlayerConfiguration(
     val lastPosition: Long,
     @SerializedName("title")
     val title: String,
+    @SerializedName("storyButtonText")
+    val storyButtonText: String,
     @SerializedName("isSerial")
     val isSerial: Boolean,
     @SerializedName("episodeButtonText")

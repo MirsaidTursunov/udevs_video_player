@@ -30,6 +30,7 @@ void main() {
     expect(
         await udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
+                storyButtonText: "",
                 initialResolution: {},
                 resolutions: {},
                 qualityText: '',

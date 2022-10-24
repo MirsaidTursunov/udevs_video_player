@@ -52,6 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/video_bottom_bar"
         android:layout_below="@id/top_bar"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="-3dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -294,9 +296,10 @@
             android:layout_below="@+id/bottom_top"
             android:layout_centerVertical="true"
             android:paddingHorizontal="7dp"
-            app:played_color="@color/white"
-            app:scrubber_color="@color/blue"
-            app:unplayed_color="@color/grey10" />
+            app:played_color="@color/assets"
+            app:scrubber_color="@color/assets"
+            app:unplayed_color="@color/white"
+            android:visibility="visible"/>
 
         <SeekBar
             android:id="@+id/progress_bar"

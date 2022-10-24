@@ -524,9 +524,13 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
         topView.trailing(to: view.safeAreaLayoutGuide, offset: 0)
         topView.top(to: view.safeAreaLayoutGuide, offset: 10)
         topView.height(64)
+        // title
         titleLabel.centerY(to: topView)
         titleLabel.centerX(to: topView)
+        titleLabel.left(to: exitButton, offset: 56)
+        titleLabel.right(to: settingsButton, offset: -56)
         titleLabel.layoutMargins = .horizontal(16)
+        // exit
         exitButton.width(Constants.topButtonSize)
         exitButton.height(Constants.topButtonSize)
         exitButton.left(to: topView)

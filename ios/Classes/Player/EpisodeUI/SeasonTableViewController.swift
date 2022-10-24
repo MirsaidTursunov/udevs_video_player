@@ -55,9 +55,9 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
         cancelBtn.imageEdgeInsets = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
         cancelBtn.size(CGSize(width: 24, height: 24))
         cancelBtn.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
-        
         return cancelBtn
     }()
+    
     lazy var horizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubviews(cancelBtn, cancelLabel)
@@ -67,6 +67,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
         stackView.backgroundColor = .clear
         return stackView
     }()
+    
     lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubviews(divider, horizontalStackView)
@@ -162,7 +163,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
         if bottomSheetType == .speed{
             cell.title = "\(items[indexPath.row])x"
         } else {
-            cell.title = "Season \(items[indexPath.row].title)"
+            cell.title =  (items[indexPath.row].title)
         }
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
@@ -175,7 +176,6 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
         animateDismissView()
         cellDelegate?.onBottomSheetCellTapped(index: indexPath.row, type : bottomSheetType)
         tableView.reloadData()
-        print("IndexPath \(indexPath.row)")
     }
     
     func setupView() {
@@ -200,8 +200,6 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
             dimmedView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             dimmedView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dimmedView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            
         ])
         containerView.snp.makeConstraints({ make in
             make.left.right.equalToSuperview()
@@ -223,15 +221,16 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
         }
         cancelView.snp.makeConstraints { make in
             make.height.equalTo(80)
-            make.left.right.equalToSuperview()
+            make.right.left.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         verticalStackView.snp.makeConstraints { make in
             make.right.equalToSuperview()
-            make.top.equalTo(10)
-            make.left.equalTo(cancelView).offset(50)
+            make.top.equalTo(24)
+            make.left.right.equalToSuperview()
         }
         horizontalStackView.snp.makeConstraints { make in
-            make.left.equalTo(verticalStackView).offset(0)
+            make.left.equalToSuperview().offset(24)
             make.right.equalToSuperview()
         }
         containerViewHeightConstraint = containerView.heightAnchor.constraint(equalToConstant: defaultHeight)

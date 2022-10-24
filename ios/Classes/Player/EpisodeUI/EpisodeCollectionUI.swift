@@ -14,11 +14,10 @@ protocol EpisodeDelegate{
 
 class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
-    private var portraitConstraints = Constraints()
-    private var landscapeConstraints = Constraints()
     var seasons = [Season]()
     let videoPlayer = VideoPlayerViewController()
     var selectedSeasonIndex: Int = 0
+    var isPortrait: Bool = false
     var delegate : EpisodeDelegate?
     
     let deviceIdiom = UIScreen.main.traitCollection.userInterfaceIdiom
@@ -123,11 +122,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         if UIDevice.current.userInterfaceIdiom == .phone {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                if(UIDevice.current.orientation.isLandscape){
-                    menuHeight = UIScreen.main.bounds.width * 0.4
-                } else {
-                    menuHeight = UIScreen.main.bounds.height * 0.4
-                }
+                menuHeight = UIScreen.main.bounds.width * 0.4
             } else {
                 menuHeight = UIScreen.main.bounds.height * 0.4
             }

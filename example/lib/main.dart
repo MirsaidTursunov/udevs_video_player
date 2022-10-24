@@ -143,7 +143,7 @@ class _MyAppState extends State<MyApp> {
             qualityText: 'Качество',
             speedText: 'Скорость',
             lastPosition: 0,
-            title: "S1 E1  \"Женщина-Халк: Адвокат\" ",
+            title: "S1 E1  \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" ",
             isSerial: true,
             episodeButtonText: 'Эпизоды',
             nextButtonText: 'След.эпизод',

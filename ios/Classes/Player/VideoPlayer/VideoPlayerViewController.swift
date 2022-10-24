@@ -89,6 +89,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         label.textColor = .white
         label.textAlignment = .center
         label.numberOfLines = 2
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         return label
     }()
@@ -518,9 +519,14 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         topView.trailing(to: view.safeAreaLayoutGuide, offset: 0)
         topView.top(to: view.safeAreaLayoutGuide, offset: 10)
         topView.height(64)
+        
+        // title
         titleLabel.centerY(to: topView)
         titleLabel.centerX(to: topView)
+        titleLabel.left(to: exitButton, offset: 56)
+        titleLabel.right(to: settingsButton, offset: -56)
         titleLabel.layoutMargins = .horizontal(16)
+
         exitButton.width(Constants.topButtonSize)
         exitButton.height(Constants.topButtonSize)
         exitButton.left(to: topView)
@@ -653,6 +659,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         episodeVC.seasons = self.seasons
         episodeVC.delegate = self
         episodeVC.selectedSeasonIndex = selectedSeason
+        episodeVC.isPortrait
         self.present(episodeVC, animated: true, completion: nil)
     }
     
@@ -1077,7 +1084,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         }
     }
     
-
     func getMegogoStream(parameters:[String:String], id:String) -> MegogoStreamResponse? {
         var megogoResponse:MegogoStreamResponse?
         let _url:String = playerConfiguration.baseUrl+"megogo/stream"

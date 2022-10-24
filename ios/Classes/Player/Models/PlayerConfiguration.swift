@@ -37,8 +37,10 @@ struct PlayerConfiguration{
     var authorization: String
     var autoText: String
     var baseUrl: String
+    var closeText: String
+    var seasonText: String
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -69,6 +71,8 @@ struct PlayerConfiguration{
         self.isStory = isStory
         self.story = story
         self.storyButtonText = storyButtonText
+        self.closeText = closeText
+        self.seasonText = seasonText
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -121,7 +125,8 @@ struct PlayerConfiguration{
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
-                                   isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String
+                                   isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
+                                   seasonText:map["seasonText"] as! String
                                    
         )
     }
@@ -203,7 +208,7 @@ struct TvProgram {
 
 struct Video {
     let videoFiles: [Story]
-
+    
     init(videoFiles: [Story]) {
         self.videoFiles = videoFiles
     }
@@ -217,7 +222,7 @@ struct Story {
     let duration: Int
     let slug: String
     let fileName: String
-
+    
     init(id:String,title: String, quality: String, duration: Int, slug: String, fileName: String) {
         self.id = id
         self.title = title

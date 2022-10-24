@@ -120,6 +120,8 @@ class _MyAppState extends State<MyApp> {
               playerConfig: PlayerConfiguration(
             isStory: false,
             story: story,
+            seasonText: "Season",
+            closeText: "Close",
             storyButtonText: "",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {
@@ -143,7 +145,8 @@ class _MyAppState extends State<MyApp> {
             qualityText: 'Качество',
             speedText: 'Скорость',
             lastPosition: 0,
-            title: "S1 E1  \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" ",
+            title:
+                "S1 E1  \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" ",
             isSerial: true,
             episodeButtonText: 'Эпизоды',
             nextButtonText: 'След.эпизод',
@@ -167,7 +170,7 @@ class _MyAppState extends State<MyApp> {
             autoText: 'Автонастройка',
           )) ??
           'nothing';
-      if(s == 'nothing') {
+      if (s == 'nothing') {
         print('nothing');
       } else {
         Map<String, dynamic> t = jsonDecode(s);
@@ -180,6 +183,7 @@ class _MyAppState extends State<MyApp> {
       debugPrint('Failed to get platform version.');
     }
   }
+
   playStory() async {
     List<Season> seasons = [];
     List<Movie> movies1 = [];
@@ -279,7 +283,9 @@ class _MyAppState extends State<MyApp> {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
             isStory: true,
+            seasonText: "Season",
             story: story,
+            closeText: 'Close',
             storyButtonText: "Смотреть фильм",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {
@@ -327,7 +333,7 @@ class _MyAppState extends State<MyApp> {
             autoText: 'Автонастройка',
           )) ??
           'nothing';
-      if(s == 'nothing') {
+      if (s == 'nothing') {
         print('nothing');
       } else {
         Map<String, dynamic> t = jsonDecode(s);
@@ -383,6 +389,8 @@ class _MyAppState extends State<MyApp> {
               playerConfig: PlayerConfiguration(
             isStory: false,
             story: [],
+            seasonText: 'Сезон',
+            closeText: "",
             storyButtonText: "",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {

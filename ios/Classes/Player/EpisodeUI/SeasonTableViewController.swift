@@ -20,6 +20,7 @@ protocol BottomSheetCellDelegateSeason{
 class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var items = [Season]()
     var labelText : String?
+    var closeText : String = ""
     var selectedIndex = 0
     var cellDelegate : BottomSheetCellDelegateSeason?
     var bottomSheetType = SeasonBottomSheetType.season
@@ -43,7 +44,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
     }()
     var cancelLabel : UILabel = {
         let label = UILabel()
-        label.text = "Отменить"
+        label.text = ""
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 15,weight: .medium)
         return label
@@ -124,6 +125,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        cancelLabel.text = closeText
         defaultHeight = CGFloat((items.count * 44) + 100)
         dismissibleHeight = defaultHeight - 50
         contentTableView.delegate = self

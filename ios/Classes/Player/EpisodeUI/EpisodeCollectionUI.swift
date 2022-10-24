@@ -15,9 +15,10 @@ protocol EpisodeDelegate{
 class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     var seasons = [Season]()
+    var closeText : String = ""
+    var seasonText : String = ""
     let videoPlayer = VideoPlayerViewController()
     var selectedSeasonIndex: Int = 0
-    var isPortrait: Bool = false
     var delegate : EpisodeDelegate?
     
     let deviceIdiom = UIScreen.main.traitCollection.userInterfaceIdiom
@@ -129,6 +130,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             menuHeight = UIScreen.main.bounds.height * 0.4
         }
+        seasonSelectBtn.setTitle("\(videoPlayer.selectedSeason + 1) \(seasonText)", for: .normal)
         
         setupUI()
         
@@ -156,7 +158,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         if UIDevice.current.userInterfaceIdiom == .phone {
             seasonSelectBtn.snp.makeConstraints { make in
                 make.height.equalTo(40)
-                make.width.equalTo(110)
+                make.width.equalTo(148)
                 make.left.equalTo(headerView)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
@@ -232,6 +234,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         let seasonVC = SeasonSelectionController()
         seasonVC.modalPresentationStyle = .overCurrentContext
         seasonVC.items = seasons
+        seasonVC.closeText = closeText
         seasonVC.cellDelegate = self
         seasonVC.bottomSheetType = .season
         seasonVC.selectedIndex = videoPlayer.selectedSeason

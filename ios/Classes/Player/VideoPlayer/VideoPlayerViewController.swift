@@ -30,7 +30,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         static let nextEpisodeInset: CGFloat = 20
         static let nextEpisodeShowTime : Float = 60
     }
-    private var speedList = ["0.25","0.5","0.75","1.0","1.25","1.5","1.75","2.0"].sorted()
+    private var speedList = ["0.5","1.0","1.25","1.5","2.0"].sorted()
     private var seasonList = ["1-сезон","2-сезон","3-сезон","4-сезон","5-сезон"]
     private var player = AVPlayer()
     private var playerLayer =  AVPlayerLayer()

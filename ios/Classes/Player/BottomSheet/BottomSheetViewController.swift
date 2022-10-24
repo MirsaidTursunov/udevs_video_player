@@ -130,7 +130,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         if bottomSheetType != .speed {
             defaultHeight = 380
         } else {
-            defaultHeight = 470
+            defaultHeight = 340
         }
         dismissibleHeight = UIScreen.main.bounds.height
         contentTableView.delegate = self

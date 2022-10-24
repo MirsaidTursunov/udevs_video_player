@@ -15,6 +15,7 @@ class PlayerConfiguration {
   String title;
   bool isSerial;
   String episodeButtonText;
+  String storyButtonText;
   String nextButtonText;
   List<Season> seasons;
   bool isLive;
@@ -65,6 +66,7 @@ class PlayerConfiguration {
     map['baseUrl'] = baseUrl;
     map['isStory'] = isStory;
     map['story'] = story;
+    map['storyButtonText'] = storyButtonText;
     return map;
   }
 
@@ -102,5 +104,6 @@ class PlayerConfiguration {
     required this.baseUrl,
     required this.isStory,
     required this.story,
+    required this.storyButtonText,
   });
 }

@@ -89,10 +89,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
     lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = Colors.moreColor
-        //        view.layer.cornerRadius = 24
-        //        view.roundCorners(corners: [.topLeft,.topRight], radius: 24)
         view.clipsToBounds = true
-        //        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         return view
     }()
     

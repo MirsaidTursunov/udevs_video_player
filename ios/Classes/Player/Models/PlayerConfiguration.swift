@@ -14,6 +14,7 @@ struct PlayerConfiguration{
     var speedText: String
     var lastPosition: Int
     var title: String
+    var storyButtonText: String
     var isSerial: Bool
     var episodeButtonText: String
     var nextButtonText: String
@@ -37,7 +38,7 @@ struct PlayerConfiguration{
     var autoText: String
     var baseUrl: String
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story]) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -67,6 +68,7 @@ struct PlayerConfiguration{
         self.url = url
         self.isStory = isStory
         self.story = story
+        self.storyButtonText = storyButtonText
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -119,7 +121,7 @@ struct PlayerConfiguration{
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
-                                   isStory: map["isStory"] as! Bool, story: story
+                                   isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String
                                    
         )
     }

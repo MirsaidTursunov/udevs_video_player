@@ -9,6 +9,7 @@ import UIKit
 
 class StoryPlayerViewController: UIViewController {
     let video: Video
+    let storyButtonText: String
     weak var delegate: VideoPlayerDelegate?
     
     let pagingController: UIPageViewController = UIPageViewController(
@@ -16,8 +17,9 @@ class StoryPlayerViewController: UIViewController {
         navigationOrientation: .horizontal,
         options: [:])
     
-    init(video: Video) {
+    init(video: Video, storyButtonText: String) {
         self.video = video
+        self.storyButtonText = storyButtonText
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -89,6 +91,7 @@ extension StoryPlayerViewController: UIPageViewControllerDataSource {
     private func configureFileViewController(with file: Story) -> UIViewController {
         let vc = FileViewController(file: file)
         vc.postDelegate = self
+        vc.buttonText = self.storyButtonText
         vc.delegate = self.delegate
         return vc
     }

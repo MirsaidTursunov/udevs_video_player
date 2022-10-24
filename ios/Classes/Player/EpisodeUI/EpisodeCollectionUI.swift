@@ -14,7 +14,6 @@ protocol EpisodeDelegate{
 
 class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
-    
     private var portraitConstraints = Constraints()
     private var landscapeConstraints = Constraints()
     var seasons = [Season]()
@@ -92,6 +91,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .white
         button.setTitle("\(videoPlayer.selectedSeason + 1) сезон", for: .normal)
+        button.setImage(Svg.down.uiImage, for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 16)
         button.semanticContentAttribute = .forceRightToLeft

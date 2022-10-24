@@ -45,6 +45,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         view.backgroundColor = .clear
         return view
     }()
+    
     lazy var contentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 24
@@ -117,7 +118,6 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         }else {
             menuHeight = 180
         }
-        
         view.addSubview(backdropView)
         view.addSubview(menuView)
         menuView.addSubview(backView)
@@ -134,8 +134,6 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-        
         backView.snp.makeConstraints { make in
             make.edges.equalTo(menuView)
         }
@@ -156,8 +154,6 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
             make.width.equalTo(contentView).offset(50)
             make.height.equalTo(125)
         }
-        
-        
         menuView.snp.makeConstraints { make in
             make.height.equalTo(menuHeight)
             make.bottom.equalToSuperview()

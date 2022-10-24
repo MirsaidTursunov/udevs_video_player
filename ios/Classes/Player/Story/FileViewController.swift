@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import AVFoundation
+import NVActivityIndicatorView
 
 protocol FileViewControllerDelegate: AnyObject {
     func didLongPress(_ vc: FileViewController, sender: UILongPressGestureRecognizer)
@@ -18,6 +19,7 @@ protocol FileViewControllerDelegate: AnyObject {
 final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let file: Story
+    var buttonText:String = ""
     
     weak var postDelegate: FileViewControllerDelegate?
     weak var delegate: VideoPlayerDelegate?
@@ -26,9 +28,14 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private var timer: Timer?
     
+    private var activityIndicatorView: NVActivityIndicatorView = {
+        let activityView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: .circleStrokeSpin, color: Colors.assets)
+        return activityView
+    }()
+    
     private let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.exit.uiImage, for: .normal)
+        button.setImage(Svg.closeCircle.uiImage, for: .normal)
         button.tintColor = .white
         button.imageView?.contentMode = .scaleAspectFit
         return button
@@ -36,8 +43,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private let playButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Смотреть  фильм", for: .normal)
-        button.tintColor = .white
+        button.setImage(Svg.playCircle.uiImage, for: .normal)
+        button.setTitleColor(Colors.black,for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
         button.layer.cornerRadius = 4
         button.backgroundColor = Colors.assets
         button.imageView?.contentMode = .scaleAspectFit
@@ -59,7 +67,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var player: AVPlayer?
     
-    
     public let progressView: UIProgressView = {
         let progressView = UIProgressView()
         progressView.trackTintColor = .gray
@@ -67,7 +74,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         progressView.progressViewStyle = .default
         return progressView
     }()
-    
     
     //MARK: Gesture
     
@@ -108,7 +114,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         
         configurePlayer(with: file.fileName)
         configureTimer()
-        
+        playButton.setTitle(buttonText, for: .normal)
+        activityIndicatorView.startAnimating()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(storyDidEnd(notification:)),
                                                name: .AVPlayerItemDidPlayToEndTime,
@@ -121,6 +128,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         view.addSubview(closeButton)
         view.addSubview(progressView)
         view.addSubview(playButton)
+        view.addSubview(activityIndicatorView)
     }
     
     override func viewDidLayoutSubviews() {
@@ -149,6 +157,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                     y: 10+topPadding,
                                     width: Int(view.width-closeButton.width),
                                     height: 10)
+        activityIndicatorView.center(in: view)
+        activityIndicatorView.layer.cornerRadius = 20
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -158,6 +168,23 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         timer = nil
         player?.cancelPendingPrerolls()
         player?.pause()
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
+            if newValue != oldValue {
+                DispatchQueue.main.async {[weak self] in
+                    if newValue == 2 {
+                        self?.activityIndicatorView.stopAnimating()
+                    } else if newValue == 0 {
+                        self?.activityIndicatorView.stopAnimating()
+                        self?.timer?.invalidate()
+                    } else {
+                        self?.activityIndicatorView.startAnimating()
+                    }
+                }
+            }
+        }
     }
     
     private func configureTimer() {
@@ -176,9 +203,10 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private func configurePlayer(with video: String) {
         self.player = AVPlayer(url: URL(string: video)!)
+        self.player?.addObserver(self, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
         let playerLayer = AVPlayerLayer(player: self.player)
         playerLayer.frame = self.view.bounds
-        playerLayer.videoGravity = .resizeAspectFill
+        playerLayer.videoGravity = .resizeAspect
         playerView.layer.addSublayer(playerLayer)
         playerLayer.player = player
         player?.play()

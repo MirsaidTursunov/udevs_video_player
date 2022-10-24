@@ -43,6 +43,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         label.text = labelText
         label.font = .boldSystemFont(ofSize: 17)
         label.textColor = .white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -146,6 +147,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     @objc func handleCloseAction() {
         animateDismissView()
     }
+    
     @objc func cancelTapped() {
         self.dismiss(animated: true, completion: nil)
     }
@@ -162,7 +164,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "BottomSheetCell") as! BottomSheetCell
-        if bottomSheetType == .speed{
+        if bottomSheetType == .speed {
             cell.title = "\(items[indexPath.row])x"
         } else {
             cell.title = items[indexPath.row]

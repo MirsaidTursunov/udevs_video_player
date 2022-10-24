@@ -46,8 +46,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.programs = playerConfiguration.programsInfoList
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
             } else if (playerConfiguration.isStory){
-                let vc = StoryPlayerViewController(video: Video(videoFiles: playerConfiguration.story))
-                print(playerConfiguration.story)
+                let vc = StoryPlayerViewController(video: Video(videoFiles: playerConfiguration.story),storyButtonText: playerConfiguration.storyButtonText)
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)

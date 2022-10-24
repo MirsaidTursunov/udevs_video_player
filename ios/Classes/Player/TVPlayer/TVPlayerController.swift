@@ -269,7 +269,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     }()
     
     private var activityIndicatorView: NVActivityIndicatorView = {
-        let activityView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: .circleStrokeSpin, color: .white)
+        let activityView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: .circleStrokeSpin, color: Colors.assets)
         return activityView
     }()
     

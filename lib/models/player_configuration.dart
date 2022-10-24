@@ -4,13 +4,14 @@ import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
 import 'package:udevs_video_player/models/story.dart';
 
-
 class PlayerConfiguration {
   Map<String, String> initialResolution;
   Map<String, String> resolutions;
   List<Story> story;
   String qualityText;
   String speedText;
+  String closeText;
+  String seasonText;
   int lastPosition;
   String title;
   bool isSerial;
@@ -67,6 +68,8 @@ class PlayerConfiguration {
     map['isStory'] = isStory;
     map['story'] = story;
     map['storyButtonText'] = storyButtonText;
+    map['closeText'] = closeText;
+    map['seasonText'] = seasonText;
     return map;
   }
 
@@ -77,6 +80,7 @@ class PlayerConfiguration {
 
   PlayerConfiguration({
     required this.initialResolution,
+    required this.seasonText,
     required this.resolutions,
     required this.qualityText,
     required this.speedText,
@@ -105,5 +109,6 @@ class PlayerConfiguration {
     required this.isStory,
     required this.story,
     required this.storyButtonText,
+    required this.closeText,
   });
 }

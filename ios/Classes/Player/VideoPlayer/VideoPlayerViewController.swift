@@ -659,7 +659,8 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         episodeVC.seasons = self.seasons
         episodeVC.delegate = self
         episodeVC.selectedSeasonIndex = selectedSeason
-        episodeVC.isPortrait
+        episodeVC.closeText = self.playerConfiguration.closeText
+        episodeVC.seasonText = self.playerConfiguration.seasonText
         self.present(episodeVC, animated: true, completion: nil)
     }
     

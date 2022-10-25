@@ -441,7 +441,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     }
     
     func addConstraints() {
-        addVideosLandscapeConstraints1()
+        //        addVideosLandscapeConstraints()
         addBottomViewConstraints()
         addTopViewConstraints()
         addControlButtonConstraints()
@@ -489,16 +489,16 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             make.edges.equalToSuperview()
         }
         
-//        if (isSerial) {
+        if (isSerial) {
             bottomActionsStackView.snp.makeConstraints { make in
                 make.right.equalTo(bottomView).offset(-16)
             }
-//        } else {
-//            bottomActionsStackView.snp.makeConstraints { make in
-//                make.left.equalToSuperview().offset(80)
-//                make.right.equalToSuperview().offset(-80)
-//            }
-//        }
+        } else {
+            bottomActionsStackView.snp.makeConstraints { make in
+                make.left.equalToSuperview().offset(80)
+                make.right.equalToSuperview().offset(-80)
+            }
+        }
         bottomActionsStackView.bottomToTop(of: timeSlider, offset: 0)
         
         currentTimeLabel.snp.makeConstraints { make in
@@ -560,11 +560,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         settingsButton.right(to: topView)
         settingsButton.centerY(to: topView)
         
-    }
-    
-    func addVideosLandscapeConstraints1() {
-        portraitConstraints.deActivate()
-        landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
     func addVideosLandscapeConstraints() {
@@ -1022,7 +1017,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             break
         }
     }
-    
     func verticalMoved(_ value: CGFloat) {
         if isVolume{
             self.volumeViewSlider.value -= Float(value / 10000)
@@ -1030,20 +1024,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         else{
             UIScreen.main.brightness -= value / 10000
         }
-    }
-    
-    func changeUrl(url:String?, title: String?){
-        guard let videoURL = URL(string: url ?? "") else {
-            return
-        }
-        self.titleLabel.text = title ?? ""
-        let currentTime = CMTime.zero
-        let asset = AVURLAsset(url: videoURL)
-        let playerItem = AVPlayerItem(asset: asset)
-        self.player.replaceCurrentItem(with: playerItem)
-        self.player.seek(to: currentTime)
-        self.player.currentItem?.preferredForwardBufferDuration = TimeInterval(1)
-        self.player.automaticallyWaitsToMinimizeStalling = true
     }
     
     // settings bottom sheet tapped
@@ -1196,14 +1176,14 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                 return
             }
             if self.urlString != videoUrl!{
-                self.changeUrl(url: videoUrl, title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}")
+                self.setupDataSource(title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}" , urlString: videoUrl, startAt: startAt)
             } else {
                 print("ERROR")
             }
             return
         } else if !self.resolutions!.isEmpty {
             let videoUrl = Array(resolutions!.values)[0]
-            self.changeUrl(url: videoUrl, title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}")
+            self.setupDataSource(title: title, urlString: videoUrl, startAt: startAt)
             return
         }
     }
@@ -1223,7 +1203,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                     resolutions["\(bitrate.bitrate)p"] = bitrate.src
                 })
                 startAt = Int64(success?.data.playStartTime ?? 0)
-                playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }
         }
         if playerConfiguration.isPremier {
@@ -1238,7 +1218,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                     }
                 })
                 startAt = 0
-                playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }
         }
         if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
@@ -1246,7 +1226,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                 resolutions[key] = value
                 startAt = 0
             }
-            playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
         }
     }
 }

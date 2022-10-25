@@ -46,7 +46,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     var sortedResolutions: [String] = []
     var isSerial = false
     var serialLabelText = ""
-    var sesonNum: Int?
     var seasons : [Season] = [Season]()
     var shouldHideHomeIndicator = false
     var qualityDelegate: QualityDelegate!
@@ -62,7 +61,8 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     private var seekForwardTimer: Timer?
     private var seekBackwardTimer: Timer?
     private var playerRate = 1.0
-    var selectedSeason = 0
+    var selectedSeason: Int = 0
+    var selectSesonNum: Int = 0
     private var selectedSpeedText = "1.0x"
     var selectedQualityText = "Auto"
     private var selectedAudioTrack = "None"
@@ -157,7 +157,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     //MARK: - BottomActionsStackView
     private lazy var bottomActionsStackView: UIStackView = {
         let spacer = UIView()
-        let stackView = UIStackView(arrangedSubviews: [episodesButton])
+        let stackView = UIStackView(arrangedSubviews: [episodesButton,nextEpisodeButton, landscapeButton])
         stackView.axis = .horizontal
         stackView.backgroundColor = .clear
         stackView.distribution = .equalSpacing
@@ -233,11 +233,23 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         button.layer.zPosition = 3
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
         button.setTitleColor(.white, for: .normal)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0)
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
-        button.imageEdgeInsets = UIEdgeInsets(top: Constants.bottomViewButtonInset + 6, left: 0, bottom: Constants.bottomViewButtonInset, right: 0)
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
+        button.isHidden = false
+        return button
+    }()
+    
+    private var nextEpisodeButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Svg.next.uiImage, for: .normal)
+        button.setTitle("", for: .normal)
+        button.layer.zPosition = 3
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
+        button.setTitleColor(.white, for: .normal)
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(nextEpisodeButtonPressed(_:)), for: .touchUpInside)
         button.isHidden = false
         return button
     }()
@@ -301,7 +313,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         super.viewDidLoad()
         let resList = resolutions ?? ["480p":urlString!]
         sortedResolutions = Array(resList.keys).sorted().reversed()
-        episodesButton.setTitle(serialLabelText, for: .normal)
+        //        episodesButton.setTitle(serialLabelText, for: .normal)
         Array(resList.keys).sorted().reversed().forEach { quality in
             if quality == "1080p"{
                 sortedResolutions.removeLast()
@@ -369,10 +381,8 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
-            landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
             addVideosLandscapeConstraints()
         } else {
-            landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
             addVideoPortaitConstraints()
         }
     }
@@ -409,7 +419,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         view.addSubview(skipBackwardButton)
         overlayView.addSubview(activityIndicatorView)
         overlayView.addSubview(bottomView)
-        overlayView.addSubview(landscapeButton)
+        //        overlayView.addSubview(landscapeButton)
         addTopViewSubviews()
         addBottomViewSubviews()
     }
@@ -431,7 +441,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     }
     
     func addConstraints() {
-        addVideosLandscapeConstraints()
+        //        addVideosLandscapeConstraints()
         addBottomViewConstraints()
         addTopViewConstraints()
         addControlButtonConstraints()
@@ -467,7 +477,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         bottomView.leading(to: view.safeAreaLayoutGuide, offset: Constants.horizontalSpacing)
         bottomView.trailing(to: view.safeAreaLayoutGuide, offset: -Constants.horizontalSpacing)
         bottomView.bottom(to: view.safeAreaLayoutGuide, offset: 0)
-        bottomView.height(70)
+        bottomView.height(80)
         
         timeStackView.snp.makeConstraints { make in
             make.centerY.equalTo(bottomView)
@@ -481,7 +491,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         
         if (isSerial) {
             bottomActionsStackView.snp.makeConstraints { make in
-                make.right.equalToSuperview().offset(-10)
+                make.right.equalTo(bottomView).offset(-16)
             }
         } else {
             bottomActionsStackView.snp.makeConstraints { make in
@@ -489,28 +499,39 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                 make.right.equalToSuperview().offset(-80)
             }
         }
+        bottomActionsStackView.bottomToTop(of: timeSlider, offset: 0)
+        
         currentTimeLabel.snp.makeConstraints { make in
             make.left.equalTo(bottomView).offset(16)
         }
         currentTimeLabel.bottomToTop(of: timeSlider, offset: bottomPad)
+        
         seperatorLabel.leftToRight(of: currentTimeLabel)
         seperatorLabel.centerY(to: currentTimeLabel)
         durationTimeLabel.leftToRight(of: seperatorLabel)
         durationTimeLabel.bottomToTop(of: timeSlider, offset: bottomPad)
-        landscapeButton.bottomToTop(of: timeSlider, offset: 0)
-        landscapeButton.snp.makeConstraints { make in
-            make.right.equalTo(bottomView).offset(-16)
-        }
+        //        landscapeButton.bottomToTop(of: timeSlider, offset: 0)
+        //        landscapeButton.snp.makeConstraints { make in
+        //            make.right.equalTo(bottomView).offset(-16)
+        //        }
         
-        episodesButton.width(140)
-        episodesButton.height(Constants.bottomViewButtonSize)
-        episodesButton.snp.makeConstraints{ make in
-            make.right.equalTo(landscapeButton).offset(-12)
-        }
+        //        nextEpisodeButton.width(48)
+        //        nextEpisodeButton.height(48)
+        nextEpisodeButton.layer.cornerRadius = 8
+        //        nextEpisodeButton.snp.makeConstraints{ make in
+        //            make.right.equalTo(landscapeButton).offset(-12)
+        //        }
+        
+        //        episodesButton.width(48)
+        //        episodesButton.height(48)
+        //        episodesButton.snp.makeConstraints{ make in
+        //            make.right.equalTo(nextEpisodeButton).offset(-12)
+        //        }
         episodesButton.layer.cornerRadius = 8
         
         if !isSerial {
             episodesButton.isHidden = true
+            nextEpisodeButton.isHidden = true
         }
     }
     
@@ -526,7 +547,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         titleLabel.left(to: exitButton, offset: 56)
         titleLabel.right(to: settingsButton, offset: -56)
         titleLabel.layoutMargins = .horizontal(16)
-
+        
         exitButton.width(Constants.topButtonSize)
         exitButton.height(Constants.topButtonSize)
         exitButton.left(to: topView)
@@ -543,6 +564,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     func addVideosLandscapeConstraints() {
         portraitConstraints.deActivate()
+        landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+        nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
+        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
         landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
@@ -550,6 +574,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         landscapeConstraints.deActivate()
         let width = view.frame.width
         let heigth = width * 9 / 16
+        nextEpisodeButton.setTitle("", for: .normal)
+        episodesButton.setTitle("", for: .normal)
+        landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
         portraitConstraints.append(contentsOf: videoView.center(in: view))
         portraitConstraints.append(contentsOf: videoView.height(min: heigth, max: view.frame.height, priority: .defaultLow, isActive: true))
         portraitConstraints.append(videoView.left(to: view))
@@ -600,6 +627,21 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             showControls()
         }
     }
+    
+    @objc func nextEpisodeButtonPressed(_ sender: UIButton){
+        if seasons[selectedSeason].movies.count > selectSesonNum+1 {
+            DispatchQueue.main.async {
+                self.nextEpisode(seasonIndex: self.selectedSeason, episodeIndex: self.selectSesonNum+1)
+            }
+            return
+        } else if seasons.count > selectedSeason+1{
+            DispatchQueue.main.async {
+                self.nextEpisode(seasonIndex: self.selectedSeason+1, episodeIndex: 0)
+            }
+            return
+        }
+    }
+    
     
     @objc func exitButtonPressed(_ sender: UIButton){
         self.dismiss(animated: true, completion: nil);
@@ -658,7 +700,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         episodeVC.modalPresentationStyle = .custom
         episodeVC.seasons = self.seasons
         episodeVC.delegate = self
-        episodeVC.selectedSeasonIndex = selectedSeason
+        episodeVC.selectedSeasonIndex = self.selectedSeason
         episodeVC.closeText = self.playerConfiguration.closeText
         episodeVC.seasonText = self.playerConfiguration.seasonText
         self.present(episodeVC, animated: true, completion: nil)
@@ -1088,16 +1130,16 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     func getMegogoStream(parameters:[String:String], id:String) -> MegogoStreamResponse? {
         var megogoResponse:MegogoStreamResponse?
         let _url:String = playerConfiguration.baseUrl+"megogo/stream"
-         let result = Networking.sharedInstance.getMegogoStream(_url, token: self.playerConfiguration.authorization, sessionId: id, parameters: parameters)
-                switch result {
-                case .failure(let error):
-                    print(error)
-                    break
-                case .success(let success):
-                    megogoResponse = success
-                    break
-                }
-            return megogoResponse
+        let result = Networking.sharedInstance.getMegogoStream(_url, token: self.playerConfiguration.authorization, sessionId: id, parameters: parameters)
+        switch result {
+        case .failure(let error):
+            print(error)
+            break
+        case .success(let success):
+            megogoResponse = success
+            break
+        }
+        return megogoResponse
         
     }
     
@@ -1105,16 +1147,18 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         let _url : String = playerConfiguration.baseUrl+"premier/videos/\(playerConfiguration.videoId)/episodes/\(episodeId)/stream"
         var premierSteamResponse: PremierStreamResponse?
         let result = Networking.sharedInstance.getPremierStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
-            switch result {
-            case .failure(let error):
-                print(error)
-            case .success(let success):
-                premierSteamResponse = success
-            }
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(let success):
+            premierSteamResponse = success
+        }
         return premierSteamResponse
     }
     
     func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
+        self.selectedSeason = _seasonIndex
+        self.selectSesonNum = _episodeIndex
         self.resolutions = SortFunctions.sortWithKeys(_resolutions)
         let isFinded = resolutions?.contains(where: { (key, value) in
             if key == self.selectedQualityText {
@@ -1143,6 +1187,48 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             return
         }
     }
+    
+    func nextEpisode(seasonIndex: Int, episodeIndex: Int) {
+        var resolutions: [String:String] = [:]
+        var startAt :Int64?
+        let episodeId : String = seasons[seasonIndex].movies[episodeIndex].id ?? ""
+        if playerConfiguration.isMegogo {
+            let parameters : [String:String] = ["video_id":episodeId,"access_token":self.playerConfiguration.megogoAccessToken]
+            var success : MegogoStreamResponse?
+            success = self.getMegogoStream(parameters: parameters,id: episodeId)
+            if success != nil {
+                
+                resolutions[self.playerConfiguration.autoText] = success?.data.src
+                success?.data.bitrates.forEach({ bitrate in
+                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
+                })
+                startAt = Int64(success?.data.playStartTime ?? 0)
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            }
+        }
+        if playerConfiguration.isPremier {
+            var success : PremierStreamResponse?
+            success = self.getPremierStream(episodeId: episodeId)
+            if success != nil {
+                success?.fileInfo.forEach({ file in
+                    if file.quality == "auto"{
+                        resolutions[self.playerConfiguration.autoText] = file.fileName
+                    } else {
+                        resolutions["\(file.quality)"] = file.fileName
+                    }
+                })
+                startAt = 0
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            }
+        }
+        if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
+            seasons[seasonIndex].movies[episodeIndex].resolutions.map { (key: String, value: String) in
+                resolutions[key] = value
+                startAt = 0
+            }
+            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+        }
+    }
 }
 
 extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate {
@@ -1154,31 +1240,31 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
         if playerConfiguration.isMegogo {
             let parameters : [String:String] = ["video_id":episodeId,"access_token":self.playerConfiguration.megogoAccessToken]
             var success : MegogoStreamResponse?
-                success = self.getMegogoStream(parameters: parameters,id: episodeId)
-                if success != nil {
-                    
-                    resolutions[self.playerConfiguration.autoText] = success?.data.src
-                    success?.data.bitrates.forEach({ bitrate in
-                        resolutions["\(bitrate.bitrate)p"] = bitrate.src
-                    })
-                    startAt = Int64(success?.data.playStartTime ?? 0)
-                    self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-                }
+            success = self.getMegogoStream(parameters: parameters,id: episodeId)
+            if success != nil {
+                
+                resolutions[self.playerConfiguration.autoText] = success?.data.src
+                success?.data.bitrates.forEach({ bitrate in
+                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
+                })
+                startAt = Int64(success?.data.playStartTime ?? 0)
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            }
         }
         if playerConfiguration.isPremier {
             var success : PremierStreamResponse?
-                success = self.getPremierStream(episodeId: episodeId)
-                if success != nil {
-                    success?.fileInfo.forEach({ file in
-                        if file.quality == "auto"{
-                            resolutions[self.playerConfiguration.autoText] = file.fileName
-                        } else {
-                            resolutions["\(file.quality)"] = file.fileName
-                        }
-                    })
-                    startAt = 0
-                    self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-                }
+            success = self.getPremierStream(episodeId: episodeId)
+            if success != nil {
+                success?.fileInfo.forEach({ file in
+                    if file.quality == "auto"{
+                        resolutions[self.playerConfiguration.autoText] = file.fileName
+                    } else {
+                        resolutions["\(file.quality)"] = file.fileName
+                    }
+                })
+                startAt = 0
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            }
         }
         if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
             seasons[seasonIndex].movies[episodeIndex].resolutions.map { (key: String, value: String) in

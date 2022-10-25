@@ -10,7 +10,9 @@ import SnapKit
 class EpisodeCollectionCell: UICollectionViewCell {
     
     var episodes : Movie? {
-        didSet{
+        didSet {
+            print("TEST")
+            print(episodes?.duration ?? 0)
             titleLbl.text = episodes?.title ?? ""
             descriptionLabel.text = episodes?.description ?? ""
             durationLbl.text = VGPlayerUtils.getTimeIntString(from: episodes?.duration ?? 0)

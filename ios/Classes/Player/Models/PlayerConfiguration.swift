@@ -170,7 +170,7 @@ struct Movie{
     }
     
     static func fromMap(map : [String:Any])->Movie{
-        return Movie(id: (map["id"] as? String),title: (map["title"] as? String), description: map["description"] as? String, image: (map["image"] as? String), duration: (map["druation"] as? Int), resolutions: (map["resolutions"] as! [String:String]))
+        return Movie(id: (map["id"] as? String),title: (map["title"] as? String), description: map["description"] as? String, image: (map["image"] as? String), duration: (map["duration"] as? Int), resolutions: (map["resolutions"] as! [String:String]))
     }
 }
 

@@ -441,7 +441,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     }
     
     func addConstraints() {
-        //        addVideosLandscapeConstraints()
+        addVideosLandscapeConstraints1()
         addBottomViewConstraints()
         addTopViewConstraints()
         addControlButtonConstraints()
@@ -489,16 +489,16 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             make.edges.equalToSuperview()
         }
         
-        if (isSerial) {
+//        if (isSerial) {
             bottomActionsStackView.snp.makeConstraints { make in
                 make.right.equalTo(bottomView).offset(-16)
             }
-        } else {
-            bottomActionsStackView.snp.makeConstraints { make in
-                make.left.equalToSuperview().offset(80)
-                make.right.equalToSuperview().offset(-80)
-            }
-        }
+//        } else {
+//            bottomActionsStackView.snp.makeConstraints { make in
+//                make.left.equalToSuperview().offset(80)
+//                make.right.equalToSuperview().offset(-80)
+//            }
+//        }
         bottomActionsStackView.bottomToTop(of: timeSlider, offset: 0)
         
         currentTimeLabel.snp.makeConstraints { make in
@@ -560,6 +560,11 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         settingsButton.right(to: topView)
         settingsButton.centerY(to: topView)
         
+    }
+    
+    func addVideosLandscapeConstraints1() {
+        portraitConstraints.deActivate()
+        landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
     func addVideosLandscapeConstraints() {

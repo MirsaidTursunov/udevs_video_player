@@ -9,9 +9,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
+import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -63,13 +63,15 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         skip.setOnClickListener { // inside on click we are
             skip()
         }
-        val close = findViewById<ImageView>(R.id.story_close)
+
+        val close = findViewById<CardView>(R.id.cv_story_close)
         close.setOnClickListener { // inside on click we are
             onBackPressed()
         }
-        val storyMovie = findViewById<Button>(R.id.story_movie)
-        storyMovie.text = playerConfiguration?.storyButtonText
-        storyMovie.setOnClickListener { // inside on click we are
+        val storyMovieBtn = findViewById<ConstraintLayout>(R.id.btn_story_movie)
+        val storyMovieText = findViewById<TextView>(R.id.tv_play)
+        storyMovieText.text = playerConfiguration?.storyButtonText
+        storyMovieBtn.setOnClickListener { // inside on click we are
             backPressed()
         }
 

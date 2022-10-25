@@ -607,8 +607,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 override fun onClick(epIndex: Int, seasIndex: Int) {
                     seasonIndex = seasIndex
                     episodeIndex = epIndex
-                    title?.text =
-                        "S${seasonIndex + 1} E${episodeIndex + 1} " +
+                    title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
                                 playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource =

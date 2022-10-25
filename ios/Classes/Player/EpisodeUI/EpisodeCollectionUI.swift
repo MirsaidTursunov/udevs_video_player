@@ -90,7 +90,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .white
-        button.setTitle("\(videoPlayer.selectedSeason + 1) сезон", for: .normal)
+        button.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
         button.setImage(Svg.down.uiImage, for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 16)
@@ -130,7 +130,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             menuHeight = UIScreen.main.bounds.height * 0.4
         }
-        seasonSelectBtn.setTitle("\(videoPlayer.selectedSeason + 1) \(seasonText)", for: .normal)
+        seasonSelectBtn.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
         
         setupUI()
         
@@ -158,7 +158,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         if UIDevice.current.userInterfaceIdiom == .phone {
             seasonSelectBtn.snp.makeConstraints { make in
                 make.height.equalTo(40)
-                make.width.equalTo(148)
+                make.width.equalTo(132)
                 make.left.equalTo(headerView)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
@@ -237,7 +237,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         seasonVC.closeText = closeText
         seasonVC.cellDelegate = self
         seasonVC.bottomSheetType = .season
-        seasonVC.selectedIndex = videoPlayer.selectedSeason
+        seasonVC.selectedIndex = selectedSeasonIndex
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.present(seasonVC, animated: false, completion:nil)
         }

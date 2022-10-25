@@ -52,12 +52,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         return button
     }()
     
-    public let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
-        return imageView
-    }()
-    
     public let playerView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
@@ -123,7 +117,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func addSubviews() {
-        view.addSubview(imageView)
         view.addSubview(playerView)
         view.addSubview(closeButton)
         view.addSubview(progressView)
@@ -145,14 +138,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                   y: view.height-CGFloat(bottomPadding+topPadding),
                                   width: view.width-40,
                                   height: 42)
-        
-        imageView.frame = CGRect(x: 0,
-                                 y: 0,
-                                 width: view.width,
-                                 height: view.height)
-        
         playerView.frame = view.bounds
-        
         progressView.frame = CGRect(x: 10,
                                     y: 10+topPadding,
                                     width: Int(view.width-closeButton.width),

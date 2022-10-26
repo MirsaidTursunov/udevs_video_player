@@ -98,7 +98,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var episodeIndex: Int = 0
     private var retrofitService: RetrofitService? = null
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player_activity)

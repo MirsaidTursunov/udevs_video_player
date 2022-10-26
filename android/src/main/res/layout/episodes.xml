@@ -9,7 +9,6 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-
     <ImageView
         android:id="@+id/episode_sheet_back"
         android:layout_width="40dp"
@@ -33,7 +32,6 @@
     <!--            android:textSize="18sp"-->
     <!--            tools:ignore="HardcodedText" />-->
 
-
     <com.google.android.material.tabs.TabLayout
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +41,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:paddingStart="20dp"
-        app:tabIndicatorColor="@color/blue"
+        app:tabIndicatorColor="@color/assets"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/assets"
         app:tabTextAppearance="@style/EpisodeTabText"

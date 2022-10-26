@@ -1,0 +1,23 @@
+<vector android:height="72dp" android:viewportHeight="74"
+    android:viewportWidth="74" android:width="72dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillAlpha="0.01" android:fillColor="#ffffff" android:pathData="M1,1h72v72h-72z"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M1,1H73M1,1V73M1,1L73,73M73,1V73M73,1L1,73M73,73H1"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M37,37m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M8,13L66,13A1,1 0,0 1,67 14L67,60A1,1 0,0 1,66 61L8,61A1,1 0,0 1,7 60L7,14A1,1 0,0 1,8 13z"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M14,7L60,7A1,1 0,0 1,61 8L61,66A1,1 0,0 1,60 67L14,67A1,1 0,0 1,13 66L13,8A1,1 0,0 1,14 7z"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M11,10L63,10A1,1 0,0 1,64 11L64,63A1,1 0,0 1,63 64L11,64A1,1 0,0 1,10 63L10,11A1,1 0,0 1,11 10z"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M37,37m-12,0a12,12 0,1 1,24 0a12,12 0,1 1,-24 0"
+        android:strokeAlpha="0.01" android:strokeColor="#DADEE4" android:strokeWidth="0.13"/>
+    <path android:fillColor="#9D9D9D" android:fillType="evenOdd" android:pathData="M7,37C7,20.432 20.431,7 37,7C53.569,7 67,20.432 67,37C67,46.814 62.288,55.527 55.003,61H61C62.657,61 64,62.343 64,64C64,65.657 62.657,67 61,67H37C20.431,67 7,53.569 7,37ZM43,25C43,28.314 40.314,31 37,31C33.686,31 31,28.314 31,25C31,21.686 33.686,19 37,19C40.314,19 43,21.686 43,25ZM31,37C31,40.314 28.314,43 25,43C21.686,43 19,40.314 19,37C19,33.686 21.686,31 25,31C28.314,31 31,33.686 31,37ZM49,43C52.314,43 55,40.314 55,37C55,33.686 52.314,31 49,31C45.686,31 43,33.686 43,37C43,40.314 45.686,43 49,43ZM43,49C43,52.314 40.314,55 37,55C33.686,55 31,52.314 31,49C31,45.686 33.686,43 37,43C40.314,43 43,45.686 43,49Z"/>
+</vector>

@@ -15,6 +15,7 @@
 
     <color name="main">#1c192c</color>
     <color name="episodes_background_color">#1E1E1E</color>
+    <color name="btn_season_color">#2E2E2E</color>
     <color name="main_dark">#100E19</color>
     <color name="red">#F40100</color>
     <color name="red300">#74F40100</color>

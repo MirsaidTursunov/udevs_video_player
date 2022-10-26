@@ -16,6 +16,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -34,6 +35,7 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -45,13 +47,8 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
-import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
-import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
-import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.adapters.*
+import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import kotlin.math.abs
@@ -97,6 +94,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
     private var retrofitService: RetrofitService? = null
+    private lateinit var currentSeason: Season
+    private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
+    private var selectedSeasonIndex : Int = 0;
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,6 +206,10 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         } else {
             playVideo()
         }
+        if(!playerConfiguration!!.isLive){
+        currentSeason = playerConfiguration!!.seasons[0]
+        }
+
     }
 
     override fun onBackPressed() {
@@ -418,6 +422,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         }
     }
 
+
+
+
     private fun getMegogoStream() {
         retrofitService?.getMegogoStream(
             playerConfiguration!!.authorization,
@@ -470,7 +477,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 if (body != null) {
                     val map: HashMap<String, String> = hashMapOf()
                     body.file_info?.forEach {
-                        if(it!!.quality == "auto") {
+                        if (it!!.quality == "auto") {
                             map[playerConfiguration!!.autoText] = it.file_name!!
                         } else {
                             map[it.quality!!] = it.file_name!!
@@ -595,20 +602,21 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         backButtonEpisodeBottomSheet?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-//        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
-//        titleBottomSheet?.text = title?.text
-        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)
-        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.episode_view_pager)
-        viewPager?.adapter = EpisodePagerAdapter(
+
+
+        val btnSeasons = bottomSheetDialog.findViewById<Button>(R.id.btn_seasons)
+
+
+        val rvEpisodes = bottomSheetDialog.findViewById<RecyclerView>(R.id.episodes_rv)
+
+        rvEpisodesRvAdapter = EpisodesRvAdapter(
             this,
-            playerConfiguration!!.seasons,
-            object : EpisodePagerAdapter.OnClickListener {
-                @SuppressLint("SetTextI18n")
-                override fun onClick(epIndex: Int, seasIndex: Int) {
-                    seasonIndex = seasIndex
-                    episodeIndex = epIndex
+            currentSeason.movies,
+            object : EpisodesRvAdapter.OnClickListener {
+                override fun onClick(episodeIndex: Int) {
+                    var seasonIndex = selectedSeasonIndex
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+                            playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource =
                         HlsMediaSource.Factory(dataSourceFactory)
@@ -628,9 +636,15 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                     bottomSheetDialog.dismiss()
                 }
             })
-        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-            tab.text = playerConfiguration!!.seasons[position].title
-        }.attach()
+
+        rvEpisodes?.adapter = rvEpisodesRvAdapter
+
+        btnSeasons?.text = currentSeason.title
+        btnSeasons?.setOnClickListener {
+            showSeasonsBottomSheet(rvEpisodes)
+        }
+
+
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE
@@ -691,6 +705,33 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE
         }
+    }
+
+    private fun showSeasonsBottomSheet(rvEpisodes: RecyclerView?) {
+        val seasonsBottomSheetDialog = BottomSheetDialog(this)
+        seasonsBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        seasonsBottomSheetDialog.setContentView(R.layout.seasons_page)
+        val rv_seasons = seasonsBottomSheetDialog.findViewById<RecyclerView>(R.id.rv_seasons)
+        val cv_close = seasonsBottomSheetDialog.findViewById<ConstraintLayout>(R.id.cv_close)
+
+        rv_seasons?.adapter = SeasonsRvAdapter(
+            this,
+            playerConfiguration!!.seasons,
+            object : SeasonsRvAdapter.OnClickListener {
+                override fun onClick(seasonPosition: Int) {
+                    selectedSeasonIndex = seasonPosition
+                    currentSeason = playerConfiguration!!.seasons[seasonPosition]
+                    rvEpisodes?.adapter = rvEpisodesRvAdapter
+                    seasonsBottomSheetDialog.dismiss()
+                }
+
+            }, selectedSeasonIndex)
+
+        cv_close?.setOnClickListener {
+            seasonsBottomSheetDialog.dismiss()
+        }
+
+        seasonsBottomSheetDialog.show()
     }
 
     private var backButtonQualitySpeedBottomSheet: ImageView? = null

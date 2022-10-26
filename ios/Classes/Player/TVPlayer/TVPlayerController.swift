@@ -309,10 +309,10 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     
     @objc func changeOrientation(_ sender: UIButton){
         var value  = UIInterfaceOrientation.landscapeRight.rawValue
-        if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
+        if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight {
             value = UIInterfaceOrientation.portrait.rawValue
-            landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
         }
+        UIDevice.current.setValue(value, forKey: "orientation")
         if #available(iOS 16.0, *) {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return
             }
@@ -324,7 +324,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
                     print(windowScene.effectiveGeometry)
                 }
             })
-        } else{
+        } else {
             UIViewController.attemptRotationToDeviceOrientation()
         }
     }
@@ -393,11 +393,21 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
-            landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
-            addVideosLandscapeConstraints()
+            if #available(iOS 16.0, *) {
+                landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+                addVideosLandscapeConstraints()
+            } else {
+                landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+                addVideoPortaitConstraints()
+            }
         } else {
-            landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
-            addVideoPortaitConstraints()
+            if #available(iOS 16.0, *) {
+                landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+                addVideoPortaitConstraints()
+            } else {
+                landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+                addVideosLandscapeConstraints()
+            }
         }
     }
     

@@ -31,9 +31,8 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         static let nextEpisodeShowTime : Float = 60
     }
     private var speedList = ["0.5","1.0","1.25","1.5","2.0"].sorted()
-    private var seasonList = ["1-сезон","2-сезон","3-сезон","4-сезон","5-сезон"]
     private var player = AVPlayer()
-    private var playerLayer =  AVPlayerLayer()
+    private var playerLayer = AVPlayerLayer()
     private var playerItemContext = 0
     weak var delegate: VideoPlayerDelegate?
     var urlString: String?
@@ -68,10 +67,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     private var selectedAudioTrack = "None"
     private var selectedSubtitle = "None"
     
-    
     private var videoView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -79,7 +77,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         let view = UIView()
         view.tag = 2
         view.layer.zPosition = 2
-        view.backgroundColor =  UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.64)
+        view.backgroundColor =  .clear
         return view
     }()
     
@@ -118,14 +116,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         label.text = "00:00"
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        
-        return label
-    }()
-    
-    private var leftTimeLabel: UILabel = {
-        let label = UILabel()
-        label.text = "00:00"
-        label.textColor = .white
         return label
     }()
     
@@ -135,11 +125,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         return label
-    }()
-    
-    private var blockBottomView: UIView = {
-        let view = UIView()
-        return view
     }()
     
     private var bottomView: UIView = {
@@ -296,13 +281,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.videoGravity = .resizeAspect
         videoView.layer.addSublayer(playerLayer)
-        selectedAudioTrack = player.currentItem?.selected(type: .audio) ?? "None"
-        selectedSubtitle = player.currentItem?.selected(type: .subtitle) ?? "None"
     }
     
     func runPlayer(startAt: Int){
-        selectedAudioTrack = player.currentItem?.selected(type: .audio) ?? "None"
-        selectedSubtitle = player.currentItem?.selected(type: .subtitle) ?? "None"
         player.currentItem?.preferredForwardBufferDuration = TimeInterval(40000)
         player.automaticallyWaitsToMinimizeStalling = true;
         player.seek(to:CMTimeMakeWithSeconds(Float64(Float(startAt)),preferredTimescale: 1000))
@@ -313,20 +294,12 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         super.viewDidLoad()
         let resList = resolutions ?? ["480p":urlString!]
         sortedResolutions = Array(resList.keys).sorted().reversed()
-        //        episodesButton.setTitle(serialLabelText, for: .normal)
         Array(resList.keys).sorted().reversed().forEach { quality in
             if quality == "1080p"{
                 sortedResolutions.removeLast()
                 sortedResolutions.insert("1080p", at: 1)
             }
         }
-        view.backgroundColor = Colors.moreColor
-        if #available(iOS 13.0, *) {
-            let value = UIInterfaceOrientationMask.landscapeRight.rawValue
-            UIDevice.current.setValue(value, forKey: "orientation")
-        } else {
-        }
-        
         if #available(iOS 13.0, *) {
             setSliderThumbTintColor(Colors.mainColor)
         } else {
@@ -381,9 +354,17 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
-            addVideosLandscapeConstraints()
+            if #available(iOS 16.0, *) {
+                addVideosLandscapeConstraints()
+            } else {
+                addVideoPortaitConstraints()
+            }
         } else {
-            addVideoPortaitConstraints()
+            if #available(iOS 16.0, *) {
+                addVideoPortaitConstraints()
+            } else {
+                addVideosLandscapeConstraints()
+            }
         }
     }
     
@@ -396,6 +377,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return nil
     }
+    
     override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
         return [.bottom]
     }
@@ -419,7 +401,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         view.addSubview(skipBackwardButton)
         overlayView.addSubview(activityIndicatorView)
         overlayView.addSubview(bottomView)
-        //        overlayView.addSubview(landscapeButton)
         addTopViewSubviews()
         addBottomViewSubviews()
     }
@@ -441,7 +422,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     }
     
     func addConstraints() {
-        addVideosLandscapeConstraints1()
+        addVideoPortaitConstraints()
         addBottomViewConstraints()
         addTopViewConstraints()
         addControlButtonConstraints()
@@ -489,16 +470,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             make.edges.equalToSuperview()
         }
         
-//        if (isSerial) {
-            bottomActionsStackView.snp.makeConstraints { make in
-                make.right.equalTo(bottomView).offset(-16)
-            }
-//        } else {
-//            bottomActionsStackView.snp.makeConstraints { make in
-//                make.left.equalToSuperview().offset(80)
-//                make.right.equalToSuperview().offset(-80)
-//            }
-//        }
+        bottomActionsStackView.snp.makeConstraints { make in
+            make.right.equalTo(bottomView).offset(-16)
+        }
         bottomActionsStackView.bottomToTop(of: timeSlider, offset: 0)
         
         currentTimeLabel.snp.makeConstraints { make in
@@ -510,23 +484,9 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         seperatorLabel.centerY(to: currentTimeLabel)
         durationTimeLabel.leftToRight(of: seperatorLabel)
         durationTimeLabel.bottomToTop(of: timeSlider, offset: bottomPad)
-        //        landscapeButton.bottomToTop(of: timeSlider, offset: 0)
-        //        landscapeButton.snp.makeConstraints { make in
-        //            make.right.equalTo(bottomView).offset(-16)
-        //        }
         
-        //        nextEpisodeButton.width(48)
-        //        nextEpisodeButton.height(48)
         nextEpisodeButton.layer.cornerRadius = 8
-        //        nextEpisodeButton.snp.makeConstraints{ make in
-        //            make.right.equalTo(landscapeButton).offset(-12)
-        //        }
         
-        //        episodesButton.width(48)
-        //        episodesButton.height(48)
-        //        episodesButton.snp.makeConstraints{ make in
-        //            make.right.equalTo(nextEpisodeButton).offset(-12)
-        //        }
         episodesButton.layer.cornerRadius = 8
         
         if !isSerial {
@@ -559,33 +519,27 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         settingsButton.layer.cornerRadius = 8
         settingsButton.right(to: topView)
         settingsButton.centerY(to: topView)
-        
-    }
-    
-    func addVideosLandscapeConstraints1() {
-        portraitConstraints.deActivate()
-        landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
     func addVideosLandscapeConstraints() {
         portraitConstraints.deActivate()
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
-        nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
-        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
+        if playerConfiguration.isSerial {
+            nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
+            episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
+        }
         landscapeConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
     func addVideoPortaitConstraints() {
         landscapeConstraints.deActivate()
-        let width = view.frame.width
-        let heigth = width * 9 / 16
-        nextEpisodeButton.setTitle("", for: .normal)
-        episodesButton.setTitle("", for: .normal)
+        if playerConfiguration.isSerial{
+            nextEpisodeButton.setTitle("", for: .normal)
+            episodesButton.setTitle("", for: .normal)
+        }
         landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
         portraitConstraints.append(contentsOf: videoView.center(in: view))
-        portraitConstraints.append(contentsOf: videoView.height(min: heigth, max: view.frame.height, priority: .defaultLow, isActive: true))
-        portraitConstraints.append(videoView.left(to: view))
-        portraitConstraints.append(videoView.right(to: view))
+        portraitConstraints.append(contentsOf: videoView.edgesToSuperview())
     }
     
     fileprivate func makeCircleWith(size: CGSize, backgroundColor: UIColor) -> UIImage? {
@@ -647,7 +601,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         }
     }
     
-    
     @objc func exitButtonPressed(_ sender: UIButton){
         self.dismiss(animated: true, completion: nil);
     }
@@ -656,7 +609,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         var value  = UIInterfaceOrientation.landscapeRight.rawValue
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight {
             value = UIInterfaceOrientation.portrait.rawValue
-            videoView.backgroundColor = .black
         }
         UIDevice.current.setValue(value, forKey: "orientation")
         if #available(iOS 16.0, *) {

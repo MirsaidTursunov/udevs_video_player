@@ -996,6 +996,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         self.player.seek(to: currentTime)
         self.player.currentItem?.preferredForwardBufferDuration = TimeInterval(1)
         self.player.automaticallyWaitsToMinimizeStalling = true
+        self.player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
     }
     
     // settings bottom sheet tapped

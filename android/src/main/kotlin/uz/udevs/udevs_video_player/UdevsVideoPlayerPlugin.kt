@@ -31,10 +31,6 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         channel.setMethodCallHandler(this)
     }
 
-    companion object{
-        val CLOSE_PLAYER = "close_player"
-    }
-
     override fun onMethodCall(call: MethodCall, result: Result) {
         if (call.method == "playVideo") {
             if (call.hasArgument("playerConfigJsonString")) {
@@ -55,7 +51,7 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 resultMethod = result
             }
         } else if(call.method == "closePlayer"){
-            ///TODO: close player
+            /// TODO: close player
         } else {
             result.notImplemented()
         }

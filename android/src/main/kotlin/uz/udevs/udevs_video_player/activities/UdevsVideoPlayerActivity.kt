@@ -66,7 +66,6 @@ class UdevsVideoPlayerActivity : Activity() {
     private var currentFocus = CurrentFocus.NONE
     private var retrofitService: RetrofitService? = null
 
-    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player_activity)
@@ -78,45 +77,7 @@ class UdevsVideoPlayerActivity : Activity() {
 
         playerView = findViewById(R.id.exo_player_view)
 
-        title = findViewById(R.id.video_title)
-        subtitle = findViewById(R.id.video_subtitle)
-        title?.text = playerConfiguration?.title
-
-        timer = findViewById(R.id.timer)
-        live = findViewById(R.id.live)
-        playPause = findViewById(R.id.video_play_pause)
-        exoProgress = findViewById(R.id.exo_progress)
-        exoProgress?.setKeyTimeIncrement(15000)
-        customSeekBar = findViewById(R.id.progress_bar)
-        customSeekBar?.isEnabled = false
-        qualityButton = findViewById(R.id.quality_button)
-        qualityButton?.text = playerConfiguration!!.qualityText
-        speedButton = findViewById(R.id.speed_button)
-        speedButton?.text = playerConfiguration!!.speedText
-        tvButton = findViewById(R.id.tv_button)
-        previousButton = findViewById(R.id.video_previous)
-        nextButton = findViewById(R.id.video_next)
-        if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
-                    episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
-        ) {
-            nextButton?.visibility = View.VISIBLE
-        }
-        if (playerConfiguration?.isSerial == true && (seasonIndex == 0 && episodeIndex != 0 || seasonIndex > 0)) {
-            previousButton?.visibility = View.VISIBLE
-        }
-        if (playerConfiguration?.isSerial == true) {
-            subtitle?.visibility = View.VISIBLE
-            subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
-        }
-        if (playerConfiguration?.isLive == true) {
-            live?.visibility = View.VISIBLE
-            timer?.visibility = View.GONE
-            exoProgress?.visibility = View.GONE
-            customSeekBar?.visibility = View.VISIBLE
-            tvButton?.visibility = View.VISIBLE
-        }
-
+        initializeViews()
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         initializeClickListeners()
 
@@ -227,6 +188,48 @@ class UdevsVideoPlayerActivity : Activity() {
                 }
             })
         player?.playWhenReady = true
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initializeViews() {
+        title = findViewById(R.id.video_title)
+        subtitle = findViewById(R.id.video_subtitle)
+        title?.text = playerConfiguration?.title
+
+        timer = findViewById(R.id.timer)
+        live = findViewById(R.id.live)
+        playPause = findViewById(R.id.video_play_pause)
+        exoProgress = findViewById(R.id.exo_progress)
+        exoProgress?.setKeyTimeIncrement(15000)
+        customSeekBar = findViewById(R.id.progress_bar)
+        customSeekBar?.isEnabled = false
+        qualityButton = findViewById(R.id.quality_button)
+        qualityButton?.text = playerConfiguration!!.qualityText
+        speedButton = findViewById(R.id.speed_button)
+        speedButton?.text = playerConfiguration!!.speedText
+        tvButton = findViewById(R.id.tv_button)
+        previousButton = findViewById(R.id.video_previous)
+        nextButton = findViewById(R.id.video_next)
+        if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
+                    episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
+        ) {
+            nextButton?.visibility = View.VISIBLE
+        }
+        if (playerConfiguration?.isSerial == true && (seasonIndex == 0 && episodeIndex != 0 || seasonIndex > 0)) {
+            previousButton?.visibility = View.VISIBLE
+        }
+        if (playerConfiguration?.isSerial == true) {
+            subtitle?.visibility = View.VISIBLE
+            subtitle?.text =
+                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
+        }
+        if (playerConfiguration?.isLive == true) {
+            live?.visibility = View.VISIBLE
+            timer?.visibility = View.GONE
+            exoProgress?.visibility = View.GONE
+            customSeekBar?.visibility = View.VISIBLE
+            tvButton?.visibility = View.VISIBLE
+        }
     }
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
@@ -455,7 +458,7 @@ class UdevsVideoPlayerActivity : Activity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         //sorting
         val l = mutableListOf<String>()
-        if(fromQuality) {
+        if (fromQuality) {
             var auto = ""
             list.forEach {
                 if (it.substring(0, it.length - 1).toIntOrNull() != null) {

@@ -18,6 +18,8 @@ data class PlayerConfiguration(
     val title: String,
     @SerializedName("storyButtonText")
     val storyButtonText: String,
+    @SerializedName("closeText")
+    val closeText: String,
     @SerializedName("isSerial")
     val isSerial: Boolean,
     @SerializedName("episodeButtonText")

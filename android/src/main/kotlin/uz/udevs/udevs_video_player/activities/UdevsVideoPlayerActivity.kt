@@ -535,7 +535,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 BottomSheet.SETTINGS -> {
                     backButtonSettingsBottomSheet?.visibility = View.GONE
                 }
-                BottomSheet.TV_PROGRAMS -> {}
+                BottomSheet.TV_PROGRAMS -> {
+
+                }
                 BottomSheet.QUALITY_OR_SPEED -> backButtonSettingsBottomSheet?.visibility =
                     View.GONE
                 BottomSheet.NONE -> {}
@@ -607,6 +609,12 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
         val btnSeasons = bottomSheetDialog.findViewById<Button>(R.id.btn_seasons)
 
+        val icClose = bottomSheetDialog.findViewById<ImageView>(R.id.ic_close_episodes)
+
+        icClose?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
         val rvEpisodes = bottomSheetDialog.findViewById<RecyclerView>(R.id.episodes_rv)
 
         rvEpisodesRvAdapter = EpisodesRvAdapter(
@@ -642,7 +650,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
         btnSeasons?.text = currentSeason.title
         btnSeasons?.setOnClickListener {
-            showSeasonsBottomSheet(rvEpisodes)
+            showSeasonsBottomSheet(rvEpisodes, btnSeasons)
         }
 
 
@@ -708,12 +716,15 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         }
     }
 
-    private fun showSeasonsBottomSheet(rvEpisodes: RecyclerView?) {
+    private fun showSeasonsBottomSheet(rvEpisodes: RecyclerView?, btnSeasons: Button) {
         val seasonsBottomSheetDialog = BottomSheetDialog(this)
         seasonsBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         seasonsBottomSheetDialog.setContentView(R.layout.seasons_page)
         val rv_seasons = seasonsBottomSheetDialog.findViewById<RecyclerView>(R.id.rv_seasons)
         val cv_close = seasonsBottomSheetDialog.findViewById<ConstraintLayout>(R.id.cv_close)
+        val tv_close = seasonsBottomSheetDialog.findViewById<TextView>(R.id.tv_close)
+
+        tv_close?.text = playerConfiguration?.closeText
 
         rv_seasons?.adapter = SeasonsRvAdapter(
             this,
@@ -722,6 +733,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 override fun onClick(seasonPosition: Int) {
                     selectedSeasonIndex = seasonPosition
                     currentSeason = playerConfiguration!!.seasons[seasonPosition]
+                    btnSeasons.text = currentSeason.title
                     rvEpisodes?.adapter = rvEpisodesRvAdapter
                     seasonsBottomSheetDialog.dismiss()
                 }

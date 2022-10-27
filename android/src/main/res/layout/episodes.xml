@@ -9,7 +9,6 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-
     <ImageView
         android:id="@+id/episode_sheet_back"
         android:layout_width="40dp"

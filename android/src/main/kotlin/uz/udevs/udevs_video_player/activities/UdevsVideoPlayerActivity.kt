@@ -504,6 +504,8 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         println("newConfig.orientation: ${newConfig.orientation}")
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
+            episodesText?.visibility = View.VISIBLE
+            nextText?.visibility = View.VISIBLE
             zoom?.visibility = View.VISIBLE
             orientation?.setImageResource(R.drawable.ic_portrait)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -522,6 +524,8 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         } else {
             cutFullScreen()
             zoom?.visibility = View.GONE
+            episodesText?.visibility = View.GONE
+            nextText?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {

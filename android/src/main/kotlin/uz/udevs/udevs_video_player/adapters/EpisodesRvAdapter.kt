@@ -32,7 +32,6 @@ class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClick
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.episode_item, parent, false)
-
         return Vh(view)
     }
 
@@ -40,10 +39,12 @@ class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClick
         holder.title.text = list[position].title
         holder.description.text = list[position].description
         holder.duration.text = MyHelper().formatDuration(list[position].duration)
-        Glide.with(context)
-            .load(list[position].image)
-            .placeholder(R.drawable.logo_secondary)
-            .into(holder.image)
+        if(list[position].image.isNotEmpty()){
+            Glide.with(context)
+                .load(list[position].image)
+                .placeholder(R.drawable.logo_secondary)
+                .into(holder.image)
+        }
         holder.image.setOnClickListener {
             onClickListener.onClick(position)
         }

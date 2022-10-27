@@ -490,7 +490,7 @@ class UdevsVideoPlayerActivity : Activity() {
             l as ArrayList<String>, (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
-                        currentQuality = list[position]
+                        currentQuality = l[position]
                         qualityText?.text = currentQuality
                         val currentPosition = player?.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
@@ -502,7 +502,7 @@ class UdevsVideoPlayerActivity : Activity() {
                         player?.prepare()
                         player?.playWhenReady
                     } else {
-                        currentSpeed = list[position]
+                        currentSpeed = l[position]
                         speedText?.text = currentSpeed
                         player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }

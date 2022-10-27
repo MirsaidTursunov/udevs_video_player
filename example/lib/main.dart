@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> {
               playerConfig: PlayerConfiguration(
             isStory: false,
             story: story,
+            storyIndex: 0,
             seasonText: "Season",
             closeText: "Close",
             storyButtonText: "",
@@ -288,6 +289,7 @@ class _MyAppState extends State<MyApp> {
             isStory: true,
             seasonText: "Season",
             story: story,
+            storyIndex: 2,
             closeText: 'Close',
             storyButtonText: "Смотреть фильм",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
@@ -391,6 +393,7 @@ class _MyAppState extends State<MyApp> {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
             isStory: false,
+            storyIndex: 0,
             story: [],
             seasonText: 'Сезон',
             closeText: "",

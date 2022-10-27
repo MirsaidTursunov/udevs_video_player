@@ -13,6 +13,7 @@ class PlayerConfiguration {
   String closeText;
   String seasonText;
   int lastPosition;
+  int storyIndex;
   String title;
   bool isSerial;
   String episodeButtonText;
@@ -70,6 +71,7 @@ class PlayerConfiguration {
     map['storyButtonText'] = storyButtonText;
     map['closeText'] = closeText;
     map['seasonText'] = seasonText;
+    map['storyIndex'] = storyIndex;
     return map;
   }
 
@@ -81,6 +83,7 @@ class PlayerConfiguration {
   PlayerConfiguration({
     required this.initialResolution,
     required this.seasonText,
+    required this.storyIndex,
     required this.resolutions,
     required this.qualityText,
     required this.speedText,

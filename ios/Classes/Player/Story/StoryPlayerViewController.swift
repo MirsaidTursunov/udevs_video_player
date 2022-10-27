@@ -9,6 +9,7 @@ import UIKit
 
 class StoryPlayerViewController: UIViewController {
     let video: Video
+    let index: Int
     let storyButtonText: String
     weak var delegate: VideoPlayerDelegate?
     
@@ -17,9 +18,10 @@ class StoryPlayerViewController: UIViewController {
         navigationOrientation: .horizontal,
         options: [:])
     
-    init(video: Video, storyButtonText: String) {
+    init(video: Video, storyButtonText: String, index: Int) {
         self.video = video
         self.storyButtonText = storyButtonText
+        self.index = index
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,7 +40,7 @@ class StoryPlayerViewController: UIViewController {
     }
     
     private func configurePagingController() {
-        guard let file = video.videoFiles.first else { return }
+        let file = video.videoFiles[index] 
         
         let vc = configureFileViewController(with: file)
         pagingController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)

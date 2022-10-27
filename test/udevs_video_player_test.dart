@@ -12,6 +12,9 @@ class MockUdevsVideoPlayerPlatform
     required String playerConfigJsonString,
   }) =>
       Future.value('42');
+
+  @override
+  Future<dynamic> closeVideo() => Future.value('42');
 }
 
 void main() {
@@ -30,6 +33,7 @@ void main() {
     expect(
         await udevsVideoPlayerPlugin.playVideo(
           playerConfig: PlayerConfiguration(
+            storyIndex: 0,
             seasonText: "",
             initialResolution: {},
             resolutions: {},

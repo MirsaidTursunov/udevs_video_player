@@ -221,7 +221,7 @@ class UdevsVideoPlayerActivity : Activity() {
         if (playerConfiguration?.isSerial == true) {
             subtitle?.visibility = View.VISIBLE
             subtitle?.text =
-                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
         }
         if (playerConfiguration?.isLive == true) {
             live?.visibility = View.VISIBLE
@@ -309,7 +309,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 previousButton?.visibility = View.INVISIBLE
             }
             subtitle?.text =
-                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
             if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
@@ -339,7 +339,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 nextButton?.visibility = View.INVISIBLE
             }
             subtitle?.text =
-                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
             if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
@@ -451,8 +451,13 @@ class UdevsVideoPlayerActivity : Activity() {
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
-        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
-            playerConfiguration!!.qualityText
+        if(fromQuality) {
+            bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+                playerConfiguration!!.qualityText
+        } else {
+            bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+                playerConfiguration!!.speedText
+        }
         val recyclerView =
             bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

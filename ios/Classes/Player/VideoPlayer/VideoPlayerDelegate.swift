@@ -8,7 +8,7 @@
 import Foundation
 
 protocol VideoPlayerDelegate: AnyObject {
-    func getDuration(duration: Double)
+    func getDuration(duration: Int)
     func close(args:String?)
 }
 protocol QualityDelegate {

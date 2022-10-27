@@ -72,7 +72,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
         }
     }
     
-    func getDuration(duration: Double) {
+    func getDuration(duration: Int) {
         flutterResult!("\(duration)")
     }
     

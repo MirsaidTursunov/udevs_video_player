@@ -346,7 +346,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         player.pause()
         playerLayer.player = nil
         playerLayer.removeFromSuperlayer()
-        delegate?.getDuration(duration: player.currentTime().seconds)
+        delegate?.getDuration(duration: Int(player.currentTime().seconds))
         let value = UIInterfaceOrientationMask.portrait.rawValue
         UIDevice.current.setValue(value, forKey: "orientation")
     }

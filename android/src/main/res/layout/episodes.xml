@@ -9,6 +9,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
+
     <ImageView
         android:id="@+id/episode_sheet_back"
         android:layout_width="40dp"
@@ -32,30 +33,33 @@
     <!--            android:textSize="18sp"-->
     <!--            tools:ignore="HardcodedText" />-->
 
-    <com.google.android.material.tabs.TabLayout
+    <Button
+        android:id="@+id/btn_seasons"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_seasons_background"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_arrow_down"
+        android:text="Seasons"
+        android:textAllCaps="false"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/episode_sheet_back"
-        android:id="@+id/episode_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:paddingStart="20dp"
-        app:tabIndicatorColor="@color/assets"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/assets"
-        app:tabTextAppearance="@style/EpisodeTabText"
-        app:tabTextColor="@color/grey10" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        app:layout_goneMarginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/episode_tabs"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/episode_view_pager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_seasons"
+        android:id="@+id/episodes_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:itemCount="1"
+        tools:listitem="@layout/episode_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

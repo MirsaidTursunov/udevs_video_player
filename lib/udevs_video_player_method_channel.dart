@@ -22,4 +22,10 @@ class MethodChannelUdevsVideoPlayer extends UdevsVideoPlayerPlatform {
     });
     return res;
   }
+
+  @override
+  Future<dynamic> closeVideo() async {
+    final res = await methodChannel.invokeMethod<dynamic>('closePlayer');
+    return res;
+  }
 }

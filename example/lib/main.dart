@@ -21,6 +21,9 @@ class _MyAppState extends State<MyApp> {
   final _udevsVideoPlayerPlugin = UdevsVideoPlayer();
 
   playVideo() async {
+    Future.delayed(const Duration(seconds: 15), () {
+      _udevsVideoPlayerPlugin.closeVideo();
+    });
     List<Season> seasons = [];
     List<Movie> movies1 = [];
     List<Story> story = [];

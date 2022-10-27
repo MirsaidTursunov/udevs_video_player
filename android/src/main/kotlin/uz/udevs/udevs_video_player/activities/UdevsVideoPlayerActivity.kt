@@ -96,7 +96,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var retrofitService: RetrofitService? = null
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
-    private var selectedSeasonIndex : Int = 0;
+    private var selectedSeasonIndex: Int = 0
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,8 +206,8 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         } else {
             playVideo()
         }
-        if(!playerConfiguration!!.isLive){
-        currentSeason = playerConfiguration!!.seasons[0]
+        if (!playerConfiguration!!.isLive) {
+            currentSeason = playerConfiguration!!.seasons[0]
         }
 
     }
@@ -423,8 +423,6 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     }
 
 
-
-
     private fun getMegogoStream() {
         retrofitService?.getMegogoStream(
             playerConfiguration!!.authorization,
@@ -603,9 +601,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             bottomSheetDialog.dismiss()
         }
 
-
         val btnSeasons = bottomSheetDialog.findViewById<Button>(R.id.btn_seasons)
-
 
         val rvEpisodes = bottomSheetDialog.findViewById<RecyclerView>(R.id.episodes_rv)
 
@@ -613,8 +609,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             this,
             currentSeason.movies,
             object : EpisodesRvAdapter.OnClickListener {
+                @SuppressLint("SetTextI18n")
                 override fun onClick(episodeIndex: Int) {
-                    var seasonIndex = selectedSeasonIndex
+                    val seasonIndex = selectedSeasonIndex
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
                             playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
@@ -725,7 +722,8 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                     seasonsBottomSheetDialog.dismiss()
                 }
 
-            }, selectedSeasonIndex)
+            }, selectedSeasonIndex
+        )
 
         cv_close?.setOnClickListener {
             seasonsBottomSheetDialog.dismiss()

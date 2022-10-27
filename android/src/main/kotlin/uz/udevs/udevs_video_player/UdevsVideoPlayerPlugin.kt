@@ -2,7 +2,6 @@ package uz.udevs.udevs_video_player
 
 import android.app.Activity
 import android.content.Intent
-import androidx.annotation.NonNull
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -27,12 +26,16 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private var activity: Activity? = null
     private var resultMethod: Result? = null
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "udevs_video_player")
         channel.setMethodCallHandler(this)
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    companion object{
+        val CLOSE_PLAYER = "close_player"
+    }
+
+    override fun onMethodCall(call: MethodCall, result: Result) {
         if (call.method == "playVideo") {
             if (call.hasArgument("playerConfigJsonString")) {
                 val playerConfigJsonString = call.argument("playerConfigJsonString") as String?
@@ -51,12 +54,14 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 }
                 resultMethod = result
             }
+        } else if(call.method == "closePlayer"){
+            ///TODO: close player
         } else {
             result.notImplemented()
         }
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
@@ -87,7 +92,12 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             if (data == null || data.extras == null) {
                 resultMethod?.success(null)
             } else if (data.getStringExtra("position") == null) {
-                val json = Gson().toJson(mapOf("slug" to data.getStringExtra("slug"), "title" to data.getStringExtra("title")))
+                val json = Gson().toJson(
+                    mapOf(
+                        "slug" to data.getStringExtra("slug"),
+                        "title" to data.getStringExtra("title")
+                    )
+                )
                 resultMethod?.success(json)
             } else {
                 resultMethod?.success(data.getStringExtra("position"))

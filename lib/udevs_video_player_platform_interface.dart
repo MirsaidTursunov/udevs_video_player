@@ -28,4 +28,8 @@ abstract class UdevsVideoPlayerPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<dynamic> closeVideo() {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
 }

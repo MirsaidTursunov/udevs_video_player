@@ -16,8 +16,8 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         flutterResult = result;
         if (call.method == "closePlayer" ) {
-            let vc = VideoPlayerViewController()
-            vc.dismiss(animated: true, completion: nil)
+            SwiftUdevsVideoPlayerPlugin.viewController.dismiss(animated: true)
+            return
         }
         if (call.method == "playVideo"){
             guard let args = call.arguments else {

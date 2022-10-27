@@ -46,6 +46,8 @@ data class PlayerConfiguration(
     val seasonIndex: Int,
     @SerializedName("episodeIndex")
     val episodeIndex: Int,
+    @SerializedName("storyIndex")
+    val storyIndex: Int,
     @SerializedName("isMegogo")
     val isMegogo: Boolean,
     @SerializedName("isStory")

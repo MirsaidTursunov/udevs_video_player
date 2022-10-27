@@ -49,6 +49,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         }
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration?
 
+        storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
         sWidth = Resources.getSystem().displayMetrics.widthPixels
@@ -132,9 +133,9 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.story.first().fileName)))
+            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.story[storyIndex].fileName)))
         progressBarStatus = 0
-        max = playerConfiguration!!.story.first().duration.toInt()
+        max = playerConfiguration!!.story[storyIndex].duration.toInt()
         player = ExoPlayer.Builder(this).build()
         playerView?.player = player
         playerView?.keepScreenOn = true

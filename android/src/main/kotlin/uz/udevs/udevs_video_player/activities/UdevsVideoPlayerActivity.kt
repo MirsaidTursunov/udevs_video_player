@@ -221,7 +221,7 @@ class UdevsVideoPlayerActivity : Activity() {
         if (playerConfiguration?.isSerial == true) {
             subtitle?.visibility = View.VISIBLE
             subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
         }
         if (playerConfiguration?.isLive == true) {
             live?.visibility = View.VISIBLE
@@ -309,7 +309,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 previousButton?.visibility = View.INVISIBLE
             }
             subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
             if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
@@ -339,7 +339,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 nextButton?.visibility = View.INVISIBLE
             }
             subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.episodeText}, ${episodeIndex + 1} ${playerConfiguration!!.seasonText}"
+                "${episodeIndex + 1} ${playerConfiguration!!.episodeText}, ${seasonIndex + 1} ${playerConfiguration!!.seasonText}"
             if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {

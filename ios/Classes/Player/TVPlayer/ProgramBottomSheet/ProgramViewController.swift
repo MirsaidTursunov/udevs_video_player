@@ -257,11 +257,17 @@ extension ProgramViewController: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         if !(programInfo[indexPath.section].day.isEmpty) {
             cell.timeLB.text = programInfo[indexPath.section].tvPrograms?[indexPath.row].scheduledTime ?? ""
-                cell.timeLB.textColor = .white
-                cell.timeLB.font = UIFont.boldSystemFont(ofSize: 16)
-            cell.channelNamesLB.textColor = .white
-            cell.circleView.backgroundColor = .green
-            cell.channelNamesLB.text = programInfo[indexPath.section].tvPrograms?[indexPath.row].programTitle ?? ""
+            var isHid = true
+            if (indexPath.row+1) != programInfo[indexPath.section].tvPrograms!.count {
+                if programInfo[indexPath.section].tvPrograms![indexPath.row].isAvailable && !programInfo[indexPath.section].tvPrograms![indexPath.row+1].isAvailable {
+                    isHid = false
+                    cell.channelNamesLB.textColor = Colors.assets
+                } else {
+                    cell.channelNamesLB.textColor = .white
+                }
+            }
+            cell.liveCircle.isHidden = isHid
+            cell.channelNamesLB.text =  programInfo[indexPath.section].tvPrograms?[indexPath.row].programTitle ?? ""
         }
         return cell
     }
@@ -300,12 +306,12 @@ extension ProgramViewController: UITableViewDataSource, UITableViewDelegate {
                 headerView.addSubview(button)
 
                 label.snp.makeConstraints { make in
-                    make.left.equalToSuperview().inset(56)
+                    make.left.equalToSuperview().inset(16)
                     make.centerY.equalToSuperview()
                 }
 
                 button.snp.makeConstraints { make in
-                    make.right.equalToSuperview().inset(50)
+                    make.right.equalToSuperview().inset(16)
                     make.centerY.equalToSuperview()
                     make.width.equalTo(30)
                 }
@@ -319,7 +325,7 @@ extension ProgramViewController: UITableViewDataSource, UITableViewDelegate {
                 label.textColor = .white
                 headerView.addSubview(label)
                 label.snp.makeConstraints { make in
-                    make.left.equalToSuperview().inset(56)
+                    make.left.equalToSuperview().inset(16)
                     make.centerY.equalToSuperview()
                 }
                 return headerView

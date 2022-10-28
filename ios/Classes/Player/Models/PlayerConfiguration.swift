@@ -188,7 +188,7 @@ struct ProgramsInfo {
         var tvPrograms: [Dictionary<String, Any>]?
         tvPrograms = map["tvPrograms"] as! [Dictionary<String, Any>]?
         tvPrograms?.forEach { data in
-            let tvProgram = TvProgram.fromMap(map: data as! [String:String])
+            let tvProgram = TvProgram.fromMap(map: data as! [String:Any])
             tv.append(tvProgram)
         }
         return ProgramsInfo(day: map["day"] as! String,tvPrograms: tv )
@@ -198,13 +198,15 @@ struct ProgramsInfo {
 struct TvProgram {
     var scheduledTime: String?
     var programTitle: String?
-    init(scheduledTime: String? = nil, programTitle: String? = nil) {
+    var isAvailable: Bool
+    init(scheduledTime: String? = nil, programTitle: String? = nil,isAvailable:Bool ) {
         self.scheduledTime = scheduledTime
         self.programTitle = programTitle
+        self.isAvailable = isAvailable
     }
     
-    static func fromMap(map : [String:String])->TvProgram{
-        return TvProgram(scheduledTime: map["scheduledTime"]!, programTitle: map["programTitle"]!)
+    static func fromMap(map : [String:Any])->TvProgram{
+        return TvProgram(scheduledTime: map["scheduledTime"] as! String, programTitle: map["programTitle"] as! String, isAvailable: map["isAvailable"] as! Bool)
     }
 }
 

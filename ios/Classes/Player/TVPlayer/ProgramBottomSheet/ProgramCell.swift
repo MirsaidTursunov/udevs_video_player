@@ -20,19 +20,8 @@ class ProgramCell: UITableViewCell {
         st.alignment = .center
         st.axis = .horizontal
         st.distribution = .fill
-        st.spacing = 20
+        st.spacing = 16
         st.backgroundColor = .clear
-        st.isUserInteractionEnabled = false
-        st.translatesAutoresizingMaskIntoConstraints = false
-        return st
-    }()
-    
-    var verticalStack: UIStackView = {
-        let st = UIStackView()
-        st.alignment = .leading
-        st.axis = .vertical
-        st.distribution = .fill
-        st.spacing = 10
         st.isUserInteractionEnabled = false
         st.translatesAutoresizingMaskIntoConstraints = false
         return st
@@ -43,7 +32,7 @@ class ProgramCell: UITableViewCell {
         st.alignment = .center
         st.axis = .horizontal
         st.distribution = .fill
-        st.spacing = 10
+        st.spacing = 8
         st.isUserInteractionEnabled = false
         st.translatesAutoresizingMaskIntoConstraints = false
         return st
@@ -51,10 +40,8 @@ class ProgramCell: UITableViewCell {
     
    lazy var timeLB: UILabel = {
         let label = UILabel()
-        label.text = programModel?.scheduledTime
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .darkGray
-    
+        label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        label.textColor = Colors.textColor
         return label
     }()
     
@@ -62,7 +49,7 @@ class ProgramCell: UITableViewCell {
         let label = UILabel()
         label.text = programModel?.programTitle
         label.font = UIFont.systemFont(ofSize: 15)
-        label.numberOfLines = 0
+        label.numberOfLines = 2
         label.sizeToFit()
         label.clipsToBounds = true
         label.textAlignment = .left
@@ -72,22 +59,11 @@ class ProgramCell: UITableViewCell {
         return label
     }()
     
-    var circleView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .green
-        return view
-    }()
-    
-    var progressView: UIProgressView = {
-        let view = UIProgressView()
-        view.trackTintColor = .white
-        view.tintColor = .yellow
-        view.layer.cornerRadius = 6
-        view.clipsToBounds = true
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.progress = 0.5
-        view.isHidden = true
-        return view
+     var liveCircle: UIView = {
+        let circle = UIView(frame: CGRect(x:6,y:5,width: 10, height: 10))
+        circle.layer.cornerRadius = (circle.frame.size.width) / 2
+        circle.backgroundColor = Colors.green
+        return circle
     }()
 
     override func awakeFromNib() {
@@ -106,16 +82,16 @@ class ProgramCell: UITableViewCell {
         setUp()
         
         containerStack.snp.makeConstraints { make in
-            make.edges.equalTo(self).inset(UIEdgeInsets(top: 10, left: 56,bottom: 10, right: 30))
+            make.edges.equalTo(self).inset(UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 0))
             make.width.equalToSuperview()
         }
         
-        timeLB.snp.makeConstraints { make in
-            make.width.equalTo(50)
-            }
-        progressView.snp.makeConstraints { make in
-            make.height.equalTo(0)
-            make.width.equalToSuperview()
+//        timeLB.snp.makeConstraints { make in
+////            make.width.equalTo(50)
+//        }
+        liveCircle.snp.makeConstraints { make in
+            make.height.equalTo(10)
+            make.width.equalTo(10)
         }
     }
     
@@ -123,15 +99,11 @@ class ProgramCell: UITableViewCell {
         contentView.addSubview(containerStack)
         containerStack.addArrangedSubviews(
             timeLB,
-            verticalStack
-        )
-        
-        verticalStack.addArrangedSubviews(
-            hStack,
-            progressView
+            hStack
         )
         
         hStack.addArrangedSubviews(
+            liveCircle,
             channelNamesLB
         )
     }

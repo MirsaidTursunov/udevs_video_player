@@ -19,4 +19,6 @@ class Colors{
     static let black = UIColor(red:0, green: 0, blue: 0)
     static let white = UIColor(red:1, green: 1, blue: 1)
     static let assets = UIColor(rgb: 0xFFEDAE01)
+    static let textColor = UIColor(rgb: 0xff8D8D8D)
+    static let green = UIColor(rgb: 0xff42BE65)
 }

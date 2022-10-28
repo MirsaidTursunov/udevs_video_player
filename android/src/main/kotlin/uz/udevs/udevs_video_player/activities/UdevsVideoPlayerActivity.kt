@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -100,6 +101,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
+    private  var selectedTvProgram: Int = 0;
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -633,9 +635,10 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                 LinearLayoutManager.VERTICAL
             )
         )
-        rv?.adapter = TvProgramsRvAdapter(playerConfiguration!!.programsInfoList)
+        rv?.adapter = TvProgramsRvAdapter(this,playerConfiguration!!.programsInfoList)
         bottomSheetDialog.show()
     }
+
 
     private var backButtonEpisodeBottomSheet: ImageView? = null
     private fun showEpisodesBottomSheet() {

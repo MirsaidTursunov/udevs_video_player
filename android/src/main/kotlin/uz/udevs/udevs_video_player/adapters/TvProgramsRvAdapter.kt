@@ -1,5 +1,6 @@
 package uz.udevs.udevs_video_player.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.ProgramsInfo
-import java.text.SimpleDateFormat
-import java.util.*
 
-class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
+class TvProgramsRvAdapter(
+    var context: Context,
+    var list: List<ProgramsInfo>,
+) :
     RecyclerView.Adapter<TvProgramsRvAdapter.Vh>() {
 
-    private var startIndex = 1
+    private var startIndex = 0
 
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView
@@ -32,26 +34,14 @@ class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.tv_program_item, parent, false)
-        val holder = Vh(view)
-//        holder.itemView.setOnFocusChangeListener { _, b ->
-//            if (b) {
-//                holder.itemView.setBackgroundResource(R.drawable.focus_border)
-//            } else {
-//                holder.itemView.setBackgroundColor(Color.parseColor("#00FFFFFF"))
-//            }
-//        }
-        return holder
+        return Vh(view)
     }
 
     override fun onBindViewHolder(holder: Vh, position: Int) {
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-        System.out.println(" C DATE is  "+currentDate)
         if (position == 0) {
             holder.date.visibility = View.GONE
             holder.title.visibility = View.GONE
             holder.time.visibility = View.GONE
-            holder.tv_program_circle.visibility = View.GONE
         }
         if (position > 0 && position <= list[0].tvPrograms.size) {
             holder.date.visibility = View.GONE
@@ -64,15 +54,27 @@ class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
             holder.date.visibility = View.VISIBLE
             holder.title.visibility = View.GONE
             holder.time.visibility = View.GONE
-            holder.tv_program_circle.visibility = View.GONE
             holder.date.text = list[1].day
         }
         if (position > list[0].tvPrograms.size + 1 && position <= list[0].tvPrograms.size + list[1].tvPrograms.size + 1) {
+         println("TTTTTT")
+         println(position)
+         println(list[1].tvPrograms[position - list[0].tvPrograms.size - 2].programTitle)
             holder.date.visibility = View.GONE
             holder.title.visibility = View.VISIBLE
             holder.time.visibility = View.VISIBLE
-            holder.title.text = list[1].tvPrograms[position - list[0].tvPrograms.size - 2].programTitle
-            holder.time.text = list[1].tvPrograms[position - list[0].tvPrograms.size - 2].scheduledTime
+            holder.title.text =
+                list[1].tvPrograms[position - list[0].tvPrograms.size - 2].programTitle
+            holder.time.text =
+                list[1].tvPrograms[position - list[0].tvPrograms.size - 2].scheduledTime
+            holder.title.setTextColor(context.resources.getColor(R.color.white))
+            holder.tv_program_circle.visibility = View.GONE
+        }
+        if (position > 1 && position < list[0].tvPrograms.size)  {
+            if (list[0].tvPrograms[position-1].isAvailable  && !list[0].tvPrograms[position].isAvailable) {
+                holder.title.setTextColor(context.resources.getColor(R.color.assets))
+                holder.tv_program_circle.visibility = View.VISIBLE
+            }
         }
     }
 

@@ -42,7 +42,7 @@ class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClick
         if(list[position].image.isNotEmpty()){
             Glide.with(context)
                 .load(list[position].image)
-                .placeholder(R.drawable.logo_secondary)
+                .placeholder(R.drawable.movie_fill)
                 .into(holder.image)
         }
         holder.image.setOnClickListener {

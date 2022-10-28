@@ -10,6 +10,7 @@
     <color name="black8">#FFE9E9E9</color>
     <color name="black700">#B3000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="textColor">#8D8D8D</color>
     <color name="hint">#ADFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
 

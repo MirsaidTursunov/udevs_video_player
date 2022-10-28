@@ -385,8 +385,6 @@ class _MyAppState extends State<MyApp> {
     tvPrograms.add(TvProgram(
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
-    programsInfoList
-        .add(ProgramsInfo(day: 'Yesterday', tvPrograms: tvPrograms));
     programsInfoList.add(ProgramsInfo(day: 'Today', tvPrograms: tvPrograms));
     programsInfoList.add(ProgramsInfo(day: 'Tomorrow', tvPrograms: tvPrograms));
     try {

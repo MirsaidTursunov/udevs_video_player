@@ -35,12 +35,11 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,9 +50,13 @@ import uz.udevs.udevs_video_player.adapters.*
 import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.*
 import kotlin.math.abs
 
-class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
+open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
 
     private var playerView: PlayerView? = null
@@ -148,12 +151,14 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         }
         nextButton = findViewById(R.id.button_next)
         nextText = findViewById(R.id.text_next)
+
         if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
                     episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
         ) {
             nextButton?.visibility = View.VISIBLE
             nextText?.text = playerConfiguration?.nextButtonText
         }
+
         tvProgramsButton = findViewById(R.id.button_tv_programs)
         tvProgramsText = findViewById(R.id.text_tv_programs)
         if (playerConfiguration?.isLive == true) {
@@ -170,6 +175,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             rewind?.visibility = View.GONE
             forward?.visibility = View.GONE
             customSeekBar?.visibility = View.VISIBLE
+        }
+        if (playerConfiguration?.isLive == true) {
+            nextButton?.visibility = View.GONE
         }
 
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
@@ -200,7 +208,7 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             }
             return@setOnTouchListener true
         }
-
+        trustEveryone()
         if (playerConfiguration?.playVideoFromAsset == true) {
             playFromAsset()
         } else {
@@ -209,7 +217,43 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         if (!playerConfiguration!!.isLive) {
             currentSeason = playerConfiguration!!.seasons[0]
         }
+    }
 
+    private fun trustEveryone() {
+        try {
+            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+            val context: SSLContext = SSLContext.getInstance("TLS")
+            context.init(
+                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
+                object : X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Throws(CertificateException::class)
+                    override fun checkClientTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Throws(CertificateException::class)
+                    override fun checkServerTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    override fun getAcceptedIssuers(): Array<X509Certificate> {
+                        TODO("Not yet implemented")
+                    }
+
+                }), SecureRandom()
+            )
+            HttpsURLConnection.setDefaultSSLSocketFactory(
+                context.socketFactory
+            )
+        } catch (e: Exception) { // should never happen
+            e.printStackTrace()
+        }
     }
 
     override fun onBackPressed() {
@@ -506,7 +550,9 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             setFullScreen()
             episodesText?.visibility = View.VISIBLE
             nextText?.visibility = View.VISIBLE
-            zoom?.visibility = View.VISIBLE
+            if (playerConfiguration?.isLive == false) {
+                zoom?.visibility = View.VISIBLE
+            }
             orientation?.setImageResource(R.drawable.ic_portrait)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             when (currentBottomSheet) {
@@ -564,30 +610,31 @@ class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var currentBottomSheet = BottomSheet.NONE
 
     private fun showTvProgramsBottomSheet() {
-        currentBottomSheet = BottomSheet.TV_PROGRAMS
         val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetDialog.behavior.maxHeight =
+            (Resources.getSystem().displayMetrics.heightPixels - 96)
+        bottomSheetDialog.behavior.peekHeight =
+            (Resources.getSystem().displayMetrics.heightPixels - 96)
         bottomSheetDialog.setContentView(R.layout.tv_programs_sheet)
-        val backButtonBottomSheet =
-            bottomSheetDialog.findViewById<ImageView>(R.id.tv_program_sheet_back)
-        backButtonBottomSheet?.setOnClickListener {
+        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.tv_programs_rv)
+        val closeButtonTVBottomSheet =
+            bottomSheetDialog.findViewById<ImageView>(R.id.close_button_tv_bottom_sheet)
+        val titleTv = bottomSheetDialog.findViewById<TextView>(R.id.titleTV)
+        closeButtonTVBottomSheet?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.tv_program_sheet_title)
-        titleBottomSheet?.text = title?.text
-        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.tv_programs_tabs)
-        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.tv_programs_view_pager)
-        viewPager?.adapter = TvProgramsPagerAdapter(this, playerConfiguration!!.programsInfoList)
-        viewPager?.currentItem = 1
-        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-            tab.text = playerConfiguration!!.programsInfoList[position].day
-        }.attach()
+        titleTv?.text = playerConfiguration!!.programsInfoList.first().day
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv?.layoutManager = layoutManager
+        rv?.addItemDecoration(
+            DividerItemDecoration(
+                this@UdevsVideoPlayerActivity,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        rv?.adapter = TvProgramsRvAdapter(playerConfiguration!!.programsInfoList)
         bottomSheetDialog.show()
-        bottomSheetDialog.setOnDismissListener {
-            currentBottomSheet = BottomSheet.NONE
-        }
     }
 
     private var backButtonEpisodeBottomSheet: ImageView? = null

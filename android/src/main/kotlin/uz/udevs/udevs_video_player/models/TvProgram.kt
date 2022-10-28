@@ -8,4 +8,6 @@ data class TvProgram(
     val scheduledTime: String,
     @SerializedName("programTitle")
     val programTitle: String,
+    @SerializedName("isAvailable")
+    val isAvailable: Boolean,
 ) : Serializable

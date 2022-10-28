@@ -1,20 +1,19 @@
 package uz.udevs.udevs_video_player.adapters
 
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.ProgramsInfo
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
     RecyclerView.Adapter<TvProgramsRvAdapter.Vh>() {
 
     private var startIndex = 1
-    private var hasSetFocus = false
 
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView
@@ -45,6 +44,9 @@ class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
     }
 
     override fun onBindViewHolder(holder: Vh, position: Int) {
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = sdf.format(Date())
+        System.out.println(" C DATE is  "+currentDate)
         if (position == 0) {
             holder.date.visibility = View.GONE
             holder.title.visibility = View.GONE

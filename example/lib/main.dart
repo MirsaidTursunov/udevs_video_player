@@ -356,33 +356,43 @@ class _MyAppState extends State<MyApp> {
     List<ProgramsInfo> programsInfoList = [];
     List<TvProgram> tvPrograms = [];
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     tvPrograms.add(TvProgram(
+        isAvailable: true,
         scheduledTime: '09:00',
         programTitle: 'Забытое и погребенное, 1 сезон, 3 эп. Суррей.'));
     programsInfoList.add(ProgramsInfo(day: 'Today', tvPrograms: tvPrograms));

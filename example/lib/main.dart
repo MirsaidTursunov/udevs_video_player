@@ -289,7 +289,7 @@ class _MyAppState extends State<MyApp> {
             isStory: true,
             seasonText: "Season",
             story: story,
-            storyIndex: 2,
+            storyIndex: 1,
             closeText: 'Close',
             storyButtonText: "Смотреть фильм",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",

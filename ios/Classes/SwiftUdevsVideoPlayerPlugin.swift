@@ -56,6 +56,8 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.delegate = self
                 vc.playerConfiguration = playerConfiguration
                 vc.urlString = playerConfiguration.url
+                vc.selectedSeason = playerConfiguration.seasonIndex
+                vc.selectSesonNum = playerConfiguration.episodeIndex
                 vc.startPosition = playerConfiguration.lastPosition
                 vc.qualityLabelText = playerConfiguration.qualityText
                 vc.speedLabelText = playerConfiguration.speedText

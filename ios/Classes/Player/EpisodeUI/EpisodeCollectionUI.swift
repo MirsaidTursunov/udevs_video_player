@@ -157,7 +157,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         if UIDevice.current.userInterfaceIdiom == .phone {
             seasonSelectBtn.snp.makeConstraints { make in
                 make.height.equalTo(40)
-                make.width.equalTo(132)
+                make.width.equalTo(124)
                 make.left.equalTo(headerView)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {

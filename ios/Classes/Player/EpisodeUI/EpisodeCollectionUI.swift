@@ -177,7 +177,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
             make.height.equalTo(topView)
             make.top.equalTo(topView).offset(0)
             make.left.equalTo(topView).offset(16)
-            make.right.equalTo(topView).offset(0)
+            make.right.equalTo(topView).offset(-8)
         }
         
         topView.snp.makeConstraints { make in

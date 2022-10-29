@@ -21,9 +21,9 @@ class _MyAppState extends State<MyApp> {
   final _udevsVideoPlayerPlugin = UdevsVideoPlayer();
 
   playVideo() async {
-    Future.delayed(const Duration(seconds: 15), () {
-      _udevsVideoPlayerPlugin.closeVideo();
-    });
+    // Future.delayed(const Duration(seconds: 15), () {
+    //   _udevsVideoPlayerPlugin.closeVideo();
+    // });
     List<Season> seasons = [];
     List<Movie> movies1 = [];
     List<Story> story = [];
@@ -151,7 +151,7 @@ class _MyAppState extends State<MyApp> {
             lastPosition: 0,
             title:
                 "S1 E1  \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" ",
-            isSerial: false,
+            isSerial: true,
             episodeButtonText: 'Эпизоды',
             nextButtonText: 'След.эпизод',
             seasons: seasons,

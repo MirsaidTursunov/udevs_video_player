@@ -70,7 +70,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     var backView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.clear
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -79,7 +79,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         st.alignment = .leading
         st.axis = .vertical
         st.distribution = .fill
-        st.spacing = 20
+        st.spacing = 16
         st.isUserInteractionEnabled = true
         st.backgroundColor = .clear
         st.translatesAutoresizingMaskIntoConstraints = true
@@ -107,7 +107,6 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         button.setImage(Svg.exit.uiImage, for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .white
-        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
         button.addTarget(self, action: #selector(tap), for: .touchUpInside)
         return button
     }()
@@ -172,7 +171,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         cancelBtn.snp.makeConstraints { make in
             make.height.equalTo(48)
             make.width.equalTo(48)
-            make.right.equalToSuperview().offset(0)
+            make.right.equalToSuperview()
             make.centerY.equalToSuperview()
         }
         
@@ -181,7 +180,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
                 make.height.equalTo(topView)
                 make.top.equalTo(topView).offset(0)
                 make.left.equalTo(topView).offset(16)
-                make.right.equalTo(topView).offset(-16)
+                make.right.equalTo(topView).offset(0)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             headerView.snp.makeConstraints { make in
@@ -194,7 +193,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         if UIDevice.current.userInterfaceIdiom == .phone {
             topView.snp.makeConstraints { make in
-                make.width.equalTo(verticalStack)
+                make.right.left.equalTo(backView)
                 make.height.equalTo(verticalStack).multipliedBy(0.12)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
@@ -208,8 +207,8 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
             verticalStack.snp.makeConstraints { make in
                 make.left.equalTo(menuView).offset(0)
                 make.right.equalTo(menuView)
-                make.bottom.equalTo(menuView).offset(-24)
-                make.top.equalTo(menuView).offset(24)
+                make.bottom.equalTo(menuView).offset(-16)
+                make.top.equalTo(menuView).offset(16)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             verticalStack.snp.makeConstraints { make in
@@ -256,7 +255,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         if UIDevice.current.userInterfaceIdiom == .phone {
             collectionView.snp.makeConstraints { make in
                 make.width.equalTo(backView)
-                make.height.equalTo(backView).multipliedBy(0.9)
+                make.height.equalTo(backView)
                 make.bottom.equalTo(backView)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
@@ -268,12 +267,16 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         }
         
         if UIDevice.current.userInterfaceIdiom == .phone {
+            
+            backView.leading(to: view.safeAreaLayoutGuide, offset: 0)
+            backView.trailing(to: view.safeAreaLayoutGuide, offset: 0)
+            backView.bottom(to: view.safeAreaLayoutGuide, offset: 0)
             backView.snp.makeConstraints { make in
-                make.height.equalTo(verticalStack).multipliedBy(0.9)
-                make.width.equalToSuperview()
-                make.left.equalTo(0)
-                make.right.equalTo(0)
-                make.bottom.equalToSuperview().offset(-30)
+//                make.height.equalTo(verticalStack).multipliedBy(0.9)
+//                make.width.equalToSuperview()
+//                make.left.equalTo(0)
+//                make.right.equalTo(0)
+//                make.bottom.equalToSuperview().offset(-30)
             }
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             backView.snp.makeConstraints { make in
@@ -366,7 +369,7 @@ extension EpisodeCollectionUI: UICollectionViewDelegateFlowLayout, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
+        return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -458,10 +458,10 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         bottomView.leading(to: view.safeAreaLayoutGuide, offset: Constants.horizontalSpacing)
         bottomView.trailing(to: view.safeAreaLayoutGuide, offset: -Constants.horizontalSpacing)
         bottomView.bottom(to: view.safeAreaLayoutGuide, offset: 0)
-        bottomView.height(80)
+        bottomView.height(72)
         
         timeStackView.snp.makeConstraints { make in
-            make.centerY.equalTo(bottomView)
+            make.bottom.equalToSuperview().offset(-8)
             make.left.equalToSuperview().offset(14)
             make.right.equalToSuperview().offset(-14)
         }
@@ -478,13 +478,13 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         currentTimeLabel.snp.makeConstraints { make in
             make.left.equalTo(bottomView).offset(16)
         }
-        currentTimeLabel.bottomToTop(of: timeSlider, offset: bottomPad)
+        currentTimeLabel.centerY(to:bottomActionsStackView)
         
         seperatorLabel.leftToRight(of: currentTimeLabel)
         seperatorLabel.centerY(to: currentTimeLabel)
         durationTimeLabel.leftToRight(of: seperatorLabel)
-        durationTimeLabel.bottomToTop(of: timeSlider, offset: bottomPad)
-        
+        durationTimeLabel.centerY(to: bottomActionsStackView)
+
         nextEpisodeButton.layer.cornerRadius = 8
         
         episodesButton.layer.cornerRadius = 8
@@ -556,7 +556,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     }
     
     func setSliderThumbTintColor(_ color: UIColor) {
-        let circleImage = makeCircleWith(size: CGSize(width: 28, height: 28),
+        let circleImage = makeCircleWith(size: CGSize(width: 24, height: 24),
                                          backgroundColor: color)
         timeSlider.setThumbImage(circleImage, for: .normal)
         timeSlider.setThumbImage(circleImage, for: .highlighted)

@@ -134,15 +134,29 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                    y: 30+topPadding,
                                    width: 25,
                                    height: 25)
-        playButton.frame = CGRect(x: 20,
-                                  y: view.height-CGFloat(bottomPadding+topPadding),
-                                  width: view.width-40,
-                                  height: 42)
+//        playButton.frame = CGRect(x: 20,
+//                                  y: view.height-CGFloat(bottomPadding+topPadding),
+//                                  width: view.width-40,
+//                                  height: 42)
+        playButton.leading(to: view.safeAreaLayoutGuide)
+        playButton.trailing(to: view.safeAreaLayoutGuide)
+        playButton.bottom(to: view.safeAreaLayoutGuide)
+        playButton.height(42)
+        playButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(10)
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+        }
+
+        
+        print("TTTTTt")
+        print(bottomPadding)
         playerView.frame = view.bounds
         progressView.frame = CGRect(x: 10,
                                     y: 10+topPadding,
                                     width: Int(view.width-closeButton.width),
                                     height: 10)
+        
         activityIndicatorView.center(in: view)
         activityIndicatorView.layer.cornerRadius = 20
     }

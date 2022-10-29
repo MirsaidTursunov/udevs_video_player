@@ -61,7 +61,7 @@ class ProgramViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 15,weight: .medium)
         return label
     }()
-
+    
     lazy var cancelView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -153,40 +153,27 @@ class ProgramViewController: UIViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
                 menuHeight =  300
             } else {
                 menuHeight =  500
             }
             print("Orientation isLandscape\(UIDevice.current.orientation.isLandscape) \(menuHeight)")
-        } else {
-            if programInfo.isEmpty {
-                menuHeight =  UIScreen.main.bounds.height * 0.75
-            }else {
-                menuHeight = 210
-            }
-        }
+      
     }
     
     override func viewDidLoad() {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            if programInfo.isEmpty {
-                menuHeight =  UIScreen.main.bounds.height * 0.75
-            } else {
-                if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                    menuHeight =  300
-                } else {
-                    menuHeight =  500
-                }
-            }
+        if programInfo.isEmpty {
+            menuHeight =  UIScreen.main.bounds.height * 0.6
         } else {
-            if programInfo.isEmpty {
-                menuHeight =  UIScreen.main.bounds.height * 0.75
+            if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
+                menuHeight =  300
             } else {
-                menuHeight = 210
+                menuHeight =  500
             }
         }
+        
         super.viewDidLoad()
         view.backgroundColor = .clear
         view.addSubview(backdropView)
@@ -210,22 +197,13 @@ class ProgramViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            tableView.snp.makeConstraints { make in
-                make.left.equalTo(menuView)
-                make.right.equalTo(menuView)
-                make.top.equalTo(menuView).offset(0)
-                make.height.equalTo(menuView)
-            }
-        } else {
-            tableView.snp.makeConstraints { make in
-                make.left.equalTo(menuView).offset(0)
-                make.right.equalTo(menuView)
-                make.top.equalTo(menuView).offset(0)
-                make.height.equalTo(menuView).multipliedBy(0.7)
-            }
+        tableView.snp.makeConstraints { make in
+            make.left.equalTo(menuView)
+            make.right.equalTo(menuView)
+            make.top.equalTo(menuView).offset(0)
+            make.height.equalTo(menuView)
         }
-
+        
         menuView.snp.makeConstraints { make in
             make.height.equalTo(menuHeight)
             make.bottom.equalToSuperview().inset(0)
@@ -251,7 +229,7 @@ extension ProgramViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return programInfo[section].tvPrograms?.count ?? 0
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ProgramCell
         cell.selectionStyle = .none
@@ -288,28 +266,28 @@ extension ProgramViewController: UITableViewDataSource, UITableViewDelegate {
             if section == 0 && !(programInfo[0].day.isEmpty){
                 let headerView = UIView.init(frame: CGRect.init(x: 16, y: 0, width: tableView.frame.width, height: 80))
                 headerView.backgroundColor = .clear
-
+                
                 let label = UILabel()
                 label.font = UIFont.boldSystemFont(ofSize: 17)
                 label.text = programInfo[0].day
                 label.textColor = .white
-
+                
                 let button = UIButton(type: .custom)
                 button.setImage(Svg.exit.uiImage, for: .normal)
                 button.imageView?.contentMode = .scaleAspectFill
                 button.tintColor = .white
-
+                
                 let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
                 button.addGestureRecognizer(tap)
-
+                
                 headerView.addSubview(label)
                 headerView.addSubview(button)
-
+                
                 label.snp.makeConstraints { make in
                     make.left.equalToSuperview().inset(16)
                     make.centerY.equalToSuperview()
                 }
-
+                
                 button.snp.makeConstraints { make in
                     make.right.equalToSuperview().inset(16)
                     make.centerY.equalToSuperview()

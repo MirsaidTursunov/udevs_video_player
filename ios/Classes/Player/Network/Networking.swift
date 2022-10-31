@@ -13,7 +13,6 @@ enum NetworkError : Error {
     case CanNotProcessData
 }
 
-
 struct Networking {
     static let sharedInstance = Networking()
     let session = URLSession.shared

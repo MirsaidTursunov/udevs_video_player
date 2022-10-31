@@ -25,6 +25,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     weak var delegate: VideoPlayerDelegate?
     
     private let progress: CMTime = CMTimeMake(value: 4, timescale: 1)
+    private var orientationLock = UIInterfaceOrientationMask.all
     
     private var timer: Timer?
     
@@ -124,6 +125,22 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         view.addSubview(activityIndicatorView)
     }
     
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+            return self.orientationLock
+    }
+    
+    override var shouldAutorotate: Bool {
+        return false
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return UIInterfaceOrientation.portrait
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let window = UIApplication.shared.keyWindow
@@ -134,10 +151,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                    y: 30+topPadding,
                                    width: 25,
                                    height: 25)
-//        playButton.frame = CGRect(x: 20,
-//                                  y: view.height-CGFloat(bottomPadding+topPadding),
-//                                  width: view.width-40,
-//                                  height: 42)
+
         playButton.leading(to: view.safeAreaLayoutGuide)
         playButton.trailing(to: view.safeAreaLayoutGuide)
         playButton.bottom(to: view.safeAreaLayoutGuide)
@@ -148,14 +162,18 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             make.right.equalToSuperview().offset(-10)
         }
 
-        
-        print("TTTTTt")
-        print(bottomPadding)
         playerView.frame = view.bounds
+        playerView.center(in: view)
+        playerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.left.right.top.bottom.equalToSuperview()
+        }
+        
         progressView.frame = CGRect(x: 10,
                                     y: 10+topPadding,
                                     width: Int(view.width-closeButton.width),
                                     height: 10)
+     
         
         activityIndicatorView.center(in: view)
         activityIndicatorView.layer.cornerRadius = 20
@@ -168,6 +186,11 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         timer = nil
         player?.cancelPendingPrerolls()
         player?.pause()
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

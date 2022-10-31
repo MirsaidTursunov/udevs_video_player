@@ -484,7 +484,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         seperatorLabel.centerY(to: currentTimeLabel)
         durationTimeLabel.leftToRight(of: seperatorLabel)
         durationTimeLabel.centerY(to: bottomActionsStackView)
-
+        
         nextEpisodeButton.layer.cornerRadius = 8
         
         episodesButton.layer.cornerRadius = 8
@@ -704,6 +704,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             self.durationTimeLabel.text = VGPlayerUtils.getTimeString(from: player.currentItem!.duration)
         }
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
+            
             if newValue != oldValue {
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
@@ -719,12 +720,21 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                         self?.timer?.invalidate()
                         self?.showControls()
                     } else {
+//                        self?.isConnectedToNetwork()
                         self?.playButton.alpha = 0.0
                         self?.activityIndicatorView.startAnimating()
                         self?.enableGesture = false
                     }
                 }
             }
+        }
+    }
+    
+    func isConnectedToNetwork() {
+        if Reachability.isConnectedToNetwork(){
+            print("Internet Connection Available!")
+        }else{
+            print("Internet Connection not Available!")
         }
     }
     

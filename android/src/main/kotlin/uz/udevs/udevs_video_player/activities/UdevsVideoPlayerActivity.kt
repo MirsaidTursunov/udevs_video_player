@@ -101,7 +101,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
-    private  var selectedTvProgram: Int = 0;
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -216,7 +215,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         } else {
             playVideo()
         }
-        if (!playerConfiguration!!.isLive) {
+        if (playerConfiguration!!.isSerial) {
             currentSeason = playerConfiguration!!.seasons[0]
         }
     }

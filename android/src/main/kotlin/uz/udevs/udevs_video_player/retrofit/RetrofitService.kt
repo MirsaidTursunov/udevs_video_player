@@ -1,11 +1,15 @@
 package uz.udevs.udevs_video_player.retrofit
 
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
+import uz.udevs.udevs_video_player.models.MovieTrack
+import uz.udevs.udevs_video_player.models.MovieTrackResponse
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 
 interface RetrofitService {
@@ -25,4 +29,11 @@ interface RetrofitService {
         @Path("video-id") videoId: String,
         @Path("episode-id") episodeId: String,
     ): Call<PremierStreamResponse>
+
+    @POST("movie-track")
+    fun postMovieTrack(
+        @Header("Authorization") authorization: String,
+        @Header("platform") platform: String,
+        @Body movieTrack: MovieTrack,
+    ): Call<MovieTrackResponse>
 }

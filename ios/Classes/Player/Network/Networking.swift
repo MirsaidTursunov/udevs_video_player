@@ -55,7 +55,7 @@ struct Networking {
         request.httpMethod = "GET"
         request.setValue(token, forHTTPHeaderField: "Authorization")
         request.setValue(sessionId, forHTTPHeaderField: "SessionId")
-    
+        
         var result: Result<PremierStreamResponse, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)
         session.dataTask(with: request){data,_,_ in
@@ -66,6 +66,42 @@ struct Networking {
             do{
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(PremierStreamResponse.self, from: Data(json))
+                result = .success(response)
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
+    
+    func postMovieTrack(_ baseUrl:String, token:String, platform : String, json: [String: String]) -> Result<MovieTrackResponse, NetworkError> {
+        let url = URL(string: baseUrl)!
+        var request = URLRequest(url: url)
+        
+        request.httpMethod = "POST"
+        // prepare json data
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        do {
+            request.httpBody = jsonData
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        request.addValue(platform, forHTTPHeaderField: "platform")
+        
+        var result: Result<MovieTrackResponse, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,_,_ in
+            guard let json = data else{
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do{
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(MovieTrackResponse.self, from: Data(json))
                 result = .success(response)
             }
             catch{

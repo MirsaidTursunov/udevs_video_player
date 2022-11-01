@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:udevs_video_player/models/movie_track.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 
 void main() {
@@ -121,6 +122,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            platform: "",
             isStory: false,
             story: story,
             storyIndex: 0,
@@ -156,6 +158,14 @@ class _MyAppState extends State<MyApp> {
             nextButtonText: 'След.эпизод',
             seasons: seasons,
             isLive: false,
+            movieTrack: MovieTrack(
+              seasonKey: "1",
+              episodeKey: "1",
+              seconds: 0,
+              isMegogo: true,
+              userId: "",
+              movieKey: "",
+            ),
             tvProgramsText: 'Телеканалы',
             programsInfoList: [],
             showController: true,
@@ -286,6 +296,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            platform: "",
             isStory: true,
             seasonText: "Season",
             story: story,
@@ -400,6 +411,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            platform: "",
             isStory: false,
             storyIndex: 0,
             story: [],

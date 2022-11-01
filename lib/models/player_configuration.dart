@@ -4,11 +4,15 @@ import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
 import 'package:udevs_video_player/models/story.dart';
 
+import 'movie_track.dart';
+
 class PlayerConfiguration {
   Map<String, String> initialResolution;
   Map<String, String> resolutions;
   List<Story> story;
+  MovieTrack? movieTrack;
   String qualityText;
+  String platform;
   String speedText;
   String closeText;
   String seasonText;
@@ -46,6 +50,7 @@ class PlayerConfiguration {
     map['speedText'] = speedText;
     map['lastPosition'] = lastPosition;
     map['title'] = title;
+    map['platform'] = platform;
     map['isSerial'] = isSerial;
     map['episodeButtonText'] = episodeButtonText;
     map['nextButtonText'] = nextButtonText;
@@ -72,6 +77,7 @@ class PlayerConfiguration {
     map['closeText'] = closeText;
     map['seasonText'] = seasonText;
     map['storyIndex'] = storyIndex;
+    map['movieTrack'] = movieTrack?.toJson();
     return map;
   }
 
@@ -86,6 +92,8 @@ class PlayerConfiguration {
     required this.storyIndex,
     required this.resolutions,
     required this.qualityText,
+    required this.platform,
+    this.movieTrack,
     required this.speedText,
     required this.lastPosition,
     required this.title,

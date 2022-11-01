@@ -1123,7 +1123,21 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             break
         }
         return megogoResponse
-        
+    }
+    
+    func postMovieTrack(parameters:[String:String], id:String) -> MovieTrackResponse? {
+        var megogoResponse:MovieTrackResponse?
+        let _url:String = playerConfiguration.baseUrl+"movie-track"
+        let result = Networking.sharedInstance.postMovieTrack(_url, token: playerConfiguration.authorization, platform: playerConfiguration.sessionId, json: ["String" : "String"])
+        switch result {
+        case .failure(let error):
+            print(error)
+            break
+        case .success(let success):
+            megogoResponse = success
+            break
+        }
+        return megogoResponse
     }
     
     func getPremierStream(episodeId:String) -> PremierStreamResponse?{

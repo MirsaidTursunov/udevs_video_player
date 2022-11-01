@@ -10,7 +10,7 @@ import Foundation
 struct PlayerConfiguration{
     var initialResolution: [String:String]
     var resolutions: [String:String]
-    var url, qualityText: String
+    var url, qualityText, platform : String
     var speedText: String
     var lastPosition: Int
     var title: String
@@ -25,7 +25,7 @@ struct PlayerConfiguration{
     var programsInfoList: [ProgramsInfo]
     var showController: Bool
     var playVideoFromAsset: Bool
-    var assetPath: String?
+    var assetPath: String
     var seasonIndex: Int
     var episodeIndex: Int
     var isMegogo: Bool
@@ -40,8 +40,9 @@ struct PlayerConfiguration{
     var closeText: String
     var seasonText: String
     var storyIndex: Int
+    var movieTrack: MovieTrackRequest?
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -75,6 +76,8 @@ struct PlayerConfiguration{
         self.closeText = closeText
         self.seasonText = seasonText
         self.storyIndex = storyIndex
+        self.movieTrack = movieTrack
+        self.platform = platform
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -87,6 +90,7 @@ struct PlayerConfiguration{
         programsInfoListMap = map["programsInfoList"] as? [Dictionary<String, Any>]
         seasonsMap = map["seasons"] as? [Dictionary<String, Any>]
         videoMap = map["story"] as? [Dictionary<String, Any>]
+        
         programsInfoListMap?.forEach({ data in
             let program = ProgramsInfo.fromMap(map: data)
             programInfos.append(program)
@@ -99,6 +103,10 @@ struct PlayerConfiguration{
             let v = Story.fromMap(map: data)
             story.append(v)
         })
+        var movieTrack : MovieTrackRequest?
+        if map["movieTrack"] != nil {
+            movieTrack = MovieTrackRequest.fromMap(map: map["movieTrack"] as! [String:Any])
+        }
         
         return PlayerConfiguration(initialResolution: map["initialResolution"] as! [String:String],
                                    resolutions: map["resolutions"] as! [String:String],
@@ -128,7 +136,7 @@ struct PlayerConfiguration{
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
                                    isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
-                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int
+                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String
                                    
         )
     }

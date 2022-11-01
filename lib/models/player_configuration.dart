@@ -1,10 +1,9 @@
 import 'dart:core';
 
+import 'package:udevs_video_player/models/movie_track.dart';
 import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
 import 'package:udevs_video_player/models/story.dart';
-
-import 'movie_track.dart';
 
 class PlayerConfiguration {
   Map<String, String> initialResolution;

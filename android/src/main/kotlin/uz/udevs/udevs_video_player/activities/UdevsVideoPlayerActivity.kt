@@ -284,6 +284,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         val intent = Intent()
         intent.putExtra("position", seconds.toString())
         setResult(PLAYER_ACTIVITY_FINISH, intent)
+        timerHandler.removeCallbacks(timerRunnable)
         finish()
         super.onBackPressed()
     }
@@ -339,10 +340,14 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
-                        timerHandler.postDelayed(timerRunnable, 0)
+                        if (playerConfiguration!!.type == PlayerType.movie || playerConfiguration!!.type == PlayerType.serial) {
+                            timerHandler.postDelayed(timerRunnable, 0)
+                        }
                         playPause?.setImageResource(R.drawable.ic_pause)
                     } else {
-                        timerHandler.removeCallbacks(timerRunnable)
+                        if (playerConfiguration!!.type == PlayerType.movie || playerConfiguration!!.type == PlayerType.serial) {
+                            timerHandler.removeCallbacks(timerRunnable)
+                        }
                         playPause?.setImageResource(R.drawable.ic_play)
                     }
                 }

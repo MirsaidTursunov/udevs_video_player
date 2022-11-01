@@ -122,6 +122,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            type: PlayerType.serial,
             platform: "",
             isStory: false,
             story: story,
@@ -296,6 +297,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            type: PlayerType.story,
             platform: "",
             isStory: true,
             seasonText: "Season",
@@ -411,6 +413,7 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            type: PlayerType.tv,
             platform: "",
             isStory: false,
             storyIndex: 0,

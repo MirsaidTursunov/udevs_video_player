@@ -12,6 +12,7 @@ struct PlayerConfiguration{
     var resolutions: [String:String]
     var url, qualityText, platform : String
     var speedText: String
+    var type: PlayerType
     var lastPosition: Int
     var title: String
     var storyButtonText: String
@@ -42,7 +43,7 @@ struct PlayerConfiguration{
     var storyIndex: Int
     var movieTrack: MovieTrackRequest?
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String, type: PlayerType) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -78,6 +79,7 @@ struct PlayerConfiguration{
         self.storyIndex = storyIndex
         self.movieTrack = movieTrack
         self.platform = platform
+        self.type = type
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -106,6 +108,27 @@ struct PlayerConfiguration{
         var movieTrack : MovieTrackRequest?
         if map["movieTrack"] != nil {
             movieTrack = MovieTrackRequest.fromMap(map: map["movieTrack"] as! [String:Any])
+        }
+        var type:PlayerType
+        switch map["type"] as! String{
+        case "tv":
+            type = .tv
+            break
+        case "movie":
+            type = .movie
+            break
+        case "story":
+            type = .story
+            break
+        case "serial":
+            type = .serial
+            break
+        case "trailer":
+            type = .trailer
+            break
+        default:
+            type = .movie
+            break
         }
         
         return PlayerConfiguration(initialResolution: map["initialResolution"] as! [String:String],
@@ -136,10 +159,14 @@ struct PlayerConfiguration{
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
                                    isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
-                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String
+                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String, type : type
                                    
         )
     }
+}
+
+enum PlayerType {
+    case movie, trailer, tv, story, serial
 }
 
 struct Season {

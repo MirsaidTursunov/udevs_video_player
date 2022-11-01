@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:udevs_video_player/models/movie_track.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player/udevs_video_player_platform_interface.dart';
 import 'package:udevs_video_player/udevs_video_player_method_channel.dart';
@@ -64,6 +65,15 @@ void main() {
             baseUrl: '',
             storyButtonText: '',
             closeText: '',
+            movieTrack: MovieTrack(
+              episodeKey: '',
+              element: '',
+              seasonKey: '',
+              isMegogo: false,
+              movieKey: '',
+              seconds: 0,
+              userId: '',
+            ),
           ),
         ),
         '42');

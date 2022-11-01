@@ -9,7 +9,7 @@ class PlayerConfiguration {
   Map<String, String> initialResolution;
   Map<String, String> resolutions;
   List<Story> story;
-  MovieTrack? movieTrack;
+  MovieTrack movieTrack;
   String qualityText;
   PlayerType type;
   String platform;
@@ -72,7 +72,7 @@ class PlayerConfiguration {
     map['closeText'] = closeText;
     map['seasonText'] = seasonText;
     map['storyIndex'] = storyIndex;
-    map['movieTrack'] = movieTrack?.toJson();
+    map['movieTrack'] = movieTrack.toJson();
     return map;
   }
 
@@ -89,7 +89,7 @@ class PlayerConfiguration {
     required this.resolutions,
     required this.qualityText,
     required this.platform,
-    this.movieTrack,
+    required this.movieTrack,
     required this.speedText,
     required this.lastPosition,
     required this.title,

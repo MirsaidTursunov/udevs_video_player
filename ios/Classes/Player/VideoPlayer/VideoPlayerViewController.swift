@@ -43,7 +43,6 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     var isRegular: Bool = false
     var resolutions: [String:String]?
     var sortedResolutions: [String] = []
-    var isSerial = false
     var serialLabelText = ""
     var seasons : [Season] = [Season]()
     var shouldHideHomeIndicator = false
@@ -490,7 +489,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         
         episodesButton.layer.cornerRadius = 8
         
-        if !isSerial {
+        if playerConfiguration.type != PlayerType.serial {
             episodesButton.isHidden = true
             nextEpisodeButton.isHidden = true
         }
@@ -525,7 +524,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     func addVideosLandscapeConstraints() {
         portraitConstraints.deActivate()
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
-        if playerConfiguration.isSerial {
+        if playerConfiguration.type == PlayerType.serial {
             nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
             episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
         }
@@ -534,7 +533,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     func addVideoPortaitConstraints() {
         landscapeConstraints.deActivate()
-        if playerConfiguration.isSerial{
+        if playerConfiguration.type == PlayerType.serial{
             nextEpisodeButton.setTitle("", for: .normal)
             episodesButton.setTitle("", for: .normal)
         }

@@ -16,12 +16,10 @@ struct PlayerConfiguration{
     var lastPosition: Int
     var title: String
     var storyButtonText: String
-    var isSerial: Bool
     var episodeButtonText: String
     var nextButtonText: String
     var seasons: [Season]
     let story: [Story]
-    var isLive: Bool
     var tvProgramsText: String
     var programsInfoList: [ProgramsInfo]
     var showController: Bool
@@ -30,7 +28,6 @@ struct PlayerConfiguration{
     var seasonIndex: Int
     var episodeIndex: Int
     var isMegogo: Bool
-    var isStory: Bool
     var isPremier: Bool
     var videoId: String
     var sessionId: String
@@ -43,18 +40,16 @@ struct PlayerConfiguration{
     var storyIndex: Int
     var movieTrack: MovieTrackRequest?
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, isStory: Bool, story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String, type: PlayerType) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, episodeButtonText: String, nextButtonText: String, seasons: [Season], tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,  story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String, type: PlayerType) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
         self.speedText = speedText
         self.lastPosition = lastPosition
         self.title = title
-        self.isSerial = isSerial
         self.episodeButtonText = episodeButtonText
         self.nextButtonText = nextButtonText
         self.seasons = seasons
-        self.isLive = isLive
         self.tvProgramsText = tvProgramsText
         self.programsInfoList = programsInfoList
         self.showController = showController
@@ -71,7 +66,6 @@ struct PlayerConfiguration{
         self.autoText = autoText
         self.baseUrl = baseUrl
         self.url = url
-        self.isStory = isStory
         self.story = story
         self.storyButtonText = storyButtonText
         self.closeText = closeText
@@ -137,11 +131,9 @@ struct PlayerConfiguration{
                                    speedText: map["speedText"] as! String,
                                    lastPosition: map["lastPosition"] as! Int,
                                    title: map["title"] as! String,
-                                   isSerial: map["isSerial"] as! Bool,
                                    episodeButtonText: map["episodeButtonText"] as! String,
                                    nextButtonText: map["nextButtonText"] as! String,
                                    seasons: season,
-                                   isLive: map["isLive"] as! Bool,
                                    tvProgramsText: map["tvProgramsText"] as! String,
                                    programsInfoList: programInfos,
                                    showController : map["showController"] as! Bool,
@@ -158,7 +150,7 @@ struct PlayerConfiguration{
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
-                                   isStory: map["isStory"] as! Bool, story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
+                                   story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
                                    seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String, type : type
                                    
         )

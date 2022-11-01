@@ -55,7 +55,7 @@ class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClick
     }
 
     interface OnClickListener {
-        fun onClick(episodeIndex: Int)
+        fun onClick(index: Int)
     }
 
 }

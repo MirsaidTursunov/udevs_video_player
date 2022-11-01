@@ -15,6 +15,7 @@ import io.flutter.plugin.common.PluginRegistry
 import uz.udevs.udevs_video_player.activities.StoryVideoPlayerActivity
 import uz.udevs.udevs_video_player.activities.UdevsVideoPlayerActivity
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.PlayerType
 
 const val EXTRA_ARGUMENT = "uz.udevs.udevs_video_player.ARGUMENT"
 const val PLAYER_ACTIVITY = 111
@@ -38,7 +39,7 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 val gson = Gson()
                 val playerConfiguration =
                     gson.fromJson(playerConfigJsonString, PlayerConfiguration::class.java)
-                if (playerConfiguration.isStory) {
+                if (playerConfiguration.type == PlayerType.story) {
                     val intent = Intent(activity, StoryVideoPlayerActivity::class.java)
                     intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
                     activity?.startActivityForResult(intent, PLAYER_ACTIVITY)

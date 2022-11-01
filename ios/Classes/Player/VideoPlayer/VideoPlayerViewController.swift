@@ -766,14 +766,12 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             self?.currentTimeLabel.text = VGPlayerUtils.getTimeString(from: currentItem.currentTime())
             if(self?.playerConfiguration.type == PlayerType.movie || self?.playerConfiguration.type == PlayerType.serial){
                 countDuration = (countDuration)+1
-                print("SECONDS sss")
-                print(countDuration)
                 if (countDuration >= 30){
                     countDuration = 0
                     if( self?.playerConfiguration.type == PlayerType.movie){
                         self?.postMovieTrack(movieTrack: self!.movieTrack.with(seconds: Int(currentItem.currentTime().seconds), episodeKey: nil, seasonKey: nil, userId: nil, movieKey: nil, isMegogo: nil))
                     } else {
-                        self?.postMovieTrack(movieTrack: self!.movieTrack.with(seconds: Int(currentItem.currentTime().seconds), episodeKey: "\(selectedSeason+1)", seasonKey: "\(selectSesonNum+1)", userId: nil, movieKey: nil, isMegogo: nil))
+                        self?.postMovieTrack(movieTrack: self!.movieTrack.with(seconds: Int(currentItem.currentTime().seconds), episodeKey:"\(self!.selectSesonNum+1)" , seasonKey: "\(self!.selectedSeason+1)", userId: nil, movieKey: nil, isMegogo: nil))
                     }
                 }
             }
@@ -1140,7 +1138,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         return megogoResponse
     }
     
-    func postMovieTrack(movieTrack: MovieTrackRequest) -> MovieTrackResponse? {
+    func postMovieTrack(movieTrack: MovieTrackRequest) {
         var megogoResponse:MovieTrackResponse?
         let _url:String = playerConfiguration.baseUrl+"movie-track"
         let result = Networking.sharedInstance.postMovieTrack(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: movieTrack.fromJson())
@@ -1152,7 +1150,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             megogoResponse = success
             break
         }
-        return megogoResponse
+        return
     }
     
     func getPremierStream(episodeId:String) -> PremierStreamResponse?{

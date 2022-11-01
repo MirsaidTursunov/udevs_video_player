@@ -166,6 +166,7 @@ class _MyAppState extends State<MyApp> {
               isMegogo: true,
               userId: "",
               movieKey: "",
+              element: "",
             ),
             tvProgramsText: 'Телеканалы',
             programsInfoList: [],

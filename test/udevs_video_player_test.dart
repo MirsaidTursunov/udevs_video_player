@@ -33,6 +33,8 @@ void main() {
     expect(
         await udevsVideoPlayerPlugin.playVideo(
           playerConfig: PlayerConfiguration(
+            platform: "",
+            type: PlayerType.tv,
             storyIndex: 0,
             seasonText: "",
             initialResolution: {},

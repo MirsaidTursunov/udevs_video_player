@@ -11,6 +11,7 @@ class PlayerConfiguration {
   List<Story> story;
   MovieTrack? movieTrack;
   String qualityText;
+  PlayerType type;
   String platform;
   String speedText;
   String closeText;
@@ -47,6 +48,7 @@ class PlayerConfiguration {
     map['resolutions'] = resolutions;
     map['qualityText'] = qualityText;
     map['speedText'] = speedText;
+    map['type'] = type.name;
     map['lastPosition'] = lastPosition;
     map['title'] = title;
     map['platform'] = platform;
@@ -86,6 +88,7 @@ class PlayerConfiguration {
   }
 
   PlayerConfiguration({
+    required this.type,
     required this.initialResolution,
     required this.seasonText,
     required this.storyIndex,
@@ -122,3 +125,5 @@ class PlayerConfiguration {
     required this.closeText,
   });
 }
+
+enum PlayerType { movie, trailer, tv, story, serial }

@@ -41,6 +41,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -416,7 +419,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         episodesButton?.setOnClickListener {
             showEpisodesBottomSheet()
         }
+
         nextButton?.setOnClickListener {
+            Log.d("1121212", "CLicked")
             if (seasonIndex < playerConfiguration!!.seasons.size) {
                 if (episodeIndex < playerConfiguration!!.seasons[seasonIndex].movies.size - 1) {
                     episodeIndex++
@@ -427,7 +432,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
                 episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
             ) {
-                nextButton?.visibility = View.GONE
+//                nextButton?.visibility = View.GONE
             }
             title?.text =
                 "S${seasonIndex + 1} E${episodeIndex + 1} " +
@@ -634,7 +639,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                 LinearLayoutManager.VERTICAL
             )
         )
-        rv?.adapter = TvProgramsRvAdapter(this,playerConfiguration!!.programsInfoList)
+        rv?.adapter = TvProgramsRvAdapter(this, playerConfiguration!!.programsInfoList)
         bottomSheetDialog.show()
     }
 
@@ -672,7 +677,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             object : EpisodesRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onClick(episodeIndex: Int) {
-                    val seasonIndex = selectedSeasonIndex
+                    var seasonIndex = selectedSeasonIndex
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
                             playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()

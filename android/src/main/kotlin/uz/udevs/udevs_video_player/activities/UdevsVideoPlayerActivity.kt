@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -34,16 +33,11 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
-import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
-import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,8 +51,10 @@ import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import java.util.*
 import javax.net.ssl.*
 import kotlin.math.abs
+
 
 open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
@@ -73,6 +69,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var forward: ImageView? = null
     private var playPause: ImageView? = null
     private var progressbar: ProgressBar? = null
+    private var progressbar2: ProgressBar? = null
     private var timer: LinearLayout? = null
     private var live: LinearLayout? = null
     private var episodesButton: LinearLayout? = null
@@ -104,6 +101,20 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
+
+    var startTime: Int = 0
+
+    var timerHandler = Handler()
+    var timerRunnable: Runnable = object : Runnable {
+        override fun run() {
+            startTime += 1
+            if (startTime >= 15) {
+                startTime = 0
+                movieTrack()
+            }
+            timerHandler.postDelayed(this, 1000)
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,12 +150,13 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         forward = findViewById(R.id.video_forward)
         playPause = findViewById(R.id.video_play_pause)
         progressbar = findViewById(R.id.video_progress_bar)
+        progressbar2 = findViewById(R.id.video_progress_bar2)
         timer = findViewById(R.id.timer)
-        if (playerConfiguration?.isLive == true) {
+        if (playerConfiguration?.type == PlayerType.tv) {
             timer?.visibility = View.GONE
         }
         live = findViewById(R.id.live)
-        if (playerConfiguration?.isLive == true) {
+        if (playerConfiguration?.type == PlayerType.tv) {
             live?.visibility = View.VISIBLE
         }
         episodesButton = findViewById(R.id.button_episodes)
@@ -156,7 +168,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         nextButton = findViewById(R.id.button_next)
         nextText = findViewById(R.id.text_next)
 
-        if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
+        if (playerConfiguration?.type == PlayerType.serial && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
                     episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
         ) {
             nextButton?.visibility = View.VISIBLE
@@ -165,7 +177,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
         tvProgramsButton = findViewById(R.id.button_tv_programs)
         tvProgramsText = findViewById(R.id.text_tv_programs)
-        if (playerConfiguration?.isLive == true) {
+        if (playerConfiguration?.type == PlayerType.tv) {
             tvProgramsButton?.visibility = View.VISIBLE
             tvProgramsText?.text = playerConfiguration?.tvProgramsText
         }
@@ -174,13 +186,13 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
-        if (playerConfiguration?.isLive == true) {
+        if (playerConfiguration?.type == PlayerType.tv) {
             exoProgress?.visibility = View.GONE
             rewind?.visibility = View.GONE
             forward?.visibility = View.GONE
             customSeekBar?.visibility = View.VISIBLE
         }
-        if (playerConfiguration?.isLive == true) {
+        if (playerConfiguration?.type == PlayerType.tv) {
             nextButton?.visibility = View.GONE
         }
 
@@ -218,7 +230,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         } else {
             playVideo()
         }
-        if (playerConfiguration!!.isSerial) {
+        if (playerConfiguration?.type == PlayerType.serial) {
             currentSeason = playerConfiguration!!.seasons[0]
         }
     }
@@ -271,6 +283,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         val intent = Intent()
         intent.putExtra("position", seconds.toString())
         setResult(PLAYER_ACTIVITY_FINISH, intent)
+        timerHandler.removeCallbacks(timerRunnable)
         finish()
         super.onBackPressed()
     }
@@ -326,8 +339,14 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
+                        if (playerConfiguration!!.type == PlayerType.movie || playerConfiguration!!.type == PlayerType.serial) {
+                            timerHandler.postDelayed(timerRunnable, 0)
+                        }
                         playPause?.setImageResource(R.drawable.ic_pause)
                     } else {
+                        if (playerConfiguration!!.type == PlayerType.movie || playerConfiguration!!.type == PlayerType.serial) {
+                            timerHandler.removeCallbacks(timerRunnable)
+                        }
                         playPause?.setImageResource(R.drawable.ic_play)
                     }
                 }
@@ -338,14 +357,16 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                             playPause?.visibility = View.GONE
                             progressbar?.visibility = View.VISIBLE
                             if (playerView?.isControllerFullyVisible == false) {
-                                playerView?.setShowBuffering(SHOW_BUFFERING_ALWAYS)
+                                progressbar2?.visibility = View.VISIBLE
+//                                playerView?.setShowBuffering(SHOW_BUFFERING_ALWAYS)
                             }
                         }
                         Player.STATE_READY -> {
                             playPause?.visibility = View.VISIBLE
                             progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
-                                playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
+                                progressbar2?.visibility = View.GONE
+//                                playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                             }
                         }
                         Player.STATE_ENDED -> {
@@ -419,9 +440,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         episodesButton?.setOnClickListener {
             showEpisodesBottomSheet()
         }
-
         nextButton?.setOnClickListener {
-            Log.d("1121212", "CLicked")
             if (seasonIndex < playerConfiguration!!.seasons.size) {
                 if (episodeIndex < playerConfiguration!!.seasons[seasonIndex].movies.size - 1) {
                     episodeIndex++
@@ -432,14 +451,14 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
                 episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
             ) {
-//                nextButton?.visibility = View.GONE
+                nextButton?.visibility = View.GONE
             }
             title?.text =
                 "S${seasonIndex + 1} E${episodeIndex + 1} " +
                         playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
-            if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
+            if (playerConfiguration!!.isMegogo && playerConfiguration!!.type == PlayerType.serial) {
                 getMegogoStream()
-            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
+            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.type == PlayerType.serial) {
                 getPremierStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
@@ -549,6 +568,40 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         })
     }
 
+    private fun movieTrack() {
+        var seasonKey = playerConfiguration!!.movieTrack.seasonKey
+        var episodeKey = playerConfiguration!!.movieTrack.episodeKey
+        if (playerConfiguration!!.type == PlayerType.serial) {
+            seasonKey = "${seasonIndex + 1}"
+            episodeKey = "${episodeIndex + 1}"
+        }
+        val copy = MovieTrack(
+            seconds = player?.currentPosition?.div(1000)!!.toInt(),
+            movieKey = playerConfiguration!!.movieTrack.movieKey,
+            userId = playerConfiguration!!.movieTrack.userId,
+            element = playerConfiguration!!.movieTrack.element,
+            seasonKey = seasonKey,
+            episodeKey = episodeKey,
+            isMegogo = playerConfiguration!!.movieTrack.isMegogo,
+        )
+        retrofitService?.postMovieTrack(
+            playerConfiguration!!.authorization,
+            playerConfiguration!!.sessionId,
+            copy,
+        )?.enqueue(object : Callback<MovieTrackResponse> {
+            override fun onResponse(
+                call: Call<MovieTrackResponse>,
+                response: Response<MovieTrackResponse>
+            ) {
+                response.body()
+            }
+
+            override fun onFailure(call: Call<MovieTrackResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         println("newConfig.orientation: ${newConfig.orientation}")
@@ -556,7 +609,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             setFullScreen()
             episodesText?.visibility = View.VISIBLE
             nextText?.visibility = View.VISIBLE
-            if (playerConfiguration?.isLive == false) {
+            if (playerConfiguration?.type == PlayerType.tv) {
                 zoom?.visibility = View.VISIBLE
             }
             orientation?.setImageResource(R.drawable.ic_portrait)
@@ -676,26 +729,24 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             currentSeason.movies,
             object : EpisodesRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
-                override fun onClick(episodeIndex: Int) {
-                    var seasonIndex = selectedSeasonIndex
+                override fun onClick(index: Int) {
+                    val seasonIndex = selectedSeasonIndex
+                    episodeIndex = index
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
                             playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
-                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                    val hlsMediaSource: HlsMediaSource =
-                        HlsMediaSource.Factory(dataSourceFactory)
-                            .createMediaSource(
-                                MediaItem.fromUri(
-                                    Uri.parse(
-                                        playerConfiguration!!
-                                            .seasons[seasonIndex]
-                                            .movies[episodeIndex]
-                                            .resolutions[currentQuality]
-                                    )
-                                )
-                            )
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
+                    if (playerConfiguration!!.isMegogo && playerConfiguration!!.type == PlayerType.serial) {
+                        getMegogoStream()
+                    } else if (playerConfiguration!!.isPremier && playerConfiguration!!.type == PlayerType.serial) {
+                        getPremierStream()
+                    } else {
+                        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                        val hlsMediaSource: HlsMediaSource =
+                            HlsMediaSource.Factory(dataSourceFactory)
+                                .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                        player?.setMediaSource(hlsMediaSource)
+                        player?.prepare()
+                        player?.playWhenReady
+                    }
                     bottomSheetDialog.dismiss()
                 }
             })
@@ -706,7 +757,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         btnSeasons?.setOnClickListener {
             showSeasonsBottomSheet(rvEpisodes, btnSeasons)
         }
-
 
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
@@ -747,7 +797,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
-            if (playerConfiguration!!.isSerial) {
+            if (playerConfiguration!!.type == PlayerType.serial) {
                 showQualitySpeedSheet(
                     currentQuality,
                     playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList,
@@ -867,17 +917,24 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                         }
                         val currentPosition = player?.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                        val hlsMediaSource: HlsMediaSource = if (playerConfiguration!!.isSerial) {
-                            HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(
-                                    MediaItem.fromUri(
-                                        Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])
+                        val hlsMediaSource: HlsMediaSource =
+                            if (playerConfiguration!!.type == PlayerType.serial) {
+                                HlsMediaSource.Factory(dataSourceFactory)
+                                    .createMediaSource(
+                                        MediaItem.fromUri(
+                                            Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])
+                                        )
                                     )
-                                )
-                        } else {
-                            HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.resolutions[currentQuality])))
-                        }
+                            } else {
+                                HlsMediaSource.Factory(dataSourceFactory)
+                                    .createMediaSource(
+                                        MediaItem.fromUri(
+                                            Uri.parse(
+                                                playerConfiguration!!.resolutions[currentQuality]
+                                            )
+                                        )
+                                    )
+                            }
                         player?.setMediaSource(hlsMediaSource)
                         player?.seekTo(currentPosition!!)
                         player?.prepare()

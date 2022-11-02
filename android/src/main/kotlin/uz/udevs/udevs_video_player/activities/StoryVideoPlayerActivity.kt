@@ -29,6 +29,8 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
     private var playerView: PlayerView? = null
     private var player: ExoPlayer? = null
+    private var progressbar: ProgressBar? = null
+    private var progressbar2: ProgressBar? = null
     private var playerConfiguration: PlayerConfiguration? = null
     private var storiesProgressView: ProgressBar? = null
     private var progressBarStatus = 0
@@ -36,7 +38,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var sWidth: Int = 0
     private var storyIndex: Int = 0
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.story_player_activity)
@@ -52,6 +54,8 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
+        progressbar = findViewById<View>(R.id.video_progress_bar_story) as ProgressBar
+        progressbar2 = findViewById<View>(R.id.video_progress_bar_story2) as ProgressBar
         sWidth = Resources.getSystem().displayMetrics.widthPixels
 
         /// gesture detector
@@ -173,13 +177,15 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     when (playbackState) {
                         Player.STATE_BUFFERING -> {
+                            progressbar?.visibility = View.VISIBLE
                             if (playerView?.isControllerFullyVisible == false) {
-                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+                                progressbar2?.visibility = View.VISIBLE
                             }
                         }
                         Player.STATE_READY -> {
+                            progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
-                                playerView?.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
+                                progressbar2?.visibility = View.GONE
                             }
                         }
                         Player.STATE_ENDED -> {

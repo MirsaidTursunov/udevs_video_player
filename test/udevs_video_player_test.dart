@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:udevs_video_player/models/movie_track.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player/udevs_video_player_platform_interface.dart';
 import 'package:udevs_video_player/udevs_video_player_method_channel.dart';
@@ -33,6 +34,8 @@ void main() {
     expect(
         await udevsVideoPlayerPlugin.playVideo(
           playerConfig: PlayerConfiguration(
+            platform: "",
+            type: PlayerType.tv,
             storyIndex: 0,
             seasonText: "",
             initialResolution: {},
@@ -41,11 +44,9 @@ void main() {
             speedText: '',
             lastPosition: 0,
             title: '',
-            isSerial: false,
             episodeButtonText: '',
             nextButtonText: '',
             seasons: [],
-            isLive: false,
             tvProgramsText: '',
             programsInfoList: [],
             showController: false,
@@ -54,7 +55,6 @@ void main() {
             seasonIndex: 0,
             episodeIndex: 0,
             isMegogo: false,
-            isStory: false,
             story: [],
             isPremier: false,
             videoId: '',
@@ -65,6 +65,15 @@ void main() {
             baseUrl: '',
             storyButtonText: '',
             closeText: '',
+            movieTrack: MovieTrack(
+              episodeKey: '',
+              element: '',
+              seasonKey: '',
+              isMegogo: false,
+              movieKey: '',
+              seconds: 0,
+              userId: '',
+            ),
           ),
         ),
         '42');

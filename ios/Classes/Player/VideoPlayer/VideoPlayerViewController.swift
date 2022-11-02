@@ -43,13 +43,13 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     var isRegular: Bool = false
     var resolutions: [String:String]?
     var sortedResolutions: [String] = []
-    var isSerial = false
     var serialLabelText = ""
     var seasons : [Season] = [Season]()
     var shouldHideHomeIndicator = false
     var qualityDelegate: QualityDelegate!
     var speedDelegte: SpeedDelegate!
     var playerConfiguration: PlayerConfiguration!
+    var movieTrack: MovieTrackRequest!
     private var swipeGesture: UIPanGestureRecognizer!
     private var tapGesture: UITapGestureRecognizer!
     private var tapHideGesture: UITapGestureRecognizer!
@@ -484,12 +484,12 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         seperatorLabel.centerY(to: currentTimeLabel)
         durationTimeLabel.leftToRight(of: seperatorLabel)
         durationTimeLabel.centerY(to: bottomActionsStackView)
-
+        
         nextEpisodeButton.layer.cornerRadius = 8
         
         episodesButton.layer.cornerRadius = 8
         
-        if !isSerial {
+        if playerConfiguration.type != PlayerType.serial {
             episodesButton.isHidden = true
             nextEpisodeButton.isHidden = true
         }
@@ -524,7 +524,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     func addVideosLandscapeConstraints() {
         portraitConstraints.deActivate()
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
-        if playerConfiguration.isSerial {
+        if playerConfiguration.type == PlayerType.serial {
             nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
             episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
         }
@@ -533,7 +533,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     func addVideoPortaitConstraints() {
         landscapeConstraints.deActivate()
-        if playerConfiguration.isSerial{
+        if playerConfiguration.type == PlayerType.serial{
             nextEpisodeButton.setTitle("", for: .normal)
             episodesButton.setTitle("", for: .normal)
         }
@@ -704,6 +704,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             self.durationTimeLabel.text = VGPlayerUtils.getTimeString(from: player.currentItem!.duration)
         }
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
+            
             if newValue != oldValue {
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
@@ -719,12 +720,21 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
                         self?.timer?.invalidate()
                         self?.showControls()
                     } else {
+//                        self?.isConnectedToNetwork()
                         self?.playButton.alpha = 0.0
                         self?.activityIndicatorView.startAnimating()
                         self?.enableGesture = false
                     }
                 }
             }
+        }
+    }
+    
+    func isConnectedToNetwork() {
+        if Reachability.isConnectedToNetwork(){
+            print("Internet Connection Available!")
+        }else{
+            print("Internet Connection not Available!")
         }
     }
     
@@ -737,6 +747,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     //MARK: - Time logic
     func addTimeObserver() {
+        var countDuration = 0
         let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         let mainQueue = DispatchQueue.main
         _ = player.addPeriodicTimeObserver(forInterval: interval, queue: mainQueue, using: { [weak self] time in
@@ -752,6 +763,17 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             let remainTime = Double(newDurationSeconds) - currentItem.currentTime().seconds
             _ = CMTimeMake(value: Int64(remainTime), timescale: 1)
             self?.currentTimeLabel.text = VGPlayerUtils.getTimeString(from: currentItem.currentTime())
+            if(self?.playerConfiguration.type == PlayerType.movie || self?.playerConfiguration.type == PlayerType.serial){
+                countDuration = (countDuration)+1
+                if (countDuration >= 30){
+                    countDuration = 0
+                    if( self?.playerConfiguration.type == PlayerType.movie){
+                        self?.postMovieTrack(movieTrack: self!.movieTrack.with(seconds: Int(currentItem.currentTime().seconds), episodeKey: nil, seasonKey: nil, userId: nil, movieKey: nil, isMegogo: nil))
+                    } else {
+                        self?.postMovieTrack(movieTrack: self!.movieTrack.with(seconds: Int(currentItem.currentTime().seconds), episodeKey:"\(self!.selectSesonNum+1)" , seasonKey: "\(self!.selectedSeason+1)", userId: nil, movieKey: nil, isMegogo: nil))
+                    }
+                }
+            }
         })
     }
     
@@ -1113,7 +1135,21 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             break
         }
         return megogoResponse
-        
+    }
+    
+    func postMovieTrack(movieTrack: MovieTrackRequest) {
+        var megogoResponse:MovieTrackResponse?
+        let _url:String = playerConfiguration.baseUrl+"movie-track"
+        let result = Networking.sharedInstance.postMovieTrack(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: movieTrack.fromJson())
+        switch result {
+        case .failure(let error):
+            print(error)
+            break
+        case .success(let success):
+            megogoResponse = success
+            break
+        }
+        return
     }
     
     func getPremierStream(episodeId:String) -> PremierStreamResponse?{

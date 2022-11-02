@@ -32,7 +32,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 return
             }
             let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
-            if (playerConfiguration.isLive){
+            if (playerConfiguration.type == PlayerType.tv){
                 let vc = TVVideoPlayerViewController()
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
@@ -45,7 +45,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.showsBtnText = playerConfiguration.tvProgramsText
                 vc.programs = playerConfiguration.programsInfoList
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
-            } else if (playerConfiguration.isStory){
+            } else if (playerConfiguration.type == PlayerType.story){
                 let vc = StoryPlayerViewController(video: Video(videoFiles: playerConfiguration.story),storyButtonText: playerConfiguration.storyButtonText,index: playerConfiguration.storyIndex)
                 vc.modalPresentationStyle = .fullScreen
                 vc.delegate = self
@@ -63,10 +63,10 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
                 vc.speedLabelText = playerConfiguration.speedText
                 vc.resolutions = sortedResolutions
                 vc.selectedQualityText = playerConfiguration.autoText
-                vc.isSerial = playerConfiguration.isSerial
                 vc.titleText = playerConfiguration.title
                 vc.serialLabelText = playerConfiguration.episodeButtonText
                 vc.seasons  = playerConfiguration.seasons
+                vc.movieTrack  = playerConfiguration.movieTrack
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
             }
         } else {

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:udevs_video_player/models/movie_track.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 
 void main() {
@@ -121,7 +122,17 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            isStory: false,
+            type: PlayerType.serial,
+            movieTrack: MovieTrack(
+              episodeKey: '',
+              element: '',
+              seasonKey: '',
+              isMegogo: false,
+              movieKey: '',
+              seconds: 0,
+              userId: '',
+            ),
+            platform: "",
             story: story,
             storyIndex: 0,
             seasonText: "Season",
@@ -151,11 +162,9 @@ class _MyAppState extends State<MyApp> {
             lastPosition: 0,
             title:
                 "S1 E1  \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" \"Женщина-Халк: Адвокат\" ",
-            isSerial: true,
             episodeButtonText: 'Эпизоды',
             nextButtonText: 'След.эпизод',
             seasons: seasons,
-            isLive: false,
             tvProgramsText: 'Телеканалы',
             programsInfoList: [],
             showController: true,
@@ -286,11 +295,21 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            isStory: true,
+            type: PlayerType.story,
+            platform: "",
             seasonText: "Season",
             story: story,
             storyIndex: 1,
             closeText: 'Close',
+            movieTrack: MovieTrack(
+              episodeKey: '',
+              element: '',
+              seasonKey: '',
+              isMegogo: false,
+              movieKey: '',
+              seconds: 0,
+              userId: '',
+            ),
             storyButtonText: "Смотреть фильм",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {
@@ -315,11 +334,9 @@ class _MyAppState extends State<MyApp> {
             speedText: 'Скорость',
             lastPosition: 0,
             title: "S1 E1  \"Женщина-Халк: Адвокат\" ",
-            isSerial: true,
             episodeButtonText: 'Эпизоды',
             nextButtonText: 'След.эпизод',
             seasons: seasons,
-            isLive: false,
             tvProgramsText: 'Телеканалы',
             programsInfoList: [],
             showController: true,
@@ -400,7 +417,17 @@ class _MyAppState extends State<MyApp> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            isStory: false,
+            type: PlayerType.tv,
+            movieTrack: MovieTrack(
+              episodeKey: '',
+              element: '',
+              seasonKey: '',
+              isMegogo: false,
+              movieKey: '',
+              seconds: 0,
+              userId: '',
+            ),
+            platform: "",
             storyIndex: 0,
             story: [],
             seasonText: 'Сезон',
@@ -429,11 +456,9 @@ class _MyAppState extends State<MyApp> {
             speedText: 'Speed',
             lastPosition: 1000,
             title: 'Женщина-Халк: Адвокат',
-            isSerial: false,
             episodeButtonText: 'Episodes',
             nextButtonText: 'Next',
             seasons: [],
-            isLive: true,
             tvProgramsText: 'Programs',
             programsInfoList: programsInfoList,
             showController: true,

@@ -53,8 +53,6 @@ class EpisodesRvAdapter(var context: Context, var onClickListener: OnClickListen
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.episode_item, parent, false)
         return Vh(EpisodeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 

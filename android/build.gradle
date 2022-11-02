@@ -51,6 +51,11 @@ android {
         multiDexEnabled true
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
+
     dependencies {
         implementation "androidx.media3:media3-exoplayer:$media3_version"
         implementation "androidx.media3:media3-exoplayer-hls:$media3_version"

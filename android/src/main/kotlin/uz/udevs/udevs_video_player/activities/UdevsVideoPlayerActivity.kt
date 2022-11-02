@@ -726,7 +726,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
         rvEpisodesRvAdapter = EpisodesRvAdapter(
             this,
-            currentSeason.movies,
             object : EpisodesRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onClick(index: Int) {
@@ -750,14 +749,12 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                     bottomSheetDialog.dismiss()
                 }
             })
-
+        rvEpisodesRvAdapter.differ.submitList(currentSeason.movies)
         rvEpisodes?.adapter = rvEpisodesRvAdapter
-
         btnSeasons?.text = currentSeason.title
         btnSeasons?.setOnClickListener {
             showSeasonsBottomSheet(rvEpisodes, btnSeasons)
         }
-
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE
@@ -838,12 +835,15 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                     selectedSeasonIndex = seasonPosition
                     currentSeason = playerConfiguration!!.seasons[seasonPosition]
                     btnSeasons.text = currentSeason.title
-                    rvEpisodes?.adapter = rvEpisodesRvAdapter
+                    rvEpisodesRvAdapter.notifyDataSetChanged()
+                    rvEpisodesRvAdapter.differ.submitList(currentSeason.movies)
                     seasonsBottomSheetDialog.dismiss()
                 }
 
             }, selectedSeasonIndex
         )
+
+
 
         cv_close?.setOnClickListener {
             seasonsBottomSheetDialog.dismiss()

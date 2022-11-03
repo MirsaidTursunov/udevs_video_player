@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import AVFoundation
+import AVKit
 import NVActivityIndicatorView
 
 protocol FileViewControllerDelegate: AnyObject {
@@ -145,7 +146,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLayoutSubviews()
         let window = UIApplication.shared.keyWindow
         let topPadding: Int = Int(window?.safeAreaInsets.top ?? 0)
-        let bottomPadding:Int = Int(window?.safeAreaInsets.bottom ?? 0)
         
         closeButton.frame = CGRect(x: Int(view.width) - 45,
                                    y: 30+topPadding,
@@ -164,10 +164,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
 
         playerView.frame = view.bounds
         playerView.center(in: view)
-        playerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.left.right.top.bottom.equalToSuperview()
-        }
         
         progressView.frame = CGRect(x: 10,
                                     y: 10+topPadding,
@@ -229,7 +225,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         self.player?.addObserver(self, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
         let playerLayer = AVPlayerLayer(player: self.player)
         playerLayer.frame = self.view.bounds
-        playerLayer.videoGravity = .resizeAspect
+        playerLayer.videoGravity = .resize
         playerView.layer.addSublayer(playerLayer)
         playerLayer.player = player
         player?.play()

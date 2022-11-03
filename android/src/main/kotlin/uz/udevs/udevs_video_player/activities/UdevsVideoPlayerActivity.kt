@@ -82,7 +82,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var orientation: ImageView? = null
     private var exoProgress: DefaultTimeBar? = null
     private var customSeekBar: SeekBar? = null
-    private var customPlayback: RelativeLayout? = null
+    private var customPlayback: ConstraintLayout? = null
     private var layoutBrightness: LinearLayout? = null
     private var brightnessSeekbar: SeekBar? = null
     private var volumeSeekBar: SeekBar? = null

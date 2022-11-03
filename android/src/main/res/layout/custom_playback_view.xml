@@ -8,12 +8,13 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingHorizontal="15dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/bottom_top"
-        app:layout_constraintEnd_toEndOf="@id/bottom_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -23,8 +24,8 @@
             app:layout_constraintTop_toTopOf="@id/video_title"
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/video_close"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/ic_close"
             tools:ignore="ContentDescription" />
 
@@ -42,14 +43,14 @@
             android:maxLines="2"
             android:text="Avengers: End game"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <ImageView
             app:layout_constraintTop_toTopOf="@id/video_title"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/video_more"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_more" />
 

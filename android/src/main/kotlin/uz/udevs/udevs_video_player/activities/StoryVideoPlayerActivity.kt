@@ -230,12 +230,12 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
     private fun checkAnalytics(index: Int) {
         println("Check analtyics method called")
-        println("story item file name : ${playerConfiguration!!.story[index].fileName}")
+        println("story item file name : ${playerConfiguration!!.story[index].slug}")
         println("${playerConfiguration!!.story[index].fileName} *** ${playerConfiguration!!.userId} *** ${playerConfiguration!!.story[index].isAmediateka}")
         val analytics = CheckAnalyticsRequest(
             episodeKey = "0",
             isStory = true,
-            movieKey = playerConfiguration!!.story[index].fileName,
+            movieKey = playerConfiguration!!.story[index].slug,
             seasonKey = "0",
             userId = playerConfiguration!!.userId,
 //            userId = "53629a0e-e7a1-48bd-b6c1-901b82147798",

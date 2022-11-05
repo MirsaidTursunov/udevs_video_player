@@ -38,6 +38,7 @@ class PlayerConfiguration {
   String authorization;
   String autoText;
   String baseUrl;
+  String userId;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
@@ -73,12 +74,13 @@ class PlayerConfiguration {
     map['seasonText'] = seasonText;
     map['storyIndex'] = storyIndex;
     map['movieTrack'] = movieTrack.toJson();
+    map['userId'] = userId;
     return map;
   }
 
   @override
   String toString() {
-    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, episodeButtonText: $episodeButtonText, nextButtonText: $nextButtonText, seasons: $seasons, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, isMegogo: $isMegogo, isPremier: $isPremier, videoId: $videoId, sessionId: $sessionId, megogoAccessToken: $megogoAccessToken, authorization: $authorization, autoText: $autoText baseUrl: $baseUrl}';
+    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, episodeButtonText: $episodeButtonText, nextButtonText: $nextButtonText, seasons: $seasons, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, isMegogo: $isMegogo, isPremier: $isPremier, videoId: $videoId, sessionId: $sessionId, megogoAccessToken: $megogoAccessToken, authorization: $authorization, autoText: $autoText baseUrl: $baseUrl userId: $userId}';
   }
 
   PlayerConfiguration({
@@ -114,6 +116,7 @@ class PlayerConfiguration {
     required this.story,
     required this.storyButtonText,
     required this.closeText,
+    required this.userId,
   });
 }
 

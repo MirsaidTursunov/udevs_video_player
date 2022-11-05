@@ -189,6 +189,7 @@ class _MyAppState extends State<MyApp> {
             authorization:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg1MDEzNDMsImlzcyI6InVzZXIiLCJwaWQiOjEzMDcsInJvbGUiOiJjdXN0b21lciIsInN1YiI6IjYyMDQzMmZmLTc3ZWItNDc0Mi05MmFhLTZmOGU4NDcyMDI0ZCJ9.6SvUCBT0gb6tIRy1PL-C7WS7xHpJXc1PCZky6aH6HtA',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (s == 'nothing') {
@@ -369,6 +370,7 @@ class _MyAppState extends State<MyApp> {
             authorization:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg1MDEzNDMsImlzcyI6InVzZXIiLCJwaWQiOjEzMDcsInJvbGUiOiJjdXN0b21lciIsInN1YiI6IjYyMDQzMmZmLTc3ZWItNDc0Mi05MmFhLTZmOGU4NDcyMDI0ZCJ9.6SvUCBT0gb6tIRy1PL-C7WS7xHpJXc1PCZky6aH6HtA',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (s == 'nothing') {
@@ -489,6 +491,7 @@ class _MyAppState extends State<MyApp> {
             megogoAccessToken: '',
             authorization: '',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (kDebugMode) {

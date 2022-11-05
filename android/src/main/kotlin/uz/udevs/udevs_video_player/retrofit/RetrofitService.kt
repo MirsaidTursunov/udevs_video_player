@@ -7,10 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.MovieTrack
-import uz.udevs.udevs_video_player.models.MovieTrackResponse
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.*
 
 interface RetrofitService {
 
@@ -36,4 +33,9 @@ interface RetrofitService {
         @Header("platform") platform: String,
         @Body movieTrack: MovieTrack,
     ): Call<MovieTrackResponse>
+
+    @POST("analytics")
+    fun postStoryAnalytics(
+        @Body analyticsRequest: CheckAnalyticsRequest,
+    ): Call<CheckAnalyticsResponse>
 }

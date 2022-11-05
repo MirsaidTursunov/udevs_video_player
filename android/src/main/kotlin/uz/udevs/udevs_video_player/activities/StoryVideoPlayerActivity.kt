@@ -1,5 +1,6 @@
 package uz.udevs.udevs_video_player.activities
 
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -20,13 +21,17 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.ui.PlayerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.*
 
 class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
+    private var retrofitService: RetrofitService? = null
     private var playerView: PlayerView? = null
     private var player: ExoPlayer? = null
     private var progressbar: ProgressBar? = null
@@ -155,6 +160,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
+                        checkAnalytics(storyIndex)
                         if (max != player!!.duration.toInt() / 1000) {
                             max = player!!.duration.toInt() / 1000
                         }
@@ -219,6 +225,32 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         player?.setMediaSource(hlsMediaSource)
         player?.prepare()
         player?.playWhenReady = true
+    }
+
+    private fun checkAnalytics(index: Int) {
+        val analytics = CheckAnalyticsRequest(
+            episodeKey = "0",
+            isStory = true,
+            movieKey = playerConfiguration!!.story[index].fileName,
+            seasonKey = "0",
+            userId = playerConfiguration!!.userId,
+//            userId = "53629a0e-e7a1-48bd-b6c1-901b82147798",
+            videoPlatform = if (playerConfiguration!!.story[index].isAmediateka) "AMEDIATEKA" else "SHARQ",
+        )
+        retrofitService?.postStoryAnalytics(
+            analytics,
+        )?.enqueue(object : Callback<CheckAnalyticsResponse> {
+            override fun onResponse(
+                call: Call<CheckAnalyticsResponse>,
+                response: Response<CheckAnalyticsResponse>
+            ) {
+                response.body()
+            }
+
+            override fun onFailure(call: Call<CheckAnalyticsResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
     }
 
 

@@ -5,6 +5,8 @@ class Story {
   final String quality;
   final String slug;
   final int duration;
+  final bool isWatched;
+  final bool isAmediateka;
 
   Story({
     required this.id,
@@ -13,6 +15,8 @@ class Story {
     required this.duration,
     required this.slug,
     required this.title,
+    required this.isWatched,
+    required this.isAmediateka,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,6 +27,8 @@ class Story {
     map['duration'] = duration;
     map['slug'] = slug;
     map['fileName'] = fileName;
+    map['is_watched'] = isWatched;
+    map['is_amediateka'] = isAmediateka;
     return map;
   }
 }

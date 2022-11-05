@@ -160,6 +160,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
+                        println("Before requesting for check analtyics api")
                         checkAnalytics(storyIndex)
                         if (max != player!!.duration.toInt() / 1000) {
                             max = player!!.duration.toInt() / 1000
@@ -228,6 +229,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     }
 
     private fun checkAnalytics(index: Int) {
+        println("Check analtyics method called")
         val analytics = CheckAnalyticsRequest(
             episodeKey = "0",
             isStory = true,
@@ -244,10 +246,12 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 call: Call<CheckAnalyticsResponse>,
                 response: Response<CheckAnalyticsResponse>
             ) {
+                println("Request for check analtyics api is success")
                 response.body()
             }
 
             override fun onFailure(call: Call<CheckAnalyticsResponse>, t: Throwable) {
+                println("Request for check analtyics api is failed")
                 t.printStackTrace()
             }
         })

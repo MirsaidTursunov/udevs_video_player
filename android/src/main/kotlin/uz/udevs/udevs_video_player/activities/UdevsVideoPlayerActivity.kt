@@ -367,9 +367,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                             playPause?.visibility = View.VISIBLE
                             progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
-                                if (progressbar?.visibility == View.GONE) {
-                                    progressbar2?.visibility = View.VISIBLE
-                                }
+                                    progressbar2?.visibility = View.GONE
 //                                playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                             }
                         }

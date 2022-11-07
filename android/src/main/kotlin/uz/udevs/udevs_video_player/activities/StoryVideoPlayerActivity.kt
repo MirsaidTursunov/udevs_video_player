@@ -190,11 +190,17 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                             if (playerView?.isControllerFullyVisible == false) {
                                 progressbar2?.visibility = View.VISIBLE
                             }
+                            if(progressbar?.visibility == View.GONE){
+                                progressbar2?.visibility = View.VISIBLE
+                            }
                         }
                         Player.STATE_READY -> {
                             progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
                                 progressbar2?.visibility = View.GONE
+                            }
+                            if(progressbar?.visibility == View.GONE){
+                                progressbar2?.visibility = View.VISIBLE
                             }
                         }
                         Player.STATE_ENDED -> {

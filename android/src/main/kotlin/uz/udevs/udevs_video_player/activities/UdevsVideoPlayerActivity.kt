@@ -357,7 +357,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                             playPause?.visibility = View.GONE
                             progressbar?.visibility = View.VISIBLE
                             if (playerView?.isControllerFullyVisible == false) {
-                                progressbar2?.visibility = View.VISIBLE
+                                if (progressbar?.visibility == View.GONE) {
+                                    progressbar2?.visibility = View.VISIBLE
+                                }
 //                                playerView?.setShowBuffering(SHOW_BUFFERING_ALWAYS)
                             }
                         }
@@ -365,7 +367,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                             playPause?.visibility = View.VISIBLE
                             progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
-                                progressbar2?.visibility = View.GONE
+                                if (progressbar?.visibility == View.GONE) {
+                                    progressbar2?.visibility = View.VISIBLE
+                                }
 //                                playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                             }
                         }
@@ -964,10 +968,12 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             System.currentTimeMillis()
         } else {
             if (isDoubleClicked(lastClicked)) {
-                if (event!!.x < sWidth / 2) {
-                    player?.seekTo(player!!.currentPosition - 10000)
-                } else {
-                    player?.seekTo(player!!.currentPosition + 10000)
+                if (playerConfiguration!!.type != PlayerType.tv) {
+                    if (event!!.x < sWidth / 2) {
+                        player?.seekTo(player!!.currentPosition - 10000)
+                    } else {
+                        player?.seekTo(player!!.currentPosition + 10000)
+                    }
                 }
             } else {
                 playerView?.showController()

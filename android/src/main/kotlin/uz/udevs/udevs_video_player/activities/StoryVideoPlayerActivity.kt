@@ -28,6 +28,7 @@ import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.*
+import uz.udevs.udevs_video_player.retrofit.Common
 
 class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
@@ -55,7 +56,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             window.navigationBarColor = Color.BLACK
         }
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration?
-
+        retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
@@ -161,6 +162,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
                         println("Before requesting for check analtyics api")
+
                         checkAnalytics(storyIndex)
                         if (max != player!!.duration.toInt() / 1000) {
                             max = player!!.duration.toInt() / 1000
@@ -229,6 +231,8 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     }
 
     private fun checkAnalytics(index: Int) {
+        if (playerConfiguration!!.userId.isEmpty()) return
+        if (playerConfiguration!!.story[index].isWatched) return
         println("Check analtyics method called")
         println("story item file name : ${playerConfiguration!!.story[index].slug}")
         println("${playerConfiguration!!.story[index].fileName} *** ${playerConfiguration!!.userId} *** ${playerConfiguration!!.story[index].isAmediateka}")
@@ -238,7 +242,6 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             movieKey = playerConfiguration!!.story[index].slug,
             seasonKey = "0",
             userId = playerConfiguration!!.userId,
-//            userId = "53629a0e-e7a1-48bd-b6c1-901b82147798",
             videoPlatform = if (playerConfiguration!!.story[index].isAmediateka) "AMEDIATEKA" else "SHARQ",
         )
         retrofitService?.postStoryAnalytics(
@@ -249,6 +252,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
                 response: Response<CheckAnalyticsResponse>
             ) {
                 println("Request for check analtyics api is success")
+                println(response.code())
                 response.body()
             }
 

@@ -83,6 +83,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             'https://cdn.sharqtv.udevs.io/sharqtv/videos/d4b2982e213c9c201de32589183d929a/master.m3u8',
         duration: 139,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -94,6 +96,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/9bcb4e58ff4241173d105ae1feac8f37/master.m3u8",
         duration: 139,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -105,6 +109,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/835670534eb8c561b112389f55885415/master.m3u8",
         duration: 208,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -116,6 +122,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/c4ad656b0e0d344ccf6597e39344b9ab/master.m3u8",
         duration: 660,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     seasons.add(Season(title: '1 Season', movies: movies1));
@@ -181,6 +189,7 @@ class _MyAppState extends State<MyApp> {
             authorization:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg1MDEzNDMsImlzcyI6InVzZXIiLCJwaWQiOjEzMDcsInJvbGUiOiJjdXN0b21lciIsInN1YiI6IjYyMDQzMmZmLTc3ZWItNDc0Mi05MmFhLTZmOGU4NDcyMDI0ZCJ9.6SvUCBT0gb6tIRy1PL-C7WS7xHpJXc1PCZky6aH6HtA',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (s == 'nothing') {
@@ -256,6 +265,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             'https://cdn.sharqtv.udevs.io/sharqtv/videos/d4b2982e213c9c201de32589183d929a/master.m3u8',
         duration: 139,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -267,6 +278,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/9bcb4e58ff4241173d105ae1feac8f37/master.m3u8",
         duration: 139,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -278,6 +291,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/835670534eb8c561b112389f55885415/master.m3u8",
         duration: 208,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     story.add(
@@ -289,6 +304,8 @@ class _MyAppState extends State<MyApp> {
         fileName:
             "https://cdn.sharqtv.udevs.io/sharqtv/videos/c4ad656b0e0d344ccf6597e39344b9ab/master.m3u8",
         duration: 660,
+        isWatched: false,
+        isAmediateka: false,
       ),
     );
     seasons.add(Season(title: '1 Season', movies: movies1));
@@ -353,6 +370,7 @@ class _MyAppState extends State<MyApp> {
             authorization:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg1MDEzNDMsImlzcyI6InVzZXIiLCJwaWQiOjEzMDcsInJvbGUiOiJjdXN0b21lciIsInN1YiI6IjYyMDQzMmZmLTc3ZWItNDc0Mi05MmFhLTZmOGU4NDcyMDI0ZCJ9.6SvUCBT0gb6tIRy1PL-C7WS7xHpJXc1PCZky6aH6HtA',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (s == 'nothing') {
@@ -473,6 +491,7 @@ class _MyAppState extends State<MyApp> {
             megogoAccessToken: '',
             authorization: '',
             autoText: 'Автонастройка',
+            userId: '',
           )) ??
           'nothing';
       if (kDebugMode) {

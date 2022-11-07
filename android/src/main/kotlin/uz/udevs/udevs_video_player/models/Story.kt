@@ -16,4 +16,8 @@ data class Story(
     val duration: Long,
     @SerializedName("slug")
     var slug: String,
+    @SerializedName("is_watched")
+    var isWatched: Boolean,
+    @SerializedName("is_amediateka")
+    var isAmediateka: Boolean,
 ) : Serializable

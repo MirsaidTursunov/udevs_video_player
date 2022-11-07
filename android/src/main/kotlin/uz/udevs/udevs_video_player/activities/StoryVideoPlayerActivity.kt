@@ -1,5 +1,6 @@
 package uz.udevs.udevs_video_player.activities
 
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -20,13 +21,18 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.ui.PlayerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.*
+import uz.udevs.udevs_video_player.retrofit.Common
 
 class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener {
+    private var retrofitService: RetrofitService? = null
     private var playerView: PlayerView? = null
     private var player: ExoPlayer? = null
     private var progressbar: ProgressBar? = null
@@ -50,7 +56,7 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
             window.navigationBarColor = Color.BLACK
         }
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration?
-
+        retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
@@ -155,6 +161,9 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
+                        println("Before requesting for check analtyics api")
+
+                        checkAnalytics(storyIndex)
                         if (max != player!!.duration.toInt() / 1000) {
                             max = player!!.duration.toInt() / 1000
                         }
@@ -219,6 +228,39 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         player?.setMediaSource(hlsMediaSource)
         player?.prepare()
         player?.playWhenReady = true
+    }
+
+    private fun checkAnalytics(index: Int) {
+        if (playerConfiguration!!.userId.isEmpty()) return
+        if (playerConfiguration!!.story[index].isWatched) return
+        println("Check analtyics method called")
+        println("story item file name : ${playerConfiguration!!.story[index].slug}")
+        println("${playerConfiguration!!.story[index].fileName} *** ${playerConfiguration!!.userId} *** ${playerConfiguration!!.story[index].isAmediateka}")
+        val analytics = CheckAnalyticsRequest(
+            episodeKey = "0",
+            isStory = true,
+            movieKey = playerConfiguration!!.story[index].slug,
+            seasonKey = "0",
+            userId = playerConfiguration!!.userId,
+            videoPlatform = if (playerConfiguration!!.story[index].isAmediateka) "AMEDIATEKA" else "SHARQ",
+        )
+        retrofitService?.postStoryAnalytics(
+            analytics,
+        )?.enqueue(object : Callback<CheckAnalyticsResponse> {
+            override fun onResponse(
+                call: Call<CheckAnalyticsResponse>,
+                response: Response<CheckAnalyticsResponse>
+            ) {
+                println("Request for check analtyics api is success")
+                println(response.code())
+                response.body()
+            }
+
+            override fun onFailure(call: Call<CheckAnalyticsResponse>, t: Throwable) {
+                println("Request for check analtyics api is failed")
+                t.printStackTrace()
+            }
+        })
     }
 
 

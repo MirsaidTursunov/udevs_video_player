@@ -66,5 +66,7 @@ data class PlayerConfiguration(
     val platform: String,
     @SerializedName("movieTrack")
     val movieTrack: MovieTrack,
+    @SerializedName("userId")
+    val userId: String,
 ) : Serializable
 

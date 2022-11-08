@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -53,6 +54,7 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -212,6 +214,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         maxVolume += 1.0
         volumeSeekBar?.progress = volume.toInt()
 
+        title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
                 scaleGestureDetector?.onTouchEvent(motionEvent)
@@ -367,7 +372,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                             playPause?.visibility = View.VISIBLE
                             progressbar?.visibility = View.GONE
                             if (playerView?.isControllerFullyVisible == false) {
-                                    progressbar2?.visibility = View.GONE
+                                progressbar2?.visibility = View.GONE
 //                                playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                             }
                         }
@@ -443,21 +448,25 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             showEpisodesBottomSheet()
         }
         nextButton?.setOnClickListener {
+            val currentSeasonMoviesSize = playerConfiguration!!.seasons[seasonIndex].movies.size
+
             if (seasonIndex < playerConfiguration!!.seasons.size) {
-                if (episodeIndex < playerConfiguration!!.seasons[seasonIndex].movies.size - 1) {
+                if (episodeIndex < currentSeasonMoviesSize - 1) {
                     episodeIndex++
                 } else {
+                    episodeIndex = 0
                     seasonIndex++
+                    selectedSeasonIndex = seasonIndex
+                    currentSeason = playerConfiguration!!.seasons[seasonIndex]
                 }
             }
-            if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
-                episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
-            ) {
+            if (isLastEpisode()) {
                 nextButton?.visibility = View.GONE
+            } else {
+                nextButton?.visibility = View.VISIBLE
             }
             title?.text =
-                "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                        playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+                "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
             if (playerConfiguration!!.isMegogo && playerConfiguration!!.type == PlayerType.serial) {
                 getMegogoStream()
             } else if (playerConfiguration!!.isPremier && playerConfiguration!!.type == PlayerType.serial) {
@@ -717,7 +726,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         }
 
         val btnSeasons = bottomSheetDialog.findViewById<Button>(R.id.btn_seasons)
-
         val icClose = bottomSheetDialog.findViewById<ImageView>(R.id.ic_close_episodes)
 
         icClose?.setOnClickListener {
@@ -731,7 +739,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             object : EpisodesRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onClick(index: Int) {
-                    val seasonIndex = selectedSeasonIndex
+                    seasonIndex = selectedSeasonIndex
                     episodeIndex = index
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
                             playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
@@ -748,6 +756,14 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                         player?.prepare()
                         player?.playWhenReady
                     }
+
+
+                    // check for the last episode in the "serial"
+                    if (isLastEpisode()) {
+                        nextButton?.visibility = View.GONE
+                    } else {
+                        nextButton?.visibility = View.VISIBLE
+                    }
                     bottomSheetDialog.dismiss()
                 }
             })
@@ -761,6 +777,20 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE
         }
+    }
+
+    private fun isLastEpisode(): Boolean {
+        Log.d(
+            "Asdasdasdasdasd",
+            "playerConfiguration!!.seasons.size: " + playerConfiguration!!.seasons.size.toString()
+        )
+        Log.d("Asdasdasdasdasd", "seasonIndex: " + seasonIndex.toString())
+        Log.d(
+            "Asdasdasdasdasd",
+            "movies.size: " + playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size.toString()
+        )
+        Log.d("Asdasdasdasdasd", "episodeIndex: " + episodeIndex.toString())
+        return playerConfiguration!!.seasons.size == seasonIndex + 1 && playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
     }
 
     private var speeds =
@@ -796,19 +826,17 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
-            if (playerConfiguration!!.type == PlayerType.serial) {
-                showQualitySpeedSheet(
-                    currentQuality,
-                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList,
-                    true,
-                )
+            val list = if (playerConfiguration!!.type == PlayerType.serial) {
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList
             } else {
-                showQualitySpeedSheet(
-                    currentQuality,
-                    playerConfiguration?.resolutions?.keys?.toList() as ArrayList,
-                    true,
-                )
+                playerConfiguration?.resolutions?.keys?.toList() as ArrayList
             }
+
+            showQualitySpeedSheet(
+                currentQuality,
+                list,
+                true,
+            )
         }
         speed?.setOnClickListener {
             showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
@@ -875,8 +903,12 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         backButtonQualitySpeedBottomSheet?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+        val title = if (fromQuality) {
             playerConfiguration!!.qualityText
+        } else {
+            playerConfiguration!!.speedText
+        }
+        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text = title
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
         //sorting
         val l = mutableListOf<String>()
@@ -906,37 +938,34 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         if (auto.isNotEmpty()) {
             l.add(0, auto)
         }
+        val data = if(fromQuality){
+            l as ArrayList
+        }else{
+            list
+        }
         val adapter = QualitySpeedAdapter(
             initialValue,
             this,
-            l as ArrayList<String>, (object : QualitySpeedAdapter.OnClickListener {
+            data,
+            object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
-                        currentQuality = list[position]
+                        currentQuality = l[position]
                         qualityText?.text = currentQuality
                         if (player?.isPlaying == true) {
                             player?.pause()
                         }
                         val currentPosition = player?.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+
+                        val uri = if (playerConfiguration!!.type == PlayerType.serial) {
+                            Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])
+                        } else {
+                            Uri.parse(playerConfiguration!!.resolutions[currentQuality])
+                        }
                         val hlsMediaSource: HlsMediaSource =
-                            if (playerConfiguration!!.type == PlayerType.serial) {
-                                HlsMediaSource.Factory(dataSourceFactory)
-                                    .createMediaSource(
-                                        MediaItem.fromUri(
-                                            Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])
-                                        )
-                                    )
-                            } else {
-                                HlsMediaSource.Factory(dataSourceFactory)
-                                    .createMediaSource(
-                                        MediaItem.fromUri(
-                                            Uri.parse(
-                                                playerConfiguration!!.resolutions[currentQuality]
-                                            )
-                                        )
-                                    )
-                            }
+                            HlsMediaSource.Factory(dataSourceFactory)
+                                .createMediaSource(MediaItem.fromUri(uri))
                         player?.setMediaSource(hlsMediaSource)
                         player?.seekTo(currentPosition!!)
                         player?.prepare()
@@ -948,10 +977,11 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                     }
                     bottomSheetDialog.dismiss()
                 }
-            })
+            }
         )
         listView.adapter = adapter
         bottomSheetDialog.show()
+
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.SETTINGS
         }

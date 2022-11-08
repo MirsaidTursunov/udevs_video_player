@@ -1,7 +1,7 @@
 package uz.udevs.udevs_video_player.activities
 
-import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import android.annotation.SuppressLint
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -29,9 +28,10 @@ import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
+import kotlin.math.abs
 
-class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
-    ScaleGestureDetector.OnScaleGestureListener {
+class StoryVideoPlayerActivity : Activity(),
+    ScaleGestureDetector.OnScaleGestureListener, GestureDetector.OnGestureListener {
     private var retrofitService: RetrofitService? = null
     private var playerView: PlayerView? = null
     private var player: ExoPlayer? = null
@@ -43,8 +43,10 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     private var max = 0
     private var sWidth: Int = 0
     private var storyIndex: Int = 0
+    private lateinit var storyContainer: View
+    private lateinit var gestureDetector: GestureDetector
 
-    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.story_player_activity)
@@ -59,23 +61,34 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
+        storyContainer = findViewById(R.id.story_container)
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
         progressbar = findViewById<View>(R.id.video_progress_bar_story) as ProgressBar
         progressbar2 = findViewById<View>(R.id.video_progress_bar_story2) as ProgressBar
         sWidth = Resources.getSystem().displayMetrics.widthPixels
 
+        gestureDetector = GestureDetector(this, this)
+        storyContainer.setOnTouchListener { _, motionEvent ->
+            gestureDetector.onTouchEvent(motionEvent)
+            return@setOnTouchListener true
+        }
+//        storyContainer.setOnTouchListener(touchListener)
+
         /// gesture detector
-        val reverse = findViewById<View>(R.id.reverse)
-        reverse.setOnClickListener { // inside on click we are
-            reverse()
-        }
+//        val reverse = findViewById<View>(R.id.reverse)
+//        reverse.setOnClickListener { // inside on click we are
+//            reverse()
+//        }
+//
+//        val skip = findViewById<View>(R.id.skip)
+//        skip.setOnClickListener { // inside on click we are
+//            skip()
+//        }
 
-        val skip = findViewById<View>(R.id.skip)
-        skip.setOnClickListener { // inside on click we are
-            skip()
-        }
+//        reverse.setOnTouchListener(touchListener)
+//        skip.setOnTouchListener(touchListener)
 
-        val close = findViewById<CardView>(R.id.cv_story_close)
+        val close = findViewById<LinearLayout>(R.id.cv_story_close)
         close.setOnClickListener { // inside on click we are
             onBackPressed()
         }
@@ -88,6 +101,12 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
 
         /// play video
         playVideo()
+    }
+
+    var touchListener: View.OnTouchListener = object : View.OnTouchListener {
+        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+            return gestureDetector.onTouchEvent(event)
+        }
     }
 
     override fun onBackPressed() {
@@ -266,49 +285,85 @@ class StoryVideoPlayerActivity : Activity(), GestureDetector.OnGestureListener,
     }
 
 
-    override fun onDown(e: MotionEvent?): Boolean {
-        TODO("Not yet implemented")
+    override fun onScale(detector: ScaleGestureDetector?): Boolean = false
+
+    override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean = false
+
+    override fun onScaleEnd(detector: ScaleGestureDetector?) {
+
     }
 
-    override fun onShowPress(e: MotionEvent?) {
-        TODO("Not yet implemented")
+    override fun onDown(p0: MotionEvent?): Boolean = false
+
+    override fun onShowPress(p0: MotionEvent?) {
     }
 
-    override fun onSingleTapUp(e: MotionEvent?): Boolean {
-        return false
+    override fun onSingleTapUp(event: MotionEvent?): Boolean {
+        if (event!!.x < sWidth / 2) {
+            reverse()
+        } else {
+            skip()
+        }
+        return true
     }
 
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean = false
 
-    override fun onLongPress(e: MotionEvent?) {
-        TODO("Not yet implemented")
+    override fun onLongPress(p0: MotionEvent?) {
     }
 
     override fun onFling(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
+        downEvent: MotionEvent?,
+        moveEvent: MotionEvent?,
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        TODO("Not yet implemented")
+        var result = false
+        val diffY = moveEvent!!.y - downEvent!!.y
+        val diffX = moveEvent.x - downEvent.x
+//        which was greater? movement across Y or X?]
+        if (abs(diffX) > abs(diffY)) {
+//            right or left swipe
+            if (abs(diffX) > 100 && abs(velocityX) > 100) {
+                if (diffX > 0) {
+                    onSwipeRight()
+                } else {
+                    onSwipeLeft()
+
+                }
+                result = true
+            }
+        } else {
+//             up or down swipe
+            if (abs(diffY) > 100 && abs(velocityY) > 100) {
+                if (diffY > 0) {
+                    onSwipeBottom()
+                } else {
+                    onSwipeTop()
+                }
+                result = true
+            }
+        }
+
+        return result
     }
 
-    override fun onScale(detector: ScaleGestureDetector?): Boolean {
-        TODO("Not yet implemented")
+    private fun onSwipeTop() {
+        Toast.makeText(this, "onSwipeTop", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean {
-        TODO("Not yet implemented")
+    private fun onSwipeBottom() {
+        Toast.makeText(this, "onSwipeBottom", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onScaleEnd(detector: ScaleGestureDetector?) {
-        TODO("Not yet implemented")
+    private fun onSwipeLeft() {
+        Toast.makeText(this, "onSwipeLeft", Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun onSwipeRight() {
+        Toast.makeText(this, "onSwipeRight", Toast.LENGTH_SHORT).show()
+
     }
 }
+

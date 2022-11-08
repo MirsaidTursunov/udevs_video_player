@@ -220,7 +220,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     
     private var exitButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.exit.uiImage, for: .normal)
+        button.setImage(Svg.exit?.uiImage, for: .normal)
         button.tintColor = .white
         button.size(CGSize(width: 32, height: 32))
         button.backgroundColor = .clear
@@ -334,7 +334,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
         if(UIDevice.current.orientation.isLandscape){
             button.setImage(Svg.horizontal.uiImage, for: .normal)
         } else {
-            button.setImage(Svg.portrait.uiImage, for: .normal)
+            button.setImage(Svg.portrait?.uiImage, for: .normal)
         }
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
         return button

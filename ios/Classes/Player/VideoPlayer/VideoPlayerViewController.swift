@@ -97,7 +97,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         if (UIDevice.current.orientation.isLandscape) {
             button.setImage(Svg.horizontal.uiImage, for: .normal)
         } else {
-            button.setImage(Svg.portrait.uiImage, for: .normal)
+            button.setImage(Svg.portrait?.uiImage, for: .normal)
         }
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
         return button
@@ -537,7 +537,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             nextEpisodeButton.setTitle("", for: .normal)
             episodesButton.setTitle("", for: .normal)
         }
-        landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+        landscapeButton.setImage(Svg.portrait?.uiImage, for: .normal)
         portraitConstraints.append(contentsOf: videoView.center(in: view))
         portraitConstraints.append(contentsOf: videoView.edgesToSuperview())
     }

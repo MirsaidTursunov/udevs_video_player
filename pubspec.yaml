@@ -24,4 +24,4 @@ flutter:
         package: uz.udevs.udevs_video_player
         pluginClass: UdevsVideoPlayerPlugin
       ios:
-        pluginClass: SwiftUdevsVideoPlayerPlugin
+        pluginClass: UdevsVideoPlayerPlugin

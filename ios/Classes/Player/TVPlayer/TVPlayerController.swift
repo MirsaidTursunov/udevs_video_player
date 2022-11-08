@@ -332,7 +332,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     private var landscapeButton: UIButton = {
         let button = UIButton()
         if(UIDevice.current.orientation.isLandscape){
-            button.setImage(Svg.horizontal.uiImage, for: .normal)
+            button.setImage(Svg.horizontal?.uiImage, for: .normal)
         } else {
             button.setImage(Svg.portrait?.uiImage, for: .normal)
         }
@@ -394,18 +394,18 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
         super.viewWillTransition(to: size, with: coordinator)
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
             if #available(iOS 16.0, *) {
-                landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+                landscapeButton.setImage(Svg.horizontal?.uiImage, for: .normal)
                 addVideosLandscapeConstraints()
             } else {
-                landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+                landscapeButton.setImage(Svg.portrait?.uiImage, for: .normal)
                 addVideoPortaitConstraints()
             }
         } else {
             if #available(iOS 16.0, *) {
-                landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+                landscapeButton.setImage(Svg.portrait?.uiImage, for: .normal)
                 addVideoPortaitConstraints()
             } else {
-                landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+                landscapeButton.setImage(Svg.horizontal?.uiImage, for: .normal)
                 addVideosLandscapeConstraints()
             }
         }

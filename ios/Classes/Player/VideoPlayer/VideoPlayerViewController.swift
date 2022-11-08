@@ -95,7 +95,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     private var landscapeButton: UIButton = {
         let button = UIButton()
         if (UIDevice.current.orientation.isLandscape) {
-            button.setImage(Svg.horizontal.uiImage, for: .normal)
+            button.setImage(Svg.horizontal?.uiImage, for: .normal)
         } else {
             button.setImage(Svg.portrait?.uiImage, for: .normal)
         }
@@ -523,7 +523,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     func addVideosLandscapeConstraints() {
         portraitConstraints.deActivate()
-        landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+        landscapeButton.setImage(Svg.horizontal?.uiImage, for: .normal)
         if playerConfiguration.type == PlayerType.serial {
             nextEpisodeButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
             episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)

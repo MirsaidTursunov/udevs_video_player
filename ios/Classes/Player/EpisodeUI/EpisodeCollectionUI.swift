@@ -106,7 +106,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     lazy var cancelBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(Svg.exit.uiImage, for: .normal)
+        button.setImage(Svg.exit?.uiImage, for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .white
         button.addTarget(self, action: #selector(tap), for: .touchUpInside)

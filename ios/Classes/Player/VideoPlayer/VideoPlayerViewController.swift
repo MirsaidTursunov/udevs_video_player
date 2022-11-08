@@ -169,7 +169,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var exitButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.exit.uiImage, for: .normal)
+        button.setImage(Svg.exit?.uiImage, for: .normal)
         button.tintColor = .white
         button.backgroundColor = .clear
         button.imageView?.contentMode = .scaleAspectFit
@@ -179,7 +179,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var playButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.play.uiImage, for: .normal)
+        button.setImage(Svg.play?.uiImage, for: .normal)
         button.tintColor = .white
         button.layer.zPosition = 5
         button.imageView?.contentMode = .scaleAspectFit
@@ -191,7 +191,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var skipForwardButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.forward.uiImage, for: .normal)
+        button.setImage(Svg.forward?.uiImage, for: .normal)
         button.tintColor = .white
         button.layer.zPosition = 3
         button.imageView?.contentMode = .scaleAspectFit
@@ -202,7 +202,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var skipBackwardButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.replay.uiImage, for: .normal)
+        button.setImage(Svg.replay?.uiImage, for: .normal)
         button.tintColor = .white
         button.layer.zPosition = 3
         button.size(CGSize(width: 48, height: 48))
@@ -213,7 +213,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var episodesButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.serial.uiImage, for: .normal)
+        button.setImage(Svg.serial?.uiImage, for: .normal)
         button.setTitle("", for: .normal)
         button.layer.zPosition = 3
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
@@ -241,7 +241,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     
     private var settingsButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.more.uiImage, for: .normal)
+        button.setImage(Svg.more?.uiImage, for: .normal)
         button.layer.zPosition = 3
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
         button.imageEdgeInsets = UIEdgeInsets(top: Constants.bottomViewButtonInset, left: 0, bottom: Constants.bottomViewButtonInset, right: 0)
@@ -575,12 +575,12 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     @objc func playButtonPressed(_ sender: UIButton){
         if !player.isPlaying {
             player.play()
-            playButton.setImage(Svg.pause.uiImage, for: .normal)
+            playButton.setImage(Svg.pause?.uiImage, for: .normal)
             self.player.preroll(atRate: Float(self.playerRate), completionHandler: nil)
             self.player.rate = Float(self.playerRate)
             resetTimer()
         } else {
-            playButton.setImage(Svg.play.uiImage, for: .normal)
+            playButton.setImage(Svg.play?.uiImage, for: .normal)
             player.pause()
             timer?.invalidate()
             showControls()
@@ -708,12 +708,12 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             if newValue != oldValue {
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
-                        self?.playButton.setImage(Svg.pause.uiImage, for: .normal)
+                        self?.playButton.setImage(Svg.pause?.uiImage, for: .normal)
                         self?.playButton.alpha = self?.skipBackwardButton.alpha ?? 0.0
                         self?.activityIndicatorView.stopAnimating()
                         self?.enableGesture = true
                     } else if newValue == 0 {
-                        self?.playButton.setImage(Svg.play.uiImage, for: .normal)
+                        self?.playButton.setImage(Svg.play?.uiImage, for: .normal)
                         self?.playButton.alpha = self?.skipBackwardButton.alpha ?? 0.0
                         self?.activityIndicatorView.stopAnimating()
                         self?.enableGesture = true
@@ -741,7 +741,7 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
     @objc func playerEndedPlaying(_ notification: Notification) {
         DispatchQueue.main.async {[weak self] in
             self?.player.seek(to: CMTime.zero)
-            self?.playButton.setImage(Svg.play.uiImage, for: .normal)
+            self?.playButton.setImage(Svg.play?.uiImage, for: .normal)
         }
     }
     

@@ -48,7 +48,7 @@ class EpisodeCollectionCell: UICollectionViewCell {
     
     var playIcon: UIImageView = {
         let image = UIImageView()
-        image.image = Svg.serialPlay.uiImage
+        image.image = Svg.serialPlay?.uiImage
         image.backgroundColor = .clear
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill

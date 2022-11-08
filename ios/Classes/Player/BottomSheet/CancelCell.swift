@@ -30,7 +30,7 @@ class CancelCell: UITableViewCell {
     }()
     lazy var cancelBtn: UIImageView = {
         let imageView = UIImageView()
-        let image = Svg.exit.uiImage
+        let image = Svg.exit?.uiImage
         imageView.image = image
         imageView.size(CGSize(width: 24, height: 24))
         imageView.contentMode = .scaleAspectFit

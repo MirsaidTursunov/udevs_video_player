@@ -75,7 +75,7 @@ class TVSettingVC: UIViewController, UIGestureRecognizerDelegate {
     
     lazy var cancelBtn: UIButton = {
         let cancelBtn = UIButton()
-        cancelBtn.setImage(Svg.exit.uiImage, for: .normal)
+        cancelBtn.setImage(Svg.exit?.uiImage, for: .normal)
         cancelBtn.imageView?.contentMode = .scaleAspectFit
         cancelBtn.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         return cancelBtn

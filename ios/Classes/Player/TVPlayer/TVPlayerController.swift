@@ -231,7 +231,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     
     private var playButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.play.uiImage, for: .normal)
+        button.setImage(Svg.play?.uiImage, for: .normal)
         button.tintColor = .white
         button.layer.zPosition = 5
         button.imageView?.contentMode = .scaleAspectFit
@@ -259,7 +259,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     
     private var skipBackwardButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.replay.uiImage, for: .normal)
+        button.setImage(Svg.replay?.uiImage, for: .normal)
         button.tintColor = .white
         button.layer.zPosition = 3
         button.size(CGSize(width: 48, height: 48))
@@ -504,7 +504,7 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     
     private var settingsButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.more.uiImage, for: .normal)
+        button.setImage(Svg.more?.uiImage, for: .normal)
         button.layer.zPosition = 3
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
         button.setTitleColor(.white, for: .normal)
@@ -602,12 +602,12 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
     @objc func playButtonPressed(_ sender: UIButton){
         if !player.isPlaying {
             player.play()
-            playButton.setImage(Svg.pause.uiImage, for: .normal)
+            playButton.setImage(Svg.pause?.uiImage, for: .normal)
             self.player.preroll(atRate: Float(self.playerRate), completionHandler: nil)
             self.player.rate = Float(self.playerRate)
             resetTimer()
         } else {
-            playButton.setImage(Svg.play.uiImage, for: .normal)
+            playButton.setImage(Svg.play?.uiImage, for: .normal)
             player.pause()
             timer?.invalidate()
             showControls()
@@ -680,12 +680,12 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
             if newStatus != oldStatus {
                 DispatchQueue.main.async {[weak self] in
                     if newStatus == .playing{
-                        self?.playButton.setImage(Svg.pause.uiImage, for: .normal)
+                        self?.playButton.setImage(Svg.pause?.uiImage, for: .normal)
                         self?.playButton.alpha = self?.skipBackwardButton.alpha ?? 0.0
                         self?.activityIndicatorView.stopAnimating()
                         self?.enableGesture = true
                     } else if newStatus == .paused {
-                        self?.playButton.setImage(Svg.play.uiImage, for: .normal)
+                        self?.playButton.setImage(Svg.play?.uiImage, for: .normal)
                         self?.playButton.alpha = self?.skipBackwardButton.alpha ?? 0.0
                         self?.activityIndicatorView.stopAnimating()
                         self?.enableGesture = true

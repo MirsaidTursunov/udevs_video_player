@@ -51,7 +51,7 @@ class SeasonSelectionController: UIViewController, UITableViewDelegate, UITableV
     }()
     lazy var cancelBtn: UIButton = {
         let cancelBtn = UIButton()
-        cancelBtn.setImage(Svg.exit.uiImage, for: .normal)
+        cancelBtn.setImage(Svg.exit?.uiImage, for: .normal)
         cancelBtn.imageView?.contentMode = .scaleAspectFit
         cancelBtn.imageEdgeInsets = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
         cancelBtn.size(CGSize(width: 24, height: 24))

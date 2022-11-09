@@ -192,10 +192,11 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             exoProgress?.visibility = View.GONE
             rewind?.visibility = View.GONE
             forward?.visibility = View.GONE
-            customSeekBar?.visibility = View.VISIBLE
-        }
-        if (playerConfiguration?.type == PlayerType.tv) {
             nextButton?.visibility = View.GONE
+            customSeekBar?.visibility = View.GONE
+        }else{
+            title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
+                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
         }
 
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
@@ -214,8 +215,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         maxVolume += 1.0
         volumeSeekBar?.progress = volume.toInt()
 
-        title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+
 
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
@@ -780,16 +780,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun isLastEpisode(): Boolean {
-        Log.d(
-            "Asdasdasdasdasd",
-            "playerConfiguration!!.seasons.size: " + playerConfiguration!!.seasons.size.toString()
-        )
-        Log.d("Asdasdasdasdasd", "seasonIndex: " + seasonIndex.toString())
-        Log.d(
-            "Asdasdasdasdasd",
-            "movies.size: " + playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size.toString()
-        )
-        Log.d("Asdasdasdasdasd", "episodeIndex: " + episodeIndex.toString())
         return playerConfiguration!!.seasons.size == seasonIndex + 1 && playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
     }
 

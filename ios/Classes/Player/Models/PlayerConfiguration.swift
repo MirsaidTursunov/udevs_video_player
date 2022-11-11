@@ -253,17 +253,21 @@ struct Story {
     let duration: Int
     let slug: String
     let fileName: String
+    let isAmediateka: Bool
+    let isWatched: Bool
     
-    init(id:String,title: String, quality: String, duration: Int, slug: String, fileName: String) {
+    init(id:String,title: String, quality: String, duration: Int, slug: String, fileName: String, isAmediateka: Bool, isWatched: Bool) {
         self.id = id
         self.title = title
         self.quality = quality
         self.duration = duration
         self.slug = slug
         self.fileName = fileName
+        self.isAmediateka = isAmediateka
+        self.isWatched = isWatched
     }
     
     static func fromMap(map : [String:Any])-> Story {
-        return Story(id:map["id"] as! String, title: map["title"] as! String, quality: map["quality"] as! String, duration: map["duration"] as! Int, slug: map["slug"] as! String, fileName:  map["fileName"] as! String)
+        return Story(id:map["id"] as! String, title: map["title"] as! String, quality: map["quality"] as! String, duration: map["duration"] as! Int, slug: map["slug"] as! String, fileName:  map["fileName"] as! String, isAmediateka: map["is_amediateka"] as! Bool, isWatched: map["is_watched"] as! Bool)
     }
 }

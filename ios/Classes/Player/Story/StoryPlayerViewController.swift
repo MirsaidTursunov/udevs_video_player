@@ -13,16 +13,18 @@ class StoryPlayerViewController: UIViewController {
     let storyButtonText: String
     weak var delegate: VideoPlayerDelegate?
     private var orientationLock = UIInterfaceOrientationMask.all
+    let playerConfiguration: PlayerConfiguration
     
     let pagingController: UIPageViewController = UIPageViewController(
         transitionStyle: .scroll,
         navigationOrientation: .horizontal,
         options: [:])
     
-    init(video: Video, storyButtonText: String, index: Int) {
+    init(video: Video, storyButtonText: String, index: Int, playerConfiguration: PlayerConfiguration) {
         self.video = video
         self.storyButtonText = storyButtonText
         self.index = index
+        self.playerConfiguration = playerConfiguration
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,7 +110,7 @@ extension StoryPlayerViewController: UIPageViewControllerDataSource {
     }
     
     private func configureFileViewController(with file: Story) -> UIViewController {
-        let vc = FileViewController(file: file)
+        let vc = FileViewController(file: file,playerConfiguration: playerConfiguration,index: index)
         vc.postDelegate = self
         vc.buttonText = self.storyButtonText
         vc.delegate = self.delegate

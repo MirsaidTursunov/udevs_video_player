@@ -21,6 +21,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let file: Story
     var buttonText:String = ""
+    let playerConfiguration: PlayerConfiguration
+    let index: Int
     
     weak var postDelegate: FileViewControllerDelegate?
     weak var delegate: VideoPlayerDelegate?
@@ -89,8 +91,10 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: Init
     
-    init(file: Story) {
+    init(file: Story,playerConfiguration: PlayerConfiguration, index: Int) {
         self.file = file
+        self.playerConfiguration = playerConfiguration
+        self.index = index
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -192,6 +196,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
             if newValue != oldValue {
+                if !playerConfiguration.story[index].isWatched && !(playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                    postAnalytics(story: <#T##StoryAnalysticRequest#>.with(episodeKey: "0",isStory: true,movieKey: playerConfiguration.story[index].slug,seasonKey: "0",userId: playerConfiguration.movieTrack?.userId,videoPlatform: playerConfiguration.platform))
+                }
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
                         self?.activityIndicatorView.stopAnimating()
@@ -204,6 +211,21 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         }
+    }
+    
+    func postAnalytics(story: StoryAnalysticRequest) {
+        var storyAnalyticResponse:StoryAnalyticResponse?
+        let _url:String = playerConfiguration.baseUrl+"movie-track"
+        let result = Networking.sharedInstance.postAnalytics(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: story.fromJson())
+        switch result {
+        case .failure(let error):
+            print(error)
+            break
+        case .success(let success):
+            storyAnalyticResponse = success
+            break
+        }
+        return 
     }
     
     private func configureTimer() {

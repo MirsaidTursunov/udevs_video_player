@@ -93,17 +93,10 @@ struct Networking {
         }
         request.setValue(token, forHTTPHeaderField: "Authorization")
         request.setValue(platform, forHTTPHeaderField: "platform")
-        print(request)
-        print(request.allHTTPHeaderFields)
-        print(request.httpBody)
-        print(request.httpMethod)
+    
         var result: Result<MovieTrackResponse, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)
         session.dataTask(with: request){data,t,k in
-            print(data)
-            print("ERRoRRRR")
-            print(t)
-            print(k)
             guard let json = data else{
                 result = .failure(.NoDataAvailable)
                 return
@@ -111,6 +104,47 @@ struct Networking {
             do{
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(MovieTrackResponse.self, from: Data(json))
+                print("response1")
+                print(response)
+                result = .success(response)
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
+    
+    func postAnalytics(_ baseUrl:String, token:String, platform:String, json: [String: Any]) ->
+    Result<StoryAnalyticResponse, NetworkError> {
+        let url = URL(string: baseUrl)!
+        var request = URLRequest(url: url)
+        
+        request.httpMethod = "POST"
+        // prepare json data
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        print(json)
+        do {
+            request.httpBody = jsonData
+        } catch let error {
+            print("ERRoRRRR")
+            print(error.localizedDescription)
+        }
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue(platform, forHTTPHeaderField: "platform")
+    
+        var result: Result<StoryAnalyticResponse, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,t,k in
+            guard let json = data else{
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do{
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(StoryAnalyticResponse.self, from: Data(json))
                 print("response1")
                 print(response)
                 result = .success(response)

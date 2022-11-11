@@ -103,11 +103,11 @@ class StoryVideoPlayerActivity : Activity(),
         playVideo()
     }
 
-    var touchListener: View.OnTouchListener = object : View.OnTouchListener {
-        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
-            return gestureDetector.onTouchEvent(event)
-        }
-    }
+//    var touchListener: View.OnTouchListener = object : View.OnTouchListener {
+//        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+//            return gestureDetector.onTouchEvent(event)
+//        }
+//    }
 
     override fun onBackPressed() {
         if (player?.isPlaying == true) {
@@ -138,9 +138,15 @@ class StoryVideoPlayerActivity : Activity(),
         if (player?.isPlaying == true) {
             player?.stop()
         }
+
+        mFinishActivity(false)
+    }
+
+    private fun mFinishActivity(isFromSwipe: Boolean) {
         val intent = Intent()
         intent.putExtra("slug", playerConfiguration!!.story[storyIndex].slug)
         intent.putExtra("title", playerConfiguration!!.story[storyIndex].title)
+        intent.putExtra("isFromSwipe", isFromSwipe)
         setResult(PLAYER_ACTIVITY_FINISH, intent)
         finish()
     }
@@ -349,21 +355,20 @@ class StoryVideoPlayerActivity : Activity(),
     }
 
     private fun onSwipeTop() {
-        Toast.makeText(this, "onSwipeTop", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "onSwipeTop", Toast.LENGTH_SHORT).show()
+        mFinishActivity(true)
     }
 
     private fun onSwipeBottom() {
-        Toast.makeText(this, "onSwipeBottom", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "onSwipeBottom", Toast.LENGTH_SHORT).show()
     }
 
     private fun onSwipeLeft() {
-        Toast.makeText(this, "onSwipeLeft", Toast.LENGTH_SHORT).show()
-
+//        Toast.makeText(this, "onSwipeLeft", Toast.LENGTH_SHORT).show()
     }
 
     private fun onSwipeRight() {
-        Toast.makeText(this, "onSwipeRight", Toast.LENGTH_SHORT).show()
-
+//        Toast.makeText(this, "onSwipeRight", Toast.LENGTH_SHORT).show()
     }
 }
 

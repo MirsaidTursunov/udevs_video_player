@@ -13,8 +13,6 @@
         android:background="@color/black"
         app:animation_enabled="false"
         app:auto_show="true"
-        android:clickable="true"
-        android:focusable="true"
         app:controller_layout_id="@layout/custom_no_playback_view"
         app:hide_on_touch="true"
         app:layout_constraintBottom_toBottomOf="parent"

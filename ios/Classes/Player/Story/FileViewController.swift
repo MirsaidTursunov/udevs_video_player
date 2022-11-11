@@ -215,7 +215,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func postAnalytics(story: StoryAnalysticRequest) {
         var storyAnalyticResponse:StoryAnalyticResponse?
-        let _url:String = playerConfiguration.baseUrl+"movie-track"
+        let _url:String = playerConfiguration.baseUrl+"analytics"
         let result = Networking.sharedInstance.postAnalytics(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: story.fromJson())
         switch result {
         case .failure(let error):

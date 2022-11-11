@@ -39,7 +39,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.closeCircle.uiImage, for: .normal)
+        button.setImage(Svg.closeCircle?.uiImage, for: .normal)
         button.tintColor = .white
         button.imageView?.contentMode = .scaleAspectFit
         return button
@@ -196,13 +196,18 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
             if newValue != oldValue {
-                if !playerConfiguration.story[index].isWatched && !(playerConfiguration.movieTrack?.userId.isEmpty ?? false){
-                    postAnalytics(story: <#T##StoryAnalysticRequest#>.with(episodeKey: "0",isStory: true,movieKey: playerConfiguration.story[index].slug,seasonKey: "0",userId: playerConfiguration.movieTrack?.userId,videoPlatform: playerConfiguration.platform))
-                }
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
+                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self!.playerConfiguration.story[self!.index].slug,seasonKey: "0",userId: self!.playerConfiguration.movieTrack!.userId,videoPlatform: self!.playerConfiguration.platform)
+                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                            self?.postAnalytics(story: storyRequest)
+                        }
                         self?.activityIndicatorView.stopAnimating()
                     } else if newValue == 0 {
+                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self!.playerConfiguration.story[self!.index].slug,seasonKey: "0",userId: self!.playerConfiguration.movieTrack!.userId,videoPlatform: self!.playerConfiguration.platform)
+                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                            self?.postAnalytics(story: storyRequest)
+                        }
                         self?.activityIndicatorView.stopAnimating()
                         self?.timer?.invalidate()
                     } else {
@@ -214,15 +219,14 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func postAnalytics(story: StoryAnalysticRequest) {
-        var storyAnalyticResponse:StoryAnalyticResponse?
         let _url:String = playerConfiguration.baseUrl+"analytics"
         let result = Networking.sharedInstance.postAnalytics(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: story.fromJson())
         switch result {
         case .failure(let error):
             print(error)
             break
-        case .success(let success):
-            storyAnalyticResponse = success
+        case .success(_):
+            print("successfully posted analytics")
             break
         }
         return 

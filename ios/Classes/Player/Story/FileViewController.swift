@@ -106,6 +106,10 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         addSubviews()
         
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
+        swipeUp.direction = .up
+        self.view.addGestureRecognizer(swipeUp)
+        
         view.addGestureRecognizer(longPressGesture)
         view.addGestureRecognizer(tapGesture)
         
@@ -120,6 +124,17 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                                selector: #selector(storyDidEnd(notification:)),
                                                name: .AVPlayerItemDidPlayToEndTime,
                                                object: self.player?.currentItem)
+    }
+    
+    @objc func swipedUp(){
+        print("swipe up works")
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, ""]) {
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                delegate?.close(args: jsonString)
+            }
+        }
+        self.dismiss(animated: true)
     }
     
     private func addSubviews() {
@@ -198,16 +213,17 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             if newValue != oldValue {
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
-                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self!.playerConfiguration.story[self!.index].slug,seasonKey: "0",userId: self!.playerConfiguration.movieTrack!.userId,videoPlatform: self!.playerConfiguration.platform)
-                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                        print("we are here2")
+                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self?.playerConfiguration.story[self!.index].slug ?? "",seasonKey: "0",userId: self?.playerConfiguration.movieTrack!.userId ?? "",videoPlatform: self?.playerConfiguration.platform ?? "")
+//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
                             self?.postAnalytics(story: storyRequest)
-                        }
+//                        }
                         self?.activityIndicatorView.stopAnimating()
                     } else if newValue == 0 {
-                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self!.playerConfiguration.story[self!.index].slug,seasonKey: "0",userId: self!.playerConfiguration.movieTrack!.userId,videoPlatform: self!.playerConfiguration.platform)
-                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self?.playerConfiguration.story[self!.index].slug ?? "",seasonKey: "0",userId: self?.playerConfiguration.movieTrack!.userId ?? "",videoPlatform: self?.playerConfiguration.platform ?? "")
+//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
                             self?.postAnalytics(story: storyRequest)
-                        }
+//                        }
                         self?.activityIndicatorView.stopAnimating()
                         self?.timer?.invalidate()
                     } else {
@@ -219,6 +235,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func postAnalytics(story: StoryAnalysticRequest) {
+        print("we are here")
         let _url:String = playerConfiguration.baseUrl+"analytics"
         let result = Networking.sharedInstance.postAnalytics(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: story.fromJson())
         switch result {

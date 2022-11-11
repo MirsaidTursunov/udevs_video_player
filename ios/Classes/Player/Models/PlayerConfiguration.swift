@@ -10,7 +10,7 @@ import Foundation
 struct PlayerConfiguration{
     var initialResolution: [String:String]
     var resolutions: [String:String]
-    var url, qualityText, platform : String
+    var url, qualityText, platform, userId : String
     var speedText: String
     var type: PlayerType
     var lastPosition: Int
@@ -40,7 +40,7 @@ struct PlayerConfiguration{
     var storyIndex: Int
     var movieTrack: MovieTrackRequest?
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, episodeButtonText: String, nextButtonText: String, seasons: [Season], tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,  story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String, type: PlayerType) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, episodeButtonText: String, nextButtonText: String, seasons: [Season], tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,  story: [Story], storyButtonText: String, closeText:String, seasonText:String, storyIndex: Int, movieTrack: MovieTrackRequest?, platform:String, type: PlayerType,userId:String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -74,6 +74,7 @@ struct PlayerConfiguration{
         self.movieTrack = movieTrack
         self.platform = platform
         self.type = type
+        self.userId = userId
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -151,7 +152,7 @@ struct PlayerConfiguration{
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
                                    story: story, storyButtonText:map["storyButtonText"] as! String, closeText:map["closeText"] as! String,
-                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String, type : type
+                                   seasonText:map["seasonText"] as! String, storyIndex: map["storyIndex"] as! Int, movieTrack: movieTrack, platform:map["platform"] as! String, type : type, userId: map["userId"] as! String
                                    
         )
     }

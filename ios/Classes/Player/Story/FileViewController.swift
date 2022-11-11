@@ -126,17 +126,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                                object: self.player?.currentItem)
     }
     
-    @objc func swipedUp(){
-        print("swipe up works")
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, "isFromSwipe": "true"]) {
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                delegate?.close(args: jsonString)
-            }
-        }
-        self.dismiss(animated: true)
-    }
-    
     private func addSubviews() {
         view.addSubview(playerView)
         view.addSubview(closeButton)
@@ -302,5 +291,15 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         self.dismiss(animated: true)
+    }
+    
+    @objc func swipedUp(){
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, "isFromSwipe": "true"]) {
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                delegate?.close(args: jsonString)
+            }
+        }
+        self.navigationController?.popViewController(animated: true)
     }
 }

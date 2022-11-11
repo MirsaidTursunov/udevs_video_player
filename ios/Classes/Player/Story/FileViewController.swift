@@ -106,9 +106,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         addSubviews()
         
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
-        swipeUp.direction = .up
-        self.view.addGestureRecognizer(swipeUp)
+//        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
+//        swipeUp.direction = .up
+//        self.view.addGestureRecognizer(swipeUp)
         
         view.addGestureRecognizer(longPressGesture)
         view.addGestureRecognizer(tapGesture)
@@ -129,7 +129,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func swipedUp(){
         print("swipe up works")
         let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, ""]) {
+        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, "isFromSwipe": "true"]) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 delegate?.close(args: jsonString)
             }

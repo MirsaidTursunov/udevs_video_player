@@ -18,7 +18,8 @@ class StoryPlayerViewController: UIViewController {
     let pagingController: UIPageViewController = UIPageViewController(
         transitionStyle: .scroll,
         navigationOrientation: .horizontal,
-        options: [:])
+        options: [:]
+    )
     
     init(video: Video, storyButtonText: String, index: Int, playerConfiguration: PlayerConfiguration) {
         self.video = video
@@ -48,6 +49,20 @@ class StoryPlayerViewController: UIViewController {
         super.viewDidLoad()
         configurePagingController()
         view.backgroundColor = .black
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
+        swipeUp.direction = .up
+        self.view.addGestureRecognizer(swipeUp)
+    }
+    
+    @objc func swipedUp(){
+        print("swipe up works")
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(["slug": video.videoFiles[index].slug, "title":video.videoFiles[index].title, "isFromSwipe": "true"]) {
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                delegate?.close(args: jsonString)
+            }
+        }
+        self.dismiss(animated: true)
     }
     
     override func viewDidLayoutSubviews() {

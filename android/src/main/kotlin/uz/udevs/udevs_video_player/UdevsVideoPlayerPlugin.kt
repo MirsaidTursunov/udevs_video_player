@@ -92,7 +92,8 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 val json = Gson().toJson(
                     mapOf(
                         "slug" to data.getStringExtra("slug"),
-                        "title" to data.getStringExtra("title")
+                        "title" to data.getStringExtra("title"),
+                        "isFromSwipe" to data.getStringExtra("isFromSwipe")
                     )
                 )
                 resultMethod?.success(json)

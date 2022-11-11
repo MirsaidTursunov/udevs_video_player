@@ -119,6 +119,7 @@ struct Networking {
     
     func postAnalytics(_ baseUrl:String, token:String, platform:String, json: [String: Any]) ->
     Result<StoryAnalyticResponse, NetworkError> {
+        print("====>\(baseUrl)")
         let url = URL(string: baseUrl)!
         var request = URLRequest(url: url)
         
@@ -138,6 +139,10 @@ struct Networking {
         var result: Result<StoryAnalyticResponse, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)
         session.dataTask(with: request){data,t,k in
+            print(t)
+            print(k)
+            print(data)
+            
             guard let json = data else{
                 result = .failure(.NoDataAvailable)
                 return

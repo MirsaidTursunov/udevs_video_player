@@ -32,6 +32,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private var timer: Timer?
     
+    private var isAnalyticSent: Bool = false
+    
     private var activityIndicatorView: NVActivityIndicatorView = {
         let activityView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: .circleStrokeSpin, color: Colors.assets)
         return activityView
@@ -213,17 +215,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             if newValue != oldValue {
                 DispatchQueue.main.async {[weak self] in
                     if newValue == 2 {
-                        print("we are here2")
-                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self?.playerConfiguration.story[self!.index].slug ?? "",seasonKey: "0",userId: self?.playerConfiguration.movieTrack!.userId ?? "",videoPlatform: self?.playerConfiguration.platform ?? "")
-//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
-                            self?.postAnalytics(story: storyRequest)
-//                        }
                         self?.activityIndicatorView.stopAnimating()
                     } else if newValue == 0 {
-                        let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self?.playerConfiguration.story[self!.index].slug ?? "",seasonKey: "0",userId: self?.playerConfiguration.movieTrack!.userId ?? "",videoPlatform: self?.playerConfiguration.platform ?? "")
-//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
-                            self?.postAnalytics(story: storyRequest)
-//                        }
+                        
                         self?.activityIndicatorView.stopAnimating()
                         self?.timer?.invalidate()
                     } else {
@@ -260,6 +254,14 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func setProgressView(_ currentMoment: Double, and duration: Double) {
+        if currentMoment >= 1 && !isAnalyticSent {
+            isAnalyticSent = true
+            print("we are here2")
+            let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self.playerConfiguration.story[self.index].slug,seasonKey: "0",userId: self.playerConfiguration.userId,videoPlatform: self.playerConfiguration.story[self.index].isAmediateka ? "AMEDIATEKA" : "SHARQ")
+//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
+                self.postAnalytics(story: storyRequest)
+//                        }
+        }
         progressView.progress = Float(currentMoment / duration)
     }
     

@@ -14,6 +14,7 @@ import NVActivityIndicatorView
 protocol FileViewControllerDelegate: AnyObject {
     func didLongPress(_ vc: FileViewController, sender: UILongPressGestureRecognizer)
     func didTap(_ vc: FileViewController, sender: UITapGestureRecognizer)
+    func close(_ vc: FileViewController, sender: UITapGestureRecognizer)
     func videoEnded(_ vc: FileViewController)
 }
 
@@ -108,10 +109,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         addSubviews()
         
-//        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
-//        swipeUp.direction = .up
-//        self.view.addGestureRecognizer(swipeUp)
-        
         view.addGestureRecognizer(longPressGesture)
         view.addGestureRecognizer(tapGesture)
         
@@ -137,17 +134,17 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-            return self.orientationLock
+        return self.orientationLock
     }
     
     override var shouldAutorotate: Bool {
         return false
     }
-
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.portrait
     }
-
+    
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
         return UIInterfaceOrientation.portrait
     }
@@ -161,7 +158,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                    y: 30+topPadding,
                                    width: 25,
                                    height: 25)
-
+        
         playButton.leading(to: view.safeAreaLayoutGuide)
         playButton.trailing(to: view.safeAreaLayoutGuide)
         playButton.bottom(to: view.safeAreaLayoutGuide)
@@ -171,7 +168,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             make.left.equalToSuperview().offset(10)
             make.right.equalToSuperview().offset(-10)
         }
-
+        
         playerView.frame = view.bounds
         playerView.center(in: view)
         
@@ -179,7 +176,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                                     y: 10+topPadding,
                                     width: Int(view.width-closeButton.width),
                                     height: 10)
-     
+        
         
         activityIndicatorView.center(in: view)
         activityIndicatorView.layer.cornerRadius = 20
@@ -206,7 +203,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
                     if newValue == 2 {
                         self?.activityIndicatorView.stopAnimating()
                     } else if newValue == 0 {
-                        
                         self?.activityIndicatorView.stopAnimating()
                         self?.timer?.invalidate()
                     } else {
@@ -218,7 +214,6 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func postAnalytics(story: StoryAnalysticRequest) {
-        print("we are here")
         let _url:String = playerConfiguration.baseUrl+"analytics"
         let result = Networking.sharedInstance.postAnalytics(_url, token: playerConfiguration.authorization, platform: playerConfiguration.platform, json: story.fromJson())
         switch result {
@@ -229,7 +224,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
             print("successfully posted analytics")
             break
         }
-        return 
+        return
     }
     
     private func configureTimer() {
@@ -245,11 +240,8 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     private func setProgressView(_ currentMoment: Double, and duration: Double) {
         if currentMoment >= 1 && !isAnalyticSent {
             isAnalyticSent = true
-            print("we are here2")
             let storyRequest = StoryAnalysticRequest(episodeKey: "0",isStory: true,movieKey: self.playerConfiguration.story[self.index].slug,seasonKey: "0",userId: self.playerConfiguration.userId,videoPlatform: self.playerConfiguration.story[self.index].isAmediateka ? "AMEDIATEKA" : "SHARQ")
-//                        if !(self?.playerConfiguration.story[self?.index ?? 0].isWatched ?? false) && !(self?.playerConfiguration.movieTrack?.userId.isEmpty ?? false){
-                self.postAnalytics(story: storyRequest)
-//                        }
+            self.postAnalytics(story: storyRequest)
         }
         progressView.progress = Float(currentMoment / duration)
     }
@@ -280,14 +272,13 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         postDelegate?.didTap(self, sender: sender)
     }
     
-    @objc private func didTapClose() {
-        self.dismiss(animated: true)
-        delegate?.close(args: nil)
+    @objc private func didTapClose(_ sender: UITapGestureRecognizer) {
+        postDelegate?.close(self, sender: sender)
     }
     
     @objc private func playClose() {
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title]) {
+        let data:[String: Any] = ["slug": file.slug, "title": file.title, "isFromSwipe": false]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 delegate?.close(args: jsonString)
             }
@@ -296,12 +287,13 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func swipedUp(){
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(["slug": file.slug, "title":file.title, "isFromSwipe": "true"]) {
+        let data:[String: Any] = ["slug": file.slug, "title": file.title, "isFromSwipe": true]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 delegate?.close(args: jsonString)
             }
         }
         self.navigationController?.popViewController(animated: true)
     }
+    
 }

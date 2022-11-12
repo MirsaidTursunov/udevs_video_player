@@ -145,6 +145,14 @@ extension StoryPlayerViewController: FileViewControllerDelegate {
         }
     }
     
+    func close(_ vc: FileViewController, sender: UITapGestureRecognizer) {
+        vc.player?.cancelPendingPrerolls()
+        vc.player?.pause()
+        delegate?.close(args: nil)
+        dismiss(animated: true)
+        return
+    }
+    
     func didTap(_ vc: FileViewController, sender: UITapGestureRecognizer) {
         let touchLocation = sender.location(ofTouch: 0, in: view)
         

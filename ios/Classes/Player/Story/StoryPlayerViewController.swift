@@ -13,16 +13,19 @@ class StoryPlayerViewController: UIViewController {
     let storyButtonText: String
     weak var delegate: VideoPlayerDelegate?
     private var orientationLock = UIInterfaceOrientationMask.all
+    let playerConfiguration: PlayerConfiguration
     
     let pagingController: UIPageViewController = UIPageViewController(
         transitionStyle: .scroll,
         navigationOrientation: .horizontal,
-        options: [:])
+        options: [:]
+    )
     
-    init(video: Video, storyButtonText: String, index: Int) {
+    init(video: Video, storyButtonText: String, index: Int, playerConfiguration: PlayerConfiguration) {
         self.video = video
         self.storyButtonText = storyButtonText
         self.index = index
+        self.playerConfiguration = playerConfiguration
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -46,6 +49,20 @@ class StoryPlayerViewController: UIViewController {
         super.viewDidLoad()
         configurePagingController()
         view.backgroundColor = .black
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipedUp))
+        swipeUp.direction = .up
+        self.view.addGestureRecognizer(swipeUp)
+    }
+    
+    @objc func swipedUp(){
+        print("swipe up works")
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(["slug": video.videoFiles[index].slug, "title":video.videoFiles[index].title, "isFromSwipe": "true"]) {
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                delegate?.close(args: jsonString)
+            }
+        }
+        self.dismiss(animated: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -108,7 +125,7 @@ extension StoryPlayerViewController: UIPageViewControllerDataSource {
     }
     
     private func configureFileViewController(with file: Story) -> UIViewController {
-        let vc = FileViewController(file: file)
+        let vc = FileViewController(file: file,playerConfiguration: playerConfiguration,index: index)
         vc.postDelegate = self
         vc.buttonText = self.storyButtonText
         vc.delegate = self.delegate
@@ -126,6 +143,14 @@ extension StoryPlayerViewController: FileViewControllerDelegate {
                 vc.player?.play()
             }
         }
+    }
+    
+    func close(_ vc: FileViewController, sender: UITapGestureRecognizer) {
+        vc.player?.cancelPendingPrerolls()
+        vc.player?.pause()
+        delegate?.close(args: nil)
+        dismiss(animated: true)
+        return
     }
     
     func didTap(_ vc: FileViewController, sender: UITapGestureRecognizer) {

@@ -1,7 +1,6 @@
 package uz.udevs.udevs_video_player.activities
 
 import android.annotation.SuppressLint
-import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
@@ -9,9 +8,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -28,6 +27,7 @@ import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import kotlin.math.abs
 
 class StoryVideoPlayerActivity : Activity(),
@@ -43,6 +43,8 @@ class StoryVideoPlayerActivity : Activity(),
     private var max = 0
     private var sWidth: Int = 0
     private var storyIndex: Int = 0
+    private lateinit var btnClose: View
+    private lateinit var btnWatchMovie: View
     private lateinit var storyContainer: View
     private lateinit var gestureDetector: GestureDetector
 
@@ -65,6 +67,8 @@ class StoryVideoPlayerActivity : Activity(),
         storiesProgressView = findViewById<View>(R.id.stories) as ProgressBar
         progressbar = findViewById<View>(R.id.video_progress_bar_story) as ProgressBar
         progressbar2 = findViewById<View>(R.id.video_progress_bar_story2) as ProgressBar
+        btnClose = findViewById(R.id.cv_story_close)
+        btnWatchMovie = findViewById(R.id.btn_story_movie)
         sWidth = Resources.getSystem().displayMetrics.widthPixels
 
         gestureDetector = GestureDetector(this, this)
@@ -72,42 +76,19 @@ class StoryVideoPlayerActivity : Activity(),
             gestureDetector.onTouchEvent(motionEvent)
             return@setOnTouchListener true
         }
-//        storyContainer.setOnTouchListener(touchListener)
 
-        /// gesture detector
-//        val reverse = findViewById<View>(R.id.reverse)
-//        reverse.setOnClickListener { // inside on click we are
-//            reverse()
-//        }
-//
-//        val skip = findViewById<View>(R.id.skip)
-//        skip.setOnClickListener { // inside on click we are
-//            skip()
-//        }
-
-//        reverse.setOnTouchListener(touchListener)
-//        skip.setOnTouchListener(touchListener)
-
-        val close = findViewById<LinearLayout>(R.id.cv_story_close)
-        close.setOnClickListener { // inside on click we are
+        btnClose.setOnClickListener { // inside on click we are
             onBackPressed()
         }
-        val storyMovieBtn = findViewById<ConstraintLayout>(R.id.btn_story_movie)
         val storyMovieText = findViewById<TextView>(R.id.tv_play)
         storyMovieText.text = playerConfiguration?.storyButtonText
-        storyMovieBtn.setOnClickListener { // inside on click we are
+        btnWatchMovie.setOnClickListener { // inside on click we are
             backPressed()
         }
 
         /// play video
         playVideo()
     }
-
-//    var touchListener: View.OnTouchListener = object : View.OnTouchListener {
-//        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
-//            return gestureDetector.onTouchEvent(event)
-//        }
-//    }
 
     override fun onBackPressed() {
         if (player?.isPlaying == true) {
@@ -170,7 +151,7 @@ class StoryVideoPlayerActivity : Activity(),
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.story[storyIndex].fileName)))
         progressBarStatus = 0
-        max = playerConfiguration!!.story[storyIndex].duration.toInt()
+        max = playerConfiguration!!.story[storyIndex].duration.toInt() * 1000
         player = ExoPlayer.Builder(this).build()
         playerView?.player = player
         playerView?.keepScreenOn = true
@@ -187,24 +168,14 @@ class StoryVideoPlayerActivity : Activity(),
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
                         println("Before requesting for check analtyics api")
-
                         checkAnalytics(storyIndex)
-                        if (max != player!!.duration.toInt() / 1000) {
-                            max = player!!.duration.toInt() / 1000
-                        }
+//                        if (max != player!!.duration.toInt() * 1000) {
+//                            max = player!!.duration.toInt()
+//                        }
                         storiesProgressView?.max = max
                         storiesProgressView?.progress = progressBarStatus
-                        Thread(Runnable {
-                            while (progressBarStatus < max) {
-                                progressBarStatus += 1
-                                try {
-                                    Thread.sleep(1000)
-                                } catch (e: InterruptedException) {
-                                    e.printStackTrace()
-                                }
-                                storiesProgressView?.progress = progressBarStatus
-                            }
-                        }).start()
+                        playerView?.postDelayed({ getCurrentPlayerPosition() }, 100)
+
                     }
                 }
 
@@ -235,13 +206,20 @@ class StoryVideoPlayerActivity : Activity(),
                         Player.STATE_IDLE -> {}
                     }
                 }
+
+                private fun getCurrentPlayerPosition() {
+                    storiesProgressView?.progress = player!!.currentPosition.toInt()
+                    if (player!!.isPlaying) {
+                        playerView!!.postDelayed({ getCurrentPlayerPosition() }, 100)
+                    }
+                }
             })
         player?.playWhenReady = true
     }
 
     private fun playStory(index: Int) {
         progressBarStatus = 0
-        max = playerConfiguration!!.story[index].duration.toInt()
+        max = playerConfiguration!!.story[index].duration.toInt() * 1000
         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource =
             HlsMediaSource.Factory(dataSourceFactory)
@@ -290,19 +268,15 @@ class StoryVideoPlayerActivity : Activity(),
         })
     }
 
-
     override fun onScale(detector: ScaleGestureDetector?): Boolean = false
 
     override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean = false
 
-    override fun onScaleEnd(detector: ScaleGestureDetector?) {
-
-    }
+    override fun onScaleEnd(detector: ScaleGestureDetector?) {}
 
     override fun onDown(p0: MotionEvent?): Boolean = false
 
-    override fun onShowPress(p0: MotionEvent?) {
-    }
+    override fun onShowPress(p0: MotionEvent?) {}
 
     override fun onSingleTapUp(event: MotionEvent?): Boolean {
         if (event!!.x < sWidth / 2) {
@@ -355,20 +329,13 @@ class StoryVideoPlayerActivity : Activity(),
     }
 
     private fun onSwipeTop() {
-//        Toast.makeText(this, "onSwipeTop", Toast.LENGTH_SHORT).show()
         mFinishActivity(true)
     }
 
-    private fun onSwipeBottom() {
-//        Toast.makeText(this, "onSwipeBottom", Toast.LENGTH_SHORT).show()
-    }
+    private fun onSwipeBottom() {}
 
-    private fun onSwipeLeft() {
-//        Toast.makeText(this, "onSwipeLeft", Toast.LENGTH_SHORT).show()
-    }
+    private fun onSwipeLeft() {}
 
-    private fun onSwipeRight() {
-//        Toast.makeText(this, "onSwipeRight", Toast.LENGTH_SHORT).show()
-    }
+    private fun onSwipeRight() {}
 }
 

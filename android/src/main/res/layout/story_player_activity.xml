@@ -17,10 +17,8 @@
         app:hide_on_touch="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
         app:resize_mode="fill"
         app:show_buffering="never"
         app:show_timeout="6000"
@@ -36,32 +34,6 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal" />
-
-    <!--on below line we are creating
-        linear layout for our views-->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/story_container"-->
-<!--        android:orientation="horizontal">-->
-
-<!--        &lt;!&ndash;view to handle move to previous image&ndash;&gt;-->
-<!--        <View-->
-<!--            android:id="@+id/reverse"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1" />-->
-
-<!--        &lt;!&ndash;view to move to the next image&ndash;&gt;-->
-<!--        <View-->
-<!--            android:id="@+id/skip"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1" />-->
-
-<!--    </LinearLayout>-->
-
-
 
     <ProgressBar
         android:id="@+id/stories"
@@ -101,6 +73,7 @@
         android:id="@+id/btn_story_movie"
         android:layout_width="match_parent"
         android:layout_height="42dp"
+        android:visibility="gone"
         android:layout_alignBottom="@id/story_player_view"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"

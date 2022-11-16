@@ -10,6 +10,7 @@ import SVGKit
 
 struct Svg {
     static let play :SVGKImage! = SVGKImage(named: "play", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let swipe :SVGKImage! = SVGKImage(named: "swipe", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let pause :SVGKImage! = SVGKImage(named: "pause", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let exit :SVGKImage! = SVGKImage(named: "exit", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let more :SVGKImage! = SVGKImage(named: "more", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)

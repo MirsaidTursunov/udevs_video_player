@@ -55,14 +55,12 @@ class StoryPlayerViewController: UIViewController {
     }
     
     @objc func swipedUp(){
-        print("swipe up works")
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(["slug": video.videoFiles[index].slug, "title":video.videoFiles[index].title, "isFromSwipe": "true"]) {
+        let data:[String: Any] = ["slug": video.videoFiles[index].slug, "title": video.videoFiles[index].title, "isFromSwipe": false]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                delegate?.close(args: jsonString)
+                swipe(jsonString)
             }
         }
-        self.dismiss(animated: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -135,6 +133,17 @@ extension StoryPlayerViewController: UIPageViewControllerDataSource {
 
 extension StoryPlayerViewController: FileViewControllerDelegate {
     
+    func swipe(_ json: String) {
+        let transition = CATransition()
+        transition.duration = 0.5
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromTop
+        self.view.window!.layer.add(transition, forKey: nil)
+        self.dismiss(animated: false, completion: nil)
+        delegate?.close(args: json)
+    }
+    
     func didLongPress(_ vc: FileViewController, sender: UILongPressGestureRecognizer) {
         if sender.state == .began ||  sender.state == .ended {
             if(sender.state == .began) {
@@ -145,9 +154,7 @@ extension StoryPlayerViewController: FileViewControllerDelegate {
         }
     }
     
-    func close(_ vc: FileViewController, sender: UITapGestureRecognizer) {
-        vc.player?.cancelPendingPrerolls()
-        vc.player?.pause()
+    func close() {
         delegate?.close(args: nil)
         dismiss(animated: true)
         return

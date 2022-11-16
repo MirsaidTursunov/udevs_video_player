@@ -14,7 +14,8 @@ import NVActivityIndicatorView
 protocol FileViewControllerDelegate: AnyObject {
     func didLongPress(_ vc: FileViewController, sender: UILongPressGestureRecognizer)
     func didTap(_ vc: FileViewController, sender: UITapGestureRecognizer)
-    func close(_ vc: FileViewController, sender: UITapGestureRecognizer)
+    func close()
+    func swipe(_ json: String)
     func videoEnded(_ vc: FileViewController)
 }
 
@@ -50,11 +51,9 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private let playButton: UIButton = {
         let button = UIButton()
-        button.setImage(Svg.playCircle.uiImage, for: .normal)
+        button.setImage(Svg.swipe.uiImage, for: .normal)
         button.setTitleColor(Colors.black,for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        button.layer.cornerRadius = 4
-        button.backgroundColor = Colors.assets
+        button.backgroundColor = .clear
         button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
@@ -117,7 +116,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         
         configurePlayer(with: file.fileName)
         configureTimer()
-        playButton.setTitle(buttonText, for: .normal)
+//        playButton.setTitle(buttonText, for: .normal)
         activityIndicatorView.startAnimating()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(storyDidEnd(notification:)),
@@ -162,11 +161,10 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         playButton.leading(to: view.safeAreaLayoutGuide)
         playButton.trailing(to: view.safeAreaLayoutGuide)
         playButton.bottom(to: view.safeAreaLayoutGuide)
-        playButton.height(42)
+        playButton.height(32)
+        playButton.width(32)
         playButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(10)
-            make.left.equalToSuperview().offset(10)
-            make.right.equalToSuperview().offset(-10)
         }
         
         playerView.frame = view.bounds
@@ -273,27 +271,15 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc private func didTapClose(_ sender: UITapGestureRecognizer) {
-        postDelegate?.close(self, sender: sender)
+        postDelegate?.close()
     }
     
     @objc private func playClose() {
         let data:[String: Any] = ["slug": file.slug, "title": file.title, "isFromSwipe": false]
         if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                delegate?.close(args: jsonString)
+                postDelegate?.swipe(jsonString)
             }
         }
-        self.dismiss(animated: true)
     }
-    
-    @objc func swipedUp(){
-        let data:[String: Any] = ["slug": file.slug, "title": file.title, "isFromSwipe": true]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                delegate?.close(args: jsonString)
-            }
-        }
-        self.navigationController?.popViewController(animated: true)
-    }
-    
 }

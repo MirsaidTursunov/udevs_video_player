@@ -36,6 +36,8 @@ interface RetrofitService {
 
     @POST("analytics")
     fun postStoryAnalytics(
+        @Header("Authorization") authorization: String,
+        @Header("SessionId") sessionId: String,
         @Body analyticsRequest: CheckAnalyticsRequest,
     ): Call<CheckAnalyticsResponse>
 }

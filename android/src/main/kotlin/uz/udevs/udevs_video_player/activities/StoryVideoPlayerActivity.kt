@@ -61,6 +61,7 @@ class StoryVideoPlayerActivity : Activity(),
         }
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration?
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
+//        retrofitService = Common.retrofitService("https://api.spec.sharqtv.udevs.io/v1/")
         storyIndex = playerConfiguration!!.storyIndex
         playerView = findViewById(R.id.story_player_view)
         storyContainer = findViewById(R.id.story_container)
@@ -249,15 +250,18 @@ class StoryVideoPlayerActivity : Activity(),
             videoPlatform = if (playerConfiguration!!.story[index].isAmediateka) "AMEDIATEKA" else "SHARQ",
         )
         retrofitService?.postStoryAnalytics(
+            playerConfiguration!!.authorization,
+            playerConfiguration!!.sessionId,
             analytics,
         )?.enqueue(object : Callback<CheckAnalyticsResponse> {
             override fun onResponse(
                 call: Call<CheckAnalyticsResponse>,
                 response: Response<CheckAnalyticsResponse>
             ) {
-                println("Request for check analtyics api is success")
-                println(response.code())
-                response.body()
+                if (response.isSuccessful) {
+                    println("CheckAnalyticsResponse successful")
+                }
+
             }
 
             override fun onFailure(call: Call<CheckAnalyticsResponse>, t: Throwable) {

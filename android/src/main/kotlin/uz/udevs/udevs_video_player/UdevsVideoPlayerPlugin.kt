@@ -93,7 +93,6 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     mapOf(
                         "slug" to data.getStringExtra("slug"),
                         "title" to data.getStringExtra("title"),
-                        "isFromSwipe" to data.getBooleanExtra("isFromSwipe",false)
                     )
                 )
                 resultMethod?.success(json)

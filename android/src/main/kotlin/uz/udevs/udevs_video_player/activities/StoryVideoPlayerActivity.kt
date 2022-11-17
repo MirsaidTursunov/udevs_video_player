@@ -120,14 +120,13 @@ class StoryVideoPlayerActivity : Activity(),
             player?.stop()
         }
 
-        mFinishActivity(false)
+        mFinishActivity()
     }
 
-    private fun mFinishActivity(isFromSwipe: Boolean) {
+    private fun mFinishActivity() {
         val intent = Intent()
         intent.putExtra("slug", playerConfiguration!!.story[storyIndex].slug)
         intent.putExtra("title", playerConfiguration!!.story[storyIndex].title)
-        intent.putExtra("isFromSwipe", isFromSwipe)
         setResult(PLAYER_ACTIVITY_FINISH, intent)
         finish()
     }
@@ -329,7 +328,7 @@ class StoryVideoPlayerActivity : Activity(),
     }
 
     private fun onSwipeTop() {
-        mFinishActivity(true)
+        mFinishActivity()
     }
 
     private fun onSwipeBottom() {}

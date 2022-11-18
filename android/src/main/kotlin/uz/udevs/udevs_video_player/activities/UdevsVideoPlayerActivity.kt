@@ -188,16 +188,10 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
-        if (playerConfiguration?.type == PlayerType.tv) {
-            exoProgress?.visibility = View.GONE
-            rewind?.visibility = View.GONE
-            forward?.visibility = View.GONE
-            nextButton?.visibility = View.GONE
-            customSeekBar?.visibility = View.GONE
-        }else{
-            title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
-                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
-        }
+
+
+        setVideoTitle()
+
 
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         initializeClickListeners()
@@ -237,6 +231,28 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         }
         if (playerConfiguration?.type == PlayerType.serial) {
             currentSeason = playerConfiguration!!.seasons[0]
+        }
+    }
+
+    private fun setVideoTitle() {
+        println("playerConfiguration?.type: ${playerConfiguration?.type}")
+        title?.text = when (playerConfiguration?.type) {
+            PlayerType.tv -> {
+                exoProgress?.visibility = View.GONE
+                rewind?.visibility = View.GONE
+                forward?.visibility = View.GONE
+                nextButton?.visibility = View.GONE
+                customSeekBar?.visibility = View.GONE
+                ""
+            }
+            PlayerType.serial -> {
+                "S${seasonIndex + 1} E${episodeIndex + 1} " +
+                        playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].title
+            }
+            PlayerType.movie -> {
+                playerConfiguration!!.title
+            }
+            else -> ""
         }
     }
 
@@ -928,9 +944,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         if (auto.isNotEmpty()) {
             l.add(0, auto)
         }
-        val data = if(fromQuality){
+        val data = if (fromQuality) {
             l as ArrayList
-        }else{
+        } else {
             list
         }
         val adapter = QualitySpeedAdapter(

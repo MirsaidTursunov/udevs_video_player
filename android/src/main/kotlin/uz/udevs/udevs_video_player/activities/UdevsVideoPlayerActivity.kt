@@ -797,15 +797,8 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun isLastEpisode(): Boolean {
-        val hasNextSeasonMovies = try {
-            playerConfiguration!!.seasons[seasonIndex+1].movies.isNotEmpty()
-        }catch (e:Exception){
-            false
-        }
-        if(hasNextSeasonMovies){
-            return playerConfiguration!!.seasons.size == seasonIndex + 1 &&  playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
-        }
-        return true
+        return playerConfiguration!!.seasons.size == seasonIndex + 1 &&  playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
+
     }
 
     private var speeds =

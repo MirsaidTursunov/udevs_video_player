@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -252,6 +251,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             PlayerType.movie -> {
                 playerConfiguration!!.title
             }
+            PlayerType.trailer -> {
+                playerConfiguration!!.title
+            }
             else -> ""
         }
     }
@@ -326,8 +328,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun playFromAsset() {
-        val uri =
-            Uri.parse("asset:///flutter_assets/${playerConfiguration!!.assetPath}")
+        val uri = Uri.parse("asset:///flutter_assets/${playerConfiguration!!.assetPath}")
         val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this)
         val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
@@ -796,7 +797,15 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun isLastEpisode(): Boolean {
-        return playerConfiguration!!.seasons.size == seasonIndex + 1 && playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
+        val hasNextSeasonMovies = try {
+            playerConfiguration!!.seasons[seasonIndex+1].movies.isNotEmpty()
+        }catch (e:Exception){
+            false
+        }
+        if(hasNextSeasonMovies){
+            return playerConfiguration!!.seasons.size == seasonIndex + 1 &&  playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
+        }
+        return true
     }
 
     private var speeds =

@@ -46,6 +46,7 @@ class StoryVideoPlayerActivity : Activity(),
     private lateinit var btnClose: View
     private lateinit var btnWatchMovie: View
     private lateinit var storyContainer: View
+    private lateinit var btnSwipe: View
     private lateinit var gestureDetector: GestureDetector
 
     @SuppressLint("ClickableViewAccessibility")
@@ -70,6 +71,7 @@ class StoryVideoPlayerActivity : Activity(),
         progressbar2 = findViewById<View>(R.id.video_progress_bar_story2) as ProgressBar
         btnClose = findViewById(R.id.cv_story_close)
         btnWatchMovie = findViewById(R.id.btn_story_movie)
+        btnSwipe = findViewById(R.id.btn_swipe)
         sWidth = Resources.getSystem().displayMetrics.widthPixels
 
         gestureDetector = GestureDetector(this, this)
@@ -85,6 +87,10 @@ class StoryVideoPlayerActivity : Activity(),
         storyMovieText.text = playerConfiguration?.storyButtonText
         btnWatchMovie.setOnClickListener { // inside on click we are
             backPressed()
+        }
+
+        btnSwipe.setOnClickListener {
+            onSwipeTop()
         }
 
         /// play video

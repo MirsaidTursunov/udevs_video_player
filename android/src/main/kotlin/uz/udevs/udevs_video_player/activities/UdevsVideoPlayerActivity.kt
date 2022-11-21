@@ -208,8 +208,6 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         maxVolume += 1.0
         volumeSeekBar?.progress = volume.toInt()
 
-
-
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
                 scaleGestureDetector?.onTouchEvent(motionEvent)

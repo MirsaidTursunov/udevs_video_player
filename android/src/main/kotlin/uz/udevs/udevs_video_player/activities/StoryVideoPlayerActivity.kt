@@ -93,8 +93,7 @@ class StoryVideoPlayerActivity : Activity(),
             onSwipeTop()
         }
 
-        /// play video
-        playVideo()
+        setupPlayer()
     }
 
     override fun onBackPressed() {
@@ -152,19 +151,12 @@ class StoryVideoPlayerActivity : Activity(),
         }
     }
 
-    private fun playVideo() {
-        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.story[storyIndex].fileName)))
-        progressBarStatus = 0
-        max = playerConfiguration!!.story[storyIndex].duration.toInt() * 1000
+    private fun setupPlayer() {
         player = ExoPlayer.Builder(this).build()
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration!!.showController
-        player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration!!.lastPosition * 1000)
-        player?.prepare()
         player?.addListener(
             object : Player.Listener {
                 override fun onPlayerError(error: PlaybackException) {
@@ -173,11 +165,7 @@ class StoryVideoPlayerActivity : Activity(),
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) {
-                        println("Before requesting for check analtyics api")
                         checkAnalytics(storyIndex)
-//                        if (max != player!!.duration.toInt() * 1000) {
-//                            max = player!!.duration.toInt()
-//                        }
                         storiesProgressView?.max = max
                         storiesProgressView?.progress = progressBarStatus
                         playerView?.postDelayed({ getCurrentPlayerPosition() }, 100)
@@ -220,23 +208,20 @@ class StoryVideoPlayerActivity : Activity(),
                     }
                 }
             })
-        player?.playWhenReady = true
+        playStory(storyIndex)
     }
 
     private fun playStory(index: Int) {
+        val story = playerConfiguration!!.story[index]
         progressBarStatus = 0
-        max = playerConfiguration!!.story[index].duration.toInt() * 1000
+        max = story.duration.toInt() * 1000
+
         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource =
-            HlsMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(
-                    MediaItem.fromUri(
-                        Uri.parse(
-                            playerConfiguration!!.story[index].fileName
-                        )
-                    )
-                )
+            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(story.fileName)))
         player?.setMediaSource(hlsMediaSource)
+
+
         player?.prepare()
         player?.playWhenReady = true
     }
@@ -244,17 +229,16 @@ class StoryVideoPlayerActivity : Activity(),
     private fun checkAnalytics(index: Int) {
         if (playerConfiguration!!.userId.isEmpty()) return
         if (playerConfiguration!!.story[index].isWatched) return
-        println("Check analtyics method called")
-        println("story item file name : ${playerConfiguration!!.story[index].slug}")
-        println("${playerConfiguration!!.story[index].fileName} *** ${playerConfiguration!!.userId} *** ${playerConfiguration!!.story[index].isAmediateka}")
+        println("Check analtyics method was called")
         val analytics = CheckAnalyticsRequest(
             episodeKey = "0",
-            isStory = true,
             movieKey = playerConfiguration!!.story[index].slug,
+            isStory = true,
             seasonKey = "0",
             userId = playerConfiguration!!.userId,
             videoPlatform = if (playerConfiguration!!.story[index].isAmediateka) "AMEDIATEKA" else "SHARQ",
         )
+
         retrofitService?.postStoryAnalytics(
             playerConfiguration!!.authorization,
             playerConfiguration!!.sessionId,

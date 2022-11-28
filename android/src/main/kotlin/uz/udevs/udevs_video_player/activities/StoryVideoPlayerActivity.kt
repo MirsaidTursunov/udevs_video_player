@@ -133,6 +133,7 @@ class StoryVideoPlayerActivity : Activity(),
         val intent = Intent()
         intent.putExtra("slug", playerConfiguration!!.story[storyIndex].slug)
         intent.putExtra("title", playerConfiguration!!.story[storyIndex].title)
+        intent.putExtra("story_link", playerConfiguration!!.story[storyIndex].storyLink)
         setResult(PLAYER_ACTIVITY_FINISH, intent)
         finish()
     }

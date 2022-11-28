@@ -20,4 +20,6 @@ data class Story(
     var isWatched: Boolean,
     @SerializedName("is_amediateka")
     var isAmediateka: Boolean,
+    @SerializedName("story_link")
+    val storyLink: String,
 ) : Serializable

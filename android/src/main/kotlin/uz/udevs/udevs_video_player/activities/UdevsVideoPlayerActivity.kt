@@ -53,6 +53,7 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -832,9 +833,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
             val list = if (playerConfiguration!!.type == PlayerType.serial) {
-                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList()
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList
             } else {
-                playerConfiguration?.resolutions?.keys?.toList() as List
+                playerConfiguration?.resolutions?.keys?.toList() as ArrayList
             }
 
             showQualitySpeedSheet(
@@ -844,7 +845,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             )
         }
         speed?.setOnClickListener {
-            showQualitySpeedSheet(currentSpeed, speeds, false)
+            showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
@@ -890,7 +891,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(
         initialValue: String,
-        list: List<String>,
+        list: ArrayList<String>,
         fromQuality: Boolean
     ) {
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
@@ -944,7 +945,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             l.add(0, auto)
         }
         val data = if (fromQuality) {
-            l as List<String>
+            l as ArrayList
         } else {
             list
         }

@@ -835,7 +835,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
             tvQualitiesList = if (playerConfiguration!!.type == PlayerType.serial) {
-                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList()L
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList()
             } else {
                 playerConfiguration?.resolutions?.keys?.toList() as List
             }

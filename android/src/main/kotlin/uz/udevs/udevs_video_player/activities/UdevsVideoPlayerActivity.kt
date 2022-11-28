@@ -833,7 +833,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
             val list = if (playerConfiguration!!.type == PlayerType.serial) {
-                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList()
             } else {
                 playerConfiguration?.resolutions?.keys?.toList() as List
             }
@@ -845,7 +845,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             )
         }
         speed?.setOnClickListener {
-            showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
+            showQualitySpeedSheet(currentSpeed, speeds, false)
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {

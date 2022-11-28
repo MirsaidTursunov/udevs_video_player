@@ -840,7 +840,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                 playerConfiguration?.resolutions?.keys?.toList() as List
             }
 
-            Toast.makeText(this, tvQualitiesList.size, Toast.LENGTH_LONG);
+            Toast.makeText(this, tvQualitiesList.size.toString(), Toast.LENGTH_LONG).show();
 
             showQualitySpeedSheet(
                 currentQuality,

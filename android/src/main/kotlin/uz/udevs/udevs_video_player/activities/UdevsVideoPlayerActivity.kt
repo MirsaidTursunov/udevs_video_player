@@ -844,7 +844,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
             showQualitySpeedSheet(
                 currentQuality,
-                tvQualitiesList as ArrayList<String>,
+                tvQualitiesList,
                 true,
             )
         }
@@ -895,7 +895,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(
         initialValue: String,
-        list: ArrayList<String>,
+        list: List<String>,
         fromQuality: Boolean
     ) {
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED

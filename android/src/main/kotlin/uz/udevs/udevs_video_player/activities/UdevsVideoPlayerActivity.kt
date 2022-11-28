@@ -54,6 +54,7 @@ import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
+import kotlin.collections.List
 import kotlin.math.abs
 
 
@@ -102,6 +103,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
+    private lateinit var tvQualitiesList : List<String>
 
     var startTime: Int = 0
 
@@ -832,20 +834,20 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
-            val list = if (playerConfiguration!!.type == PlayerType.serial) {
-                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList
+            tvQualitiesList = if (playerConfiguration!!.type == PlayerType.serial) {
+                playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList()L
             } else {
-                playerConfiguration?.resolutions?.keys?.toList() as ArrayList
+                playerConfiguration?.resolutions?.keys?.toList() as List
             }
 
             showQualitySpeedSheet(
                 currentQuality,
-                list,
+                tvQualitiesList,
                 true,
             )
         }
         speed?.setOnClickListener {
-            showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
+            showQualitySpeedSheet(currentSpeed, speeds, false)
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
@@ -891,7 +893,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(
         initialValue: String,
-        list: ArrayList<String>,
+        list: List<String>,
         fromQuality: Boolean
     ) {
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
@@ -945,7 +947,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             l.add(0, auto)
         }
         val data = if (fromQuality) {
-            l as ArrayList
+            l as List<String>
         } else {
             list
         }

@@ -657,7 +657,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             zoom?.visibility = View.GONE
             episodesText?.visibility = View.GONE
             nextText?.visibility = View.GONE
-            orientation?.setImageResource(R.drawable.ic_landscape)
+            orientation?.setImageResource(R.drawable.ic_expand)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {

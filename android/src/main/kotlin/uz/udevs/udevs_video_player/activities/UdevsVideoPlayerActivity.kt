@@ -53,7 +53,6 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.util.*
 import javax.net.ssl.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -945,7 +944,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             l.add(0, auto)
         }
         val data = if (fromQuality) {
-            l as ArrayList
+            l as List<String>
         } else {
             list
         }

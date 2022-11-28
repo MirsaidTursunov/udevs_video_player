@@ -840,6 +840,8 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
                 playerConfiguration?.resolutions?.keys?.toList() as List
             }
 
+            Toast.makeText(this, tvQualitiesList.size, Toast.LENGTH_LONG);
+
             showQualitySpeedSheet(
                 currentQuality,
                 tvQualitiesList as ArrayList<String>,
@@ -847,7 +849,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             )
         }
         speed?.setOnClickListener {
-            showQualitySpeedSheet(currentSpeed, speeds, false)
+            showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {

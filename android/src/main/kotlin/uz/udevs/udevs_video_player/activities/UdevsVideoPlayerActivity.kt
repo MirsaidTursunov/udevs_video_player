@@ -835,7 +835,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
             val list = if (playerConfiguration!!.type == PlayerType.serial) {
                 playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList
             } else {
-                playerConfiguration?.resolutions?.keys?.toList() as ArrayList
+                playerConfiguration?.resolutions?.keys?.toList() as List
             }
 
             showQualitySpeedSheet(
@@ -891,7 +891,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(
         initialValue: String,
-        list: ArrayList<String>,
+        list: List<String>,
         fromQuality: Boolean
     ) {
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED

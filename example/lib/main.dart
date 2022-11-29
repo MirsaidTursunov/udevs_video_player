@@ -76,6 +76,7 @@ class _MyAppState extends State<MyApp> {
     ));
     story.add(
       Story(
+        storyLink: "",
         id: "6343dbbf190cf6f120114de7",
         title: "test2",
         slug: "test2",
@@ -89,6 +90,7 @@ class _MyAppState extends State<MyApp> {
     );
     story.add(
       Story(
+        storyLink: "",
         id: "6343db82190cf6f120114971",
         title: "test",
         slug: "test-Gqt8Ye69v",
@@ -103,6 +105,7 @@ class _MyAppState extends State<MyApp> {
     story.add(
       Story(
         id: "6343da92190cf6f1201131b9",
+        storyLink: "",
         title: "Game Of Thrones",
         slug: "game-of-thrones-u3lUc0ND6",
         quality: "auto",
@@ -115,6 +118,7 @@ class _MyAppState extends State<MyApp> {
     );
     story.add(
       Story(
+        storyLink: "",
         id: "633be08b1999749a268caac2",
         title: "minions",
         slug: "minions",
@@ -258,6 +262,7 @@ class _MyAppState extends State<MyApp> {
     ));
     story.add(
       Story(
+        storyLink: "",
         id: "6343dbbf190cf6f120114de7",
         title: "test2",
         slug: "test2",
@@ -271,6 +276,7 @@ class _MyAppState extends State<MyApp> {
     );
     story.add(
       Story(
+        storyLink: "",
         id: "6343db82190cf6f120114971",
         title: "test",
         slug: "test-Gqt8Ye69v",
@@ -284,6 +290,7 @@ class _MyAppState extends State<MyApp> {
     );
     story.add(
       Story(
+        storyLink: "",
         id: "6343da92190cf6f1201131b9",
         title: "Game Of Thrones",
         slug: "game-of-thrones-u3lUc0ND6",
@@ -297,6 +304,7 @@ class _MyAppState extends State<MyApp> {
     );
     story.add(
       Story(
+        storyLink: "",
         id: "633be08b1999749a268caac2",
         title: "minions",
         slug: "minions",

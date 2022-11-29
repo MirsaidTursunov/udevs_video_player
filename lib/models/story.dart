@@ -4,6 +4,7 @@ class Story {
   final String fileName;
   final String quality;
   final String slug;
+  final String storyLink;
   final int duration;
   final bool isWatched;
   final bool isAmediateka;
@@ -12,6 +13,7 @@ class Story {
     required this.id,
     required this.fileName,
     required this.quality,
+    required this.storyLink,
     required this.duration,
     required this.slug,
     required this.title,
@@ -26,6 +28,7 @@ class Story {
     map['quality'] = quality;
     map['duration'] = duration;
     map['slug'] = slug;
+    map['story_link'] = storyLink;
     map['fileName'] = fileName;
     map['is_watched'] = isWatched;
     map['is_amediateka'] = isAmediateka;

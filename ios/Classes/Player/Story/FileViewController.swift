@@ -275,7 +275,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc private func playClose() {
-        let data:[String: Any] = ["slug": file.slug, "title": file.title, "isFromSwipe": false]
+        let data:[String: Any] = ["slug": file.slug, "title": file.title, "story_link": file.storyLink]
         if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 postDelegate?.swipe(jsonString)

@@ -55,7 +55,7 @@ class StoryPlayerViewController: UIViewController {
     }
     
     @objc func swipedUp(){
-        let data:[String: Any] = ["slug": video.videoFiles[index].slug, "title": video.videoFiles[index].title, "isFromSwipe": false, "story_link" : video.videoFiles[index].storyLink]
+        let data:[String: Any] = ["slug": video.videoFiles[index].slug, "title": video.videoFiles[index].title, "story_link" : video.videoFiles[index].storyLink]
         if let jsonData = try? JSONSerialization.data(withJSONObject: data) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 swipe(jsonString)

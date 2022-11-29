@@ -523,8 +523,8 @@ class TVVideoPlayerViewController: UIViewController, SettingsBottomSheetCellDele
         vc.delegete = self
         vc.speedDelegate = self
         vc.settingModel = [
-            SettingModel(leftIcon: Svg.settings.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
-            SettingModel(leftIcon:Svg.playSpeed.uiImage, title: qualityLabelText, configureLabel: qualityText)
+            SettingModel(leftIcon:Svg.playSpeed.uiImage, title: qualityLabelText, configureLabel: qualityText),
+            SettingModel(leftIcon: Svg.settings.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText)
         ]
         self.present(vc, animated: true, completion: nil)
     }

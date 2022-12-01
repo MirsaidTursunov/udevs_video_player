@@ -15,7 +15,7 @@ import uz.udevs.udevs_video_player.databinding.EpisodeItemBinding
 import uz.udevs.udevs_video_player.models.Movie
 import uz.udevs.udevs_video_player.utils.MyHelper
 
-class EpisodesRvAdapter(var context: Context, private var listener: OnItemClickListener) :
+class EpisodesRvAdapter(var context: Context, var onClickListener: OnClickListener) :
     RecyclerView.Adapter<EpisodesRvAdapter.Vh>() {
 
     private val differCallback = object : DiffUtil.ItemCallback<Movie>() {
@@ -46,7 +46,7 @@ class EpisodesRvAdapter(var context: Context, private var listener: OnItemClickL
                     .into(binding.episodeItemImage)
             }
             binding.episodeItemImage.setOnClickListener {
-                listener.onSeasonClicked(position)
+                onClickListener.onClick(position)
             }
 
         }
@@ -64,8 +64,8 @@ class EpisodesRvAdapter(var context: Context, private var listener: OnItemClickL
         return differ.currentList.size
     }
 
-    interface OnItemClickListener {
-        fun onSeasonClicked(index: Int)
+    interface OnClickListener {
+        fun onClick(index: Int)
     }
 
 }

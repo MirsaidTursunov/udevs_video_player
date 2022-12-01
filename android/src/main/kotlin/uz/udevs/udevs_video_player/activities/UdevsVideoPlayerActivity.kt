@@ -103,7 +103,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
-    private lateinit var tvQualitiesList: List<String>
+    private lateinit var tvQualitiesList : List<String>
 
     var startTime: Int = 0
 
@@ -753,9 +753,9 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
 
         rvEpisodesRvAdapter = EpisodesRvAdapter(
             this,
-            object : EpisodesRvAdapter.OnItemClickListener {
+            object : EpisodesRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
-                override fun onSeasonClicked(index: Int) {
+                override fun onClick(index: Int) {
                     seasonIndex = selectedSeasonIndex
                     episodeIndex = index
                     title?.text = "S${seasonIndex + 1} E${episodeIndex + 1} " +
@@ -797,7 +797,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun isLastEpisode(): Boolean {
-        return playerConfiguration!!.seasons.size == seasonIndex + 1 && playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
+        return playerConfiguration!!.seasons.size == seasonIndex + 1 &&  playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
 
     }
 

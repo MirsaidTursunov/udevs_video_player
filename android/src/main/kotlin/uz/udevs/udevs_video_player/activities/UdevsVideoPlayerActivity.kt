@@ -308,6 +308,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         setResult(PLAYER_ACTIVITY_FINISH, intent)
         timerHandler.removeCallbacks(timerRunnable)
         finish()
+        sessionActive()
         super.onBackPressed()
     }
 
@@ -325,6 +326,11 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     override fun onRestart() {
         super.onRestart()
         player?.playWhenReady = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sessionActive()
     }
 
     private fun playFromAsset() {
@@ -994,6 +1000,29 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.SETTINGS
         }
+    }
+
+    private fun sessionActive(){
+        retrofitService?.sessionActive(
+            playerConfiguration!!.authorization,
+            playerConfiguration!!.sessionId,
+            false
+                    )?.enqueue(object : Callback<SessionActiveResponse> {
+            override fun onResponse(
+                call: Call<SessionActiveResponse>,
+                response: Response<SessionActiveResponse>
+            ) {
+                if (response.isSuccessful) {
+                    println("SessionActiveResponse successful")
+                }
+
+            }
+
+            override fun onFailure(call: Call<SessionActiveResponse>, t: Throwable) {
+                println("Request for check analtyics api is failed")
+                t.printStackTrace()
+            }
+        })
     }
 
     override fun onDown(p0: MotionEvent?): Boolean = false

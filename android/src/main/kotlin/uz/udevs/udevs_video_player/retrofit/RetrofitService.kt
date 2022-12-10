@@ -1,12 +1,7 @@
 package uz.udevs.udevs_video_player.retrofit
 
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import uz.udevs.udevs_video_player.models.*
 
 interface RetrofitService {
@@ -40,4 +35,11 @@ interface RetrofitService {
         @Header("SessionId") sessionId: String,
         @Body analyticsRequest: CheckAnalyticsRequest,
     ): Call<CheckAnalyticsResponse>
+
+    @PUT("session/{session_id}")
+    fun sessionActive(
+        @Header("Authorization") authorization: String,
+        @Path("session_id") sessionId: String,
+        @Query("is_watching") isWatching: Boolean,
+    ): Call<SessionActiveResponse>
 }

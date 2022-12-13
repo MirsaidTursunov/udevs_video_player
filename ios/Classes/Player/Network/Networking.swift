@@ -152,4 +152,42 @@ struct Networking {
         _ = semaphore.wait(wallTimeout: .distantFuture)
         return result
     }
+    
+    func sessionActive(_ baseUrl:String, token : String) ->
+    Result<SessionActiveResponse, NetworkError> {
+        
+        var components = URLComponents(string: baseUrl)!
+        components.queryItems = ["is_watching" : "false"].map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+        var request = URLRequest(url: components.url!)
+        print("request")
+        print(request)
+        request.httpMethod = "PUT"
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+    
+        var result: Result<SessionActiveResponse, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,t,k in
+            print(data)
+            print(t)
+            print(k)
+            guard let json = data else{
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do{
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(SessionActiveResponse.self, from: Data(json))
+                result = .success(response)
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
 }

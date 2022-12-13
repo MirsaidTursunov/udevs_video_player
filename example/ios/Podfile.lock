@@ -3,7 +3,6 @@ PODS:
     - CocoaLumberjack/Core (= 3.8.0)
   - CocoaLumberjack/Core (3.8.0)
   - Flutter (1.0.0)
-  - M3U8Kit (1.0.2)
   - NVActivityIndicatorView (5.1.1):
     - NVActivityIndicatorView/Base (= 5.1.1)
   - NVActivityIndicatorView/Base (5.1.1)
@@ -16,7 +15,6 @@ PODS:
   - TinyConstraints (4.0.2)
   - udevs_video_player (0.0.1):
     - Flutter
-    - M3U8Kit
     - NVActivityIndicatorView
     - SDWebImage (~> 5.0)
     - SnapKit (~> 4.0)
@@ -34,7 +32,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - CocoaLumberjack
-    - M3U8Kit
     - NVActivityIndicatorView
     - SDWebImage
     - SnapKit
@@ -51,13 +48,12 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CocoaLumberjack: 78abfb691154e2a9df8ded4350d504ee19d90732
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  M3U8Kit: 6a0d55ba2e62e146f34f53276d7c3aa78ed4fc00
   NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   SDWebImage: b9a731e1d6307f44ca703b3976d18c24ca561e84
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SVGKit: 1ad7513f8c74d9652f94ed64ddecda1a23864dea
   TinyConstraints: 7b7ccc0c485bb3bb47082138ff28bc33cd49897f
-  udevs_video_player: 1fdfbcac7e1f843a6736161210ec1351e6088ff9
+  udevs_video_player: 3be99491a01d6cb60fa377dd5d5c647d9aeef965
   XLActionController: 24140d835ab9e260270711afebc5efabebe9d392
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d

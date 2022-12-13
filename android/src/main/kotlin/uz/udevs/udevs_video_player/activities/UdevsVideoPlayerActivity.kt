@@ -103,7 +103,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     private lateinit var currentSeason: Season
     private lateinit var rvEpisodesRvAdapter: EpisodesRvAdapter
     private var selectedSeasonIndex: Int = 0
-    private lateinit var tvQualitiesList : List<String>
+    private lateinit var tvQualitiesList: List<String>
 
     var startTime: Int = 0
 
@@ -803,7 +803,7 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
     }
 
     private fun isLastEpisode(): Boolean {
-        return playerConfiguration!!.seasons.size == seasonIndex + 1 &&  playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
+        return playerConfiguration!!.seasons.size == seasonIndex + 1 && playerConfiguration!!.seasons[playerConfiguration!!.seasons.size - 1].movies.size == episodeIndex + 1
 
     }
 
@@ -1002,27 +1002,28 @@ open class UdevsVideoPlayerActivity : Activity(), GestureDetector.OnGestureListe
         }
     }
 
-    private fun sessionActive(){
+    private fun sessionActive() {
         retrofitService?.sessionActive(
             playerConfiguration!!.authorization,
             playerConfiguration!!.sessionId,
             false
-                    )?.enqueue(object : Callback<SessionActiveResponse> {
-            override fun onResponse(
-                call: Call<SessionActiveResponse>,
-                response: Response<SessionActiveResponse>
-            ) {
-                if (response.isSuccessful) {
-                    println("SessionActiveResponse successful")
+        )?.enqueue(
+            object : Callback<SessionActiveResponse> {
+                override fun onResponse(
+                    call: Call<SessionActiveResponse>,
+                    response: Response<SessionActiveResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        println("SessionActiveResponse successful")
+                    }
                 }
 
-            }
-
-            override fun onFailure(call: Call<SessionActiveResponse>, t: Throwable) {
-                println("Request for check analtyics api is failed")
-                t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<SessionActiveResponse>, t: Throwable) {
+                    println("Request for check analtyics api is failed")
+                    t.printStackTrace()
+                }
+            },
+        )
     }
 
     override fun onDown(p0: MotionEvent?): Boolean = false

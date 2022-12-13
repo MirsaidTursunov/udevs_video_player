@@ -351,6 +351,11 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
         UIDevice.current.setValue(value, forKey: "orientation")
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        sessionActive()
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
@@ -1135,6 +1140,20 @@ class VideoPlayerViewController: UIViewController, SettingsBottomSheetCellDelega
             break
         }
         return megogoResponse
+    }
+    
+    func sessionActive(){
+        let _url:String = playerConfiguration.baseUrl+"session/\(playerConfiguration.sessionId)"
+        let result = Networking.sharedInstance.sessionActive(_url, token: self.playerConfiguration.authorization)
+        print("KIRDEIIIIII")
+        switch result {
+        case .failure(let error):
+            print(error)
+            break
+        case .success(let success):
+            print("SUCESS")
+            break
+        }
     }
     
     func postMovieTrack(movieTrack: MovieTrackRequest) {

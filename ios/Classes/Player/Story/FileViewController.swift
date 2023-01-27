@@ -249,7 +249,7 @@ final class FileViewController: UIViewController, UIGestureRecognizerDelegate {
         self.player?.addObserver(self, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
         let playerLayer = AVPlayerLayer(player: self.player)
         playerLayer.frame = self.view.bounds
-        playerLayer.videoGravity = .resize
+        playerLayer.videoGravity = .resizeAspect
         playerView.layer.addSublayer(playerLayer)
         playerLayer.player = player
         player?.play()

@@ -178,6 +178,7 @@ class UdevsVideoPlayerActivity : Activity() {
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration!!.showController
+        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration!!.lastPosition * 1000)
         player?.prepare()
@@ -451,7 +452,7 @@ class UdevsVideoPlayerActivity : Activity() {
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
-        if(fromQuality) {
+        if (fromQuality) {
             bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
                 playerConfiguration!!.qualityText
         } else {

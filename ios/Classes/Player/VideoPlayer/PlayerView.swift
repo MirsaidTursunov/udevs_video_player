@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //  udevs_video_player
 //
-//  Created by Sunnatillo Shavkatov on 13/11/22.
+//  Created by Mirsaid Tursunov on 05/04/23.
 //
 
 import AVKit
@@ -123,7 +123,7 @@ class PlayerView: UIView {
     
     private var landscapeButton: IconButton = {
         let button = IconButton()
-        button.setImage(Svg.portrait.uiImage, for: .normal)
+        button.setImage(Svg.horizontal.uiImage, for: .normal)
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
         return button
     }()
@@ -608,7 +608,7 @@ class PlayerView: UIView {
         }
         titleLabelLandacape.isHidden = true
         titleLabelPortrait.isHidden = false
-        landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
+        landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     
     private func addVideoLandscapeConstraints() {

@@ -144,18 +144,10 @@ class PlayerView: UIView {
         return label
     }()
     
-    private var seperatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = " / "
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        return label
-    }()
-    
     private var timeSlider: UISlider = {
         let slider = UISlider()
         slider.tintColor = Colors.mainColor
-        slider.maximumTrackTintColor = .lightGray
+        slider.maximumTrackTintColor = Colors.white20
         slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         return slider
     }()
@@ -329,17 +321,31 @@ class PlayerView: UIView {
         return image
     }
     
+    fileprivate func makeCircleWithBorder(size: CGSize, backgroundColor: UIColor, borderColor: UIColor, borderWidth: CGFloat) -> UIImage? {
+        let halfBorderWidth = borderWidth / 2
+         let circleRect = CGRect(x: halfBorderWidth, y: halfBorderWidth, width: size.width - borderWidth, height: size.height - borderWidth)
+         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+         let context = UIGraphicsGetCurrentContext()!
+         context.setFillColor(backgroundColor.cgColor)
+         context.setStrokeColor(borderColor.cgColor)
+         context.setLineWidth(borderWidth)
+         context.fillEllipse(in: circleRect)
+         context.strokeEllipse(in: circleRect)
+         let image = UIGraphicsGetImageFromCurrentImageContext()
+         UIGraphicsEndImageContext()
+         return image
+    }
+
     private func setSliderThumbTintColor(_ color: UIColor) {
-        let circle = makeCircleWith(size: CGSize(width: 4, height: 4),
-                                         backgroundColor: UIColor.white)
+        let circle = makeCircleWith(size: CGSize(width: 4, height: 4), backgroundColor: UIColor.white)
         brightnessSlider.setThumbImage(circle, for: .normal)
         brightnessSlider.setThumbImage(circle, for: .highlighted)
         ///
-        let circleImage = makeCircleWith(size: CGSize(width: 24, height: 24),
-                                         backgroundColor: color)
+        let circleImage = makeCircleWithBorder(size: CGSize(width: 20, height: 20), backgroundColor: .white, borderColor: color, borderWidth: 4)
         timeSlider.setThumbImage(circleImage, for: .normal)
         timeSlider.setThumbImage(circleImage, for: .highlighted)
     }
+
     
     func loadMediaPlayer(asset:AVURLAsset){
         player.automaticallyWaitsToMinimizeStalling = true
@@ -648,7 +654,6 @@ class PlayerView: UIView {
     func addBottomViewSubviews() {
         bottomView.addSubview(currentTimeLabel)
         bottomView.addSubview(durationTimeLabel)
-        bottomView.addSubview(seperatorLabel)
         bottomView.addSubview(timeSlider)
         bottomView.addSubview(episodesButton)
         bottomView.addSubview(showsBtn)
@@ -717,30 +722,28 @@ class PlayerView: UIView {
         
         bottomView.height(82)
         
-        timeSlider.bottom(to: bottomView, offset: -8)
-        timeSlider.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(8)
-            make.right.equalToSuperview().offset(-8)
+        currentTimeLabel.snp.makeConstraints { make in
+            make.left.equalTo(bottomView).offset(8)
         }
+        currentTimeLabel.centerY(to: timeSlider)
+        currentTimeLabel.rightToLeft(of: timeSlider, offset: -12)
+        
+        timeSlider.bottom(to: bottomView, offset: -8)
+    
+        durationTimeLabel.snp.makeConstraints { make in
+            make.right.equalTo(bottomView).offset(-8)
+        }
+        durationTimeLabel.centerY(to: timeSlider)
+        durationTimeLabel.leftToRight(of: timeSlider, offset: 12)
         
         landscapeButton.bottomToTop(of: timeSlider, offset: 8)
         landscapeButton.snp.makeConstraints { make in
             make.right.equalTo(bottomView).offset(0)
         }
         
-        currentTimeLabel.snp.makeConstraints { make in
+        episodesButton.snp.makeConstraints{make in
             make.left.equalTo(bottomView).offset(8)
         }
-        currentTimeLabel.centerY(to: landscapeButton)
-        
-        seperatorLabel.leftToRight(of: currentTimeLabel)
-        seperatorLabel.centerY(to: currentTimeLabel)
-        
-        durationTimeLabel.leftToRight(of: seperatorLabel)
-        durationTimeLabel.centerY(to: seperatorLabel)
-        
-        
-        episodesButton.rightToLeft(of: landscapeButton, offset: -8)
         episodesButton.centerY(to: landscapeButton)
         
         showsBtn.rightToLeft(of: landscapeButton, offset: -8)
@@ -760,7 +763,6 @@ class PlayerView: UIView {
             liveLabel.isHidden = false
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
-            seperatorLabel.isHidden = true
         }
     }
     

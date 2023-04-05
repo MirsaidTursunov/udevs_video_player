@@ -18,7 +18,6 @@ struct Svg {
     static let pip :SVGKImage = SVGKImage(named: "picture_in_picture.svg", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let replay :SVGKImage = SVGKImage(named: "replay", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let forward :SVGKImage = SVGKImage(named: "forward", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let portrait :SVGKImage = SVGKImage(named: "portrait", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let horizontal :SVGKImage = SVGKImage(named: "horizontal", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let back :SVGKImage = SVGKImage(named: "back", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let right :SVGKImage = SVGKImage(named: "right", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)

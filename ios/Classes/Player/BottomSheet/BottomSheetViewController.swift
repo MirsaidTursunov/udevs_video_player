@@ -56,7 +56,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     lazy var cancelBtn: UIButton = {
         let cancelBtn = UIButton()
-        cancelBtn.setImage(Svg.exit.uiImage, for: .normal)
+        cancelBtn.setImage(Svg.back.uiImage, for: .normal)
         cancelBtn.size(CGSize(width: 32, height: 32))
         cancelBtn.imageView?.contentMode = .scaleAspectFit
         cancelBtn.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)

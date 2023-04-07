@@ -16,8 +16,8 @@
             android:id="@+id/episode_item_image"
             android:layout_width="170dp"
             android:layout_height="110dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logo_secondary"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo_million"
             tools:ignore="ContentDescription" />
 
         <ImageView

@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="48dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@color/transparent"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@color/second_black"
+        app:cardCornerRadius="100dp">
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tv_programs_rv"
         android:layout_width="match_parent"

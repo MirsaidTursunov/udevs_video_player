@@ -5,7 +5,7 @@
     android:id="@+id/custom_playback"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4D000000"
+    android:background="#4D010614"
     android:orientation="vertical">
 
     <LinearLayout
@@ -167,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingHorizontal="15dp">
+            android:paddingHorizontal="14dp">
 
             <LinearLayout
                 android:id="@+id/timer"
@@ -183,36 +183,6 @@
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:visibility="gone"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/exo_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/semibold"
-                    android:text="00:00"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/semibold"
-                    android:text=" / "
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/exo_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:fontFamily="@font/semibold"
-                    android:text="35:22"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
@@ -254,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:gravity="center_vertical"
+                    android:gravity="center_vertical|start"
                     android:visibility="gone"
                     tools:ignore="UseCompoundDrawables">
 
@@ -345,20 +315,57 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="5dp"
-                    android:src="@drawable/ic_landscape"
+                    android:src="@drawable/ic_portrait"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
         </LinearLayout>
 
-        <androidx.media3.ui.DefaultTimeBar
-            android:id="@+id/exo_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="7dp"
-            app:played_color="@color/blue"
-            app:scrubber_color="@color/blue"
-            app:unplayed_color="@color/grey10" />
+        <LinearLayout
+            android:id="@+id/time_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/semibold"
+                android:text="00:00"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
+
+            <androidx.media3.ui.DefaultTimeBar
+                android:layout_weight="1"
+                android:id="@+id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="7dp"
+                android:gravity="center_vertical"
+                app:played_color="@color/blue"
+                app:scrubber_drawable="@drawable/custom_thumb"
+                app:unplayed_color="@color/white20" />
+
+            <TextView
+                android:id="@+id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/semibold"
+                android:text="35:22"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
 
         <SeekBar
             android:id="@+id/progress_bar"

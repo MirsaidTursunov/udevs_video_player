@@ -19,6 +19,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+  <androidx.cardview.widget.CardView
+      android:layout_width="48dp"
+      android:layout_height="4dp"
+      android:layout_gravity="center"
+      app:cardCornerRadius="100dp"
+      android:background="@color/transparent"
+      app:cardBackgroundColor="@color/second_black"
+      android:elevation="0dp">
+  </androidx.cardview.widget.CardView>
+
   <androidx.viewpager.widget.ViewPager
       android:id="@+id/track_selection_dialog_view_pager"
       android:layout_width="match_parent"

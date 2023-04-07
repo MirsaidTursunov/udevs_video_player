@@ -3,9 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/main_dark"
     android:orientation="vertical"
     android:paddingVertical="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="48dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="100dp"
+        android:background="@color/transparent"
+        app:cardBackgroundColor="@color/second_black"
+        android:elevation="0dp">
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/settings_sheet_back"

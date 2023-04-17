@@ -208,7 +208,7 @@ class UdevsVideoPlayerActivity : Activity() {
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = false
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         player?.setMediaSource(mediaSource)
         player?.prepare()
         player?.playWhenReady = true
@@ -222,7 +222,7 @@ class UdevsVideoPlayerActivity : Activity() {
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration!!.showController
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration!!.lastPosition * 1000)
         player?.prepare()

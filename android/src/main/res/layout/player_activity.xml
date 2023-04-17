@@ -16,7 +16,7 @@
         app:auto_show="true"
         app:controller_layout_id="@layout/custom_playback_view"
         app:hide_on_touch="true"
-        app:resize_mode="fit"
+        app:resize_mode="fill"
         app:show_buffering="always"
         app:show_timeout="6000"
         app:shutter_background_color="@color/black"

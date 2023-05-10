@@ -28,70 +28,88 @@ class UdevsVideoPlayer {
     );
   }
 
-  Future<dynamic> downloadVideo(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<dynamic> downloadVideo({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .downloadVideo(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.downloadVideo(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<dynamic> pauseDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<dynamic> pauseDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .pauseDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.pauseDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<dynamic> resumeDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<dynamic> resumeDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .resumeDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.resumeDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<bool> isDownloadVideo(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<bool> isDownloadVideo({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .isDownloadVideo(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.isDownloadVideo(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<int?> getCurrentProgressDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<int?> getCurrentProgressDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .getCurrentProgressDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.getCurrentProgressDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
   Stream<MediaItemDownload> get currentProgressDownloadAsStream =>
       UdevsVideoPlayerPlatform.instance.currentProgressDownloadAsStream();
 
-  Future<int?> getStateDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<int?> getStateDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .getStateDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.getStateDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<int?> getBytesDownloaded(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<int?> getBytesDownloaded({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .getBytesDownloaded(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.getBytesDownloaded(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<int?> getContentBytesDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<int?> getContentBytesDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .getContentBytesDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.getContentBytesDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
-  Future<dynamic> removeDownload(
-      {required DownloadConfiguration downloadConfig}) {
+  Future<dynamic> removeDownload({
+    required DownloadConfiguration downloadConfig,
+  }) {
     String jsonStringConfig = jsonEncode(downloadConfig.toJson());
-    return UdevsVideoPlayerPlatform.instance
-        .removeDownload(downloadConfigJsonString: jsonStringConfig);
+    return UdevsVideoPlayerPlatform.instance.removeDownload(
+      downloadConfigJsonString: jsonStringConfig,
+    );
   }
 
   void dispose() => UdevsVideoPlayerPlatform.instance.dispose();

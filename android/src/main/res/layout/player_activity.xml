@@ -7,21 +7,54 @@
     android:layout_height="match_parent"
     tools:context=".activities.UdevsVideoPlayerActivity">
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/exo_player_view"
+    <!--    <androidx.media3.ui.PlayerView-->
+    <!--        android:id="@+id/exo_player_view"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/black"-->
+    <!--        app:animation_enabled="false"-->
+    <!--        app:auto_show="true"-->
+    <!--        app:controller_layout_id="@layout/custom_playback_view"-->
+    <!--        app:hide_on_touch="true"-->
+    <!--        app:resize_mode="fit"-->
+    <!--        app:show_buffering="never"-->
+    <!--        app:show_timeout="6000"-->
+    <!--        app:shutter_background_color="@color/black"-->
+    <!--        app:surface_type="surface_view"-->
+    <!--        app:use_controller="true">-->
+
+    <!--    </androidx.media3.ui.PlayerView>-->
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
-        app:animation_enabled="false"
-        app:auto_show="true"
-        app:controller_layout_id="@layout/custom_playback_view"
-        app:hide_on_touch="true"
-        app:resize_mode="fit"
-        app:show_buffering="never"
-        app:show_timeout="6000"
-        app:shutter_background_color="@color/black"
-        app:surface_type="surface_view"
-        app:use_controller="true" />
+        android:animateLayoutChanges="true"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <uz.udevs.udevs_video_player.double_tap_playerview.DoubleTapPlayerView
+            android:id="@+id/previewPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@android:color/black"
+            app:controller_layout_id="@layout/custom_playback_view"
+            app:dtpv_controller="@id/ytOverlay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <uz.udevs.udevs_video_player.double_tap_playerview.youtybe.VideoPlayerOverlay
+            android:id="@+id/ytOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000"
+            android:visibility="invisible"
+            app:yt_playerView="@id/previewPlayerView"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_brightness"

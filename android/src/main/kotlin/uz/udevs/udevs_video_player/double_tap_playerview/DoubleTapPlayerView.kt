@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.media3.ui.PlayerView
@@ -22,9 +21,7 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 ) : PlayerView(context!!, attrs, defStyleAttr) {
 
     private val gestureDetector: GestureDetectorCompat
-    private val scaleGestureDetector: ScaleGestureDetector
     private val gestureListener: DoubleTapGestureListener = DoubleTapGestureListener(rootView)
-    private val scaleListener: ScaleGestureListener = ScaleGestureListener()
 
     private var controller: PlayerDoubleTapListener? = null
         get() = gestureListener.controls
@@ -37,7 +34,6 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 
     init {
         gestureDetector = GestureDetectorCompat(context!!, gestureListener)
-        scaleGestureDetector = ScaleGestureDetector(context, scaleListener)
 
         // Check whether controller is set through XML
         attrs?.let {
@@ -214,22 +210,6 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         companion object {
             private const val TAG = ".DTGListener"
             private var DEBUG = true
-        }
-    }
-
-    private class ScaleGestureListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-
-        private var scaleFactor: Float = 0f
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            scaleFactor = detector.scaleFactor
-            return true
-        }
-
-        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-            return true
-        }
-
-        override fun onScaleEnd(detector: ScaleGestureDetector) {
         }
     }
 

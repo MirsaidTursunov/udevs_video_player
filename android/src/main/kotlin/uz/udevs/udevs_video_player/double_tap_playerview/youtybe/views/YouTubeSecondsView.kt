@@ -13,14 +13,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import uz.udevs.udevs_video_player.R
 
-/**
- * Layout group which handles the icon animation while forwarding and rewinding.
- *
- * Since it's based on view's alpha the fading effect is more fluid (more YouTube-like) than
- * using static drawables, especially when [cycleDuration] is low.
- *
- * Used by [YouTubeOverlay][com.github.vkay94.dtpv.youtube.YouTubeOverlay].
- */
 
 class YouTubeSecondsView(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
@@ -36,9 +28,9 @@ class YouTubeSecondsView(context: Context, attrs: AttributeSet?) :
 
         trianglesContainer = findViewById(R.id.triangle_container)
         secondsTextView = findViewById(R.id.tv_seconds)
-        icon1 = findViewById(R.id.icon_1)
-        icon2 = findViewById(R.id.icon_2)
-        icon3 = findViewById(R.id.icon_3)
+        icon1 = findViewById(R.id.icon1)
+        icon2 = findViewById(R.id.icon2)
+        icon3 = findViewById(R.id.icon3)
     }
 
     /**

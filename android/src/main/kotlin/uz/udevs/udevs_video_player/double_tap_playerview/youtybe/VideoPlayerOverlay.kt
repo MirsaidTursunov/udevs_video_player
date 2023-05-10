@@ -1,10 +1,15 @@
 package uz.udevs.udevs_video_player.double_tap_playerview.youtybe
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.session.PlaybackState
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.TextView
 import androidx.annotation.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +35,8 @@ import uz.udevs.udevs_video_player.double_tap_playerview.youtybe.views.YouTubeSe
  * documentation ...).
  */
 class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
-    ConstraintLayout(context, attrs), PlayerDoubleTapListener {
+    ConstraintLayout(context, attrs), PlayerDoubleTapListener, OnTouchListener,
+    OnScaleGestureListener {
 
     private var rootLayout: ConstraintLayout
     private var secondsView: YouTubeSecondsView
@@ -72,6 +78,7 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
     /**
      * Sets all optional XML attributes and defaults
      */
+    @SuppressLint("CustomViewStyleable")
     private fun initializeAttributes() {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(
@@ -464,7 +471,32 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
         }
     }
 
+    override fun onScroll(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        if (performListener == null) {
+            return super.onScroll(e1, e2, distanceX, distanceY)
+        }
+        return performListener?.onScroll(e1, e2, distanceX, distanceY) ?: true
+    }
+
     interface PerformListener {
+
+        fun onScaleEnd(scaleFactor: Float) {}
+        fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            return true
+        }
+
+        fun onActionUp() {}
+
         /**
          * Called when the overlay is not visible and onDoubleTapProgressUp event occurred.
          * Visibility of the overlay should be set to VISIBLE within this interface method.
@@ -521,5 +553,30 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
 
             return null
         }
+    }
+
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        if (performListener == null) {
+            return true
+        }
+        if (event?.action == MotionEvent.ACTION_UP && event.pointerCount == 1) {
+            performListener!!.onActionUp()
+        }
+        return false
+    }
+
+    private var scaleFactor: Float = 0f
+
+    override fun onScale(detector: ScaleGestureDetector): Boolean {
+        scaleFactor = detector.scaleFactor
+        return true
+    }
+
+    override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+        return true
+    }
+
+    override fun onScaleEnd(detector: ScaleGestureDetector) {
+        performListener?.onScaleEnd(scaleFactor)
     }
 }

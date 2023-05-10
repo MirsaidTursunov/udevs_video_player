@@ -11,12 +11,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import uz.udevs.udevs_video_player.R
 
-/**
- * View class
- *
- * Draws a arc shape and provides a circle scaling animation.
- * Used by [YouTubeOverlay][com.github.vkay94.dtpv.youtube.YouTubeOverlay].
- */
 internal class CircleClipTapView(context: Context?, attrs: AttributeSet) :
     View(context, attrs) {
 

@@ -69,14 +69,16 @@ import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
+import kotlin.math.abs
 
 
 @UnstableApi
-class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListener {
+class UdevsVideoPlayerActivity : AppCompatActivity(),
+    AudioManager.OnAudioFocusChangeListener {
 
     private lateinit var player: ExoPlayer
+    private lateinit var playerView: DoubleTapPlayerView
     private lateinit var playerOverlay: VideoPlayerOverlay
-    private lateinit var doubleTabPlayerView: DoubleTapPlayerView
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
     private lateinit var intentFilter: IntentFilter
     private lateinit var playerConfiguration: PlayerConfiguration
@@ -110,8 +112,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
     private var volumeSeekBar: SeekBar? = null
     private var layoutVolume: LinearLayout? = null
     private var audioManager: AudioManager? = null
-    private var gestureDetector: GestureDetector? = null
-    private var scaleGestureDetector: ScaleGestureDetector? = null
     private var brightness: Double = 15.0
     private var maxBrightness: Double = 31.0
     private var volume: Double = 0.0
@@ -202,8 +202,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         initializeClickListeners()
 
         sWidth = Resources.getSystem().displayMetrics.widthPixels
-//        gestureDetector = GestureDetector(this, this)
-//        scaleGestureDetector = ScaleGestureDetector(this, this)
         brightnessSeekbar?.max = 30
         brightnessSeekbar?.progress = 15
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -219,19 +217,69 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
 
     private fun initDoubleTapPlayerView() {
         playerOverlay
-            .performListener(object : VideoPlayerOverlay.PerformListener {
-                override fun onAnimationStart() {
-                    doubleTabPlayerView.useController = false
-                    playerOverlay.visibility = View.VISIBLE
-                }
+            .performListener(
+                object : VideoPlayerOverlay.PerformListener {
+                    override fun onScaleEnd(scaleFactor: Float) {
+                        if (scaleFactor > 1) {
+                            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        } else {
+                            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                        }
+                    }
 
-                override fun onAnimationEnd() {
-                    playerOverlay.visibility = View.GONE
-                    doubleTabPlayerView.useController = true
-                }
-            })
+                    override fun onActionUp() {
+                        layoutBrightness?.visibility = View.GONE
+                        layoutVolume?.visibility = View.GONE
+                    }
 
-        doubleTabPlayerView.doubleTapDelay = 1200
+                    override fun onAnimationStart() {
+                        playerView.useController = false
+                        playerOverlay.visibility = View.VISIBLE
+                    }
+
+                    override fun onAnimationEnd() {
+                        playerOverlay.visibility = View.GONE
+                        playerView.useController = true
+                    }
+
+                    override fun onScroll(
+                        e1: MotionEvent,
+                        e2: MotionEvent,
+                        distanceX: Float,
+                        distanceY: Float
+                    ): Boolean {
+                        if (abs(distanceX) < abs(distanceY)) {
+                            if (e1.x < sWidth / 2) {
+                                layoutBrightness?.visibility = View.VISIBLE
+                                layoutVolume?.visibility = View.GONE
+                                val increase = distanceY > 0
+                                val newValue: Double =
+                                    if (increase) brightness + 0.2 else brightness - 0.2
+                                if (newValue in 0.0..maxBrightness) brightness = newValue
+                                brightnessSeekbar?.progress = brightness.toInt()
+                                setScreenBrightness(brightness.toInt())
+                            } else {
+                                layoutBrightness?.visibility = View.GONE
+                                layoutVolume?.visibility = View.VISIBLE
+                                val increase = distanceY > 0
+                                val newValue = if (increase) volume + 0.2 else volume - 0.2
+                                if (newValue in 0.0..maxVolume) volume = newValue
+                                volumeSeekBar?.progress = volume.toInt()
+                                audioManager!!.setStreamVolume(
+                                    AudioManager.STREAM_MUSIC,
+                                    volume.toInt(),
+                                    0
+                                )
+                            }
+                        }
+                        layoutBrightness?.visibility = View.GONE
+                        layoutVolume?.visibility = View.GONE
+                        return true
+                    }
+                },
+            )
+
+        playerView.doubleTapDelay = 1200
     }
 
     fun isNetworkAvailable(context: Context?): Boolean {
@@ -420,8 +468,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         if (player.isPlaying) {
             player.stop()
         }
-        var seconds = player.currentPosition / 1000
-
+        val seconds = player.currentPosition / 1000
         removeProgressListener()
         unregisterCallBack()
         val intent = Intent()
@@ -434,9 +481,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onPause() {
         super.onPause()
-        player?.playWhenReady = false
+        player.playWhenReady = false
         if (isInPictureInPictureMode) {
-            player?.playWhenReady = true
+            player.playWhenReady = true
         }
         mCastContext!!.sessionManager.removeSessionManagerListener(
             mSessionManagerListener!!, CastSession::class.java
@@ -446,7 +493,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
     override fun onResume() {
         setAudioFocus()
         if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+            player.playWhenReady = true
         if (brightness != 0.0) setScreenBrightness(brightness.toInt())
         mCastContext!!.sessionManager.addSessionManagerListener(
             mSessionManagerListener!!, CastSession::class.java
@@ -462,7 +509,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
     override fun onRestart() {
         super.onRestart()
         if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+            player.playWhenReady = true
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -471,7 +518,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         if (isInPictureInPictureMode) {
             removeProgressListener()
             unregisterCallBack()
-            player?.release()
+            player.release()
             finish()
         }
     }
@@ -483,20 +530,17 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
         player = ExoPlayer.Builder(this).build()
-        doubleTabPlayerView.player = player
-//        doubleTabPlayerView.keepScreenOn = true
-//        doubleTabPlayerView.useController = playerConfiguration.showController
-        playerOverlay.player(player!!)
-//        playerView?.player = player
-//        playerView?.keepScreenOn = true
-//        playerView?.useController = playerConfiguration.showController
-        player?.setMediaSource(hlsMediaSource)
-        player?.seekTo(playerConfiguration.lastPosition * 1000)
-        player?.prepare()
-        player?.addListener(object : Player.Listener {
+        playerView.player = player
+        playerView.keepScreenOn = true
+        playerView.useController = playerConfiguration.showController
+        playerOverlay.player(player)
+        player.setMediaSource(hlsMediaSource)
+        player.seekTo(playerConfiguration.lastPosition * 1000)
+        player.prepare()
+        player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
                 Log.d(TAG, "onPlayerError: ${error.errorCode}")
-                player?.pause()
+                player.pause()
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -563,11 +607,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeViews() {
-        ///
         playerOverlay = findViewById(R.id.ytOverlay)
-        doubleTabPlayerView = findViewById(R.id.previewPlayerView)
-        ///
-//        playerView = findViewById(R.id.exo_player_view)
+        playerView = findViewById(R.id.previewPlayerView)
         customPlayback = findViewById(R.id.custom_playback)
         layoutBrightness = findViewById(R.id.layout_brightness)
         brightnessSeekbar = findViewById(R.id.brightness_seek)
@@ -630,11 +671,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
             forward?.visibility = View.GONE
             customSeekBar?.visibility = View.VISIBLE
         }
-//        findViewById<PlayerView>(R.id.previewPlayerView).setOnTouchListener { _, motionEvent ->
-//            if (motionEvent.pointerCount == 2) {
-//                scaleGestureDetector?.onTouchEvent(motionEvent)
-//            } else if (!doubleTabPlayerView.isControllerFullyVisible && motionEvent.pointerCount == 1) {
-////                gestureDetector?.onTouchEvent(motionEvent)
+//        findViewById<DoubleTapPlayerView>(R.id.previewPlayerView).setOnTouchListener { _, motionEvent ->
+//            if (!playerView.isControllerFullyVisible && motionEvent.pointerCount == 1) {
 //                if (motionEvent.action == MotionEvent.ACTION_UP) {
 //                    layoutBrightness?.visibility = View.GONE
 //                    layoutVolume?.visibility = View.GONE
@@ -647,39 +685,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initializeClickListeners() {
-//        customPlayback?.setOnTouchListener { _, motionEvent ->
-//            if (motionEvent.pointerCount == 1 && motionEvent.action == MotionEvent.ACTION_UP) {
-//                lastClicked1 = if (lastClicked1 == -1L) {
-//                    System.currentTimeMillis()
-//                } else {
-//                    if (isDoubleClicked(lastClicked1)) {
-//                        if (motionEvent!!.x < sWidth / 2) {
-//                            player?.seekTo(player!!.currentPosition - 10000)
-//                        } else {
-//                            player?.seekTo(player!!.currentPosition + 10000)
-//                        }
-//                    } else {
-//                        doubleTabPlayerView.hideController()
-//                    }
-//                    -1L
-//                }
-//                Handler(Looper.getMainLooper()).postDelayed({
-//                    if (lastClicked1 != -1L) {
-//                        doubleTabPlayerView.hideController()
-//                        lastClicked1 = -1L
-//                    }
-//                }, 300)
-//            }
-//            return@setOnTouchListener true
-//        }
         close?.setOnClickListener {
-            if (player?.isPlaying == true) {
-                player?.stop()
+            if (player.isPlaying) {
+                player.stop()
             }
-            var seconds = 0L
-            if (player?.currentPosition != null) {
-                seconds = player?.currentPosition!! / 1000
-            }
+            val seconds = player.currentPosition / 1000
+
             removeProgressListener()
             unregisterCallBack()
             val intent = Intent()
@@ -704,7 +715,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         }
         rewind?.setOnClickListener {
             if (mLocation == PlaybackLocation.LOCAL) {
-                if (player != null) player?.seekTo(player!!.currentPosition - 10000)
+                player.seekTo(player.currentPosition - 10000)
             } else {
                 val remoteMediaClient = mCastSession!!.remoteMediaClient
                 val seekOptions: MediaSeekOptions = MediaSeekOptions
@@ -716,7 +727,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         }
         forward?.setOnClickListener {
             if (mLocation == PlaybackLocation.LOCAL) {
-                if (player != null) player?.seekTo(player!!.currentPosition + 10000)
+                player.seekTo(player.currentPosition + 10000)
             } else {
                 val remoteMediaClient = mCastSession!!.remoteMediaClient
                 val seekOptions: MediaSeekOptions = MediaSeekOptions
@@ -728,10 +739,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         }
         playPause?.setOnClickListener {
             if (mLocation == PlaybackLocation.LOCAL) {
-                if (player?.isPlaying == true) {
-                    player?.pause()
+                if (player.isPlaying) {
+                    player.pause()
                 } else {
-                    player?.play()
+                    player.play()
                 }
             } else {
                 val remoteMediaClient = mCastSession!!.remoteMediaClient
@@ -774,10 +785,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                player?.setMediaSource(hlsMediaSource)
-                player?.prepare()
+                player.setMediaSource(hlsMediaSource)
+                player.prepare()
                 if (mLocation == PlaybackLocation.LOCAL) {
-                    player?.playWhenReady
+                    player.playWhenReady
                 } else {
                     loadRemoteMedia(0)
                 }
@@ -790,20 +801,20 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
             if (mLocation == PlaybackLocation.REMOTE) {
                 return@setOnClickListener
             }
-            when (doubleTabPlayerView.resizeMode) {
+            when (playerView.resizeMode) {
                 AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> {
                     zoom?.setImageResource(R.drawable.ic_fit)
-                    doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                 }
 
                 AspectRatioFrameLayout.RESIZE_MODE_FILL -> {
                     zoom?.setImageResource(R.drawable.ic_crop_fit)
-                    doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 }
 
                 AspectRatioFrameLayout.RESIZE_MODE_FIT -> {
                     zoom?.setImageResource(R.drawable.ic_stretch)
-                    doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
                 }
 
                 AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT -> {}
@@ -816,7 +827,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
                     if (playerConfiguration.isLive) {
-                        doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
@@ -842,11 +853,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
             if (isInPictureInPictureMode) {
-                doubleTabPlayerView.hideController()
-                doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                playerView.hideController()
+                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             } else {
-                doubleTabPlayerView.showController()
-                doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                playerView.showController()
+                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
         }
     }
@@ -872,9 +883,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    player.playWhenReady
                 }
             }
 
@@ -908,9 +919,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    player.playWhenReady
                 }
             }
 
@@ -926,7 +937,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
             if (playerConfiguration.isLive) {
-                doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
@@ -965,7 +976,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
             nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_portrait)
-            doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {
                     backButtonEpisodeBottomSheet?.visibility = View.GONE
@@ -1087,10 +1098,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.prepare()
+                        player.setMediaSource(hlsMediaSource)
+                        player.prepare()
                         if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.playWhenReady
+                            player.playWhenReady
                         } else {
                             loadRemoteMedia(0)
                         }
@@ -1233,20 +1244,20 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                     if (fromQuality) {
                         currentQuality = l[position]
                         qualityText?.text = currentQuality
-                        if (player?.isPlaying == true) {
-                            player?.pause()
+                        if (player.isPlaying) {
+                            player.pause()
                         }
-                        val currentPosition = player?.currentPosition
+                        val currentPosition = player.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         url =
                             if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.seekTo(currentPosition!!)
+                        player.setMediaSource(hlsMediaSource)
+                        player.seekTo(currentPosition)
                         if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.play()
+                            player.play()
                         } else {
                             if (playerConfiguration.isSerial) {
                                 loadRemoteMedia(currentPosition ?: 0)
@@ -1260,7 +1271,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                         }
                         currentSpeed = l[position]
                         speedText?.text = currentSpeed
-                        player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
+                        player.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }
                     bottomSheetDialog.dismiss()
                 }
@@ -1272,40 +1283,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
             currentBottomSheet = BottomSheet.SETTINGS
         }
     }
-
-//    override fun onDown(e: MotionEvent): Boolean = false
-//    override fun onShowPress(e: MotionEvent) = Unit
-
-    private var lastClicked: Long = -1L
-//    override fun onSingleTapUp(e: MotionEvent): Boolean {
-//        lastClicked = if (lastClicked == -1L) {
-//            System.currentTimeMillis()
-//        } else {
-//            if (isDoubleClicked(lastClicked)) {
-//                if (e.x < sWidth / 2) {
-//                    doubleTabPlayerView.hideController()
-//                    player?.seekTo(player!!.currentPosition - 10000)
-//                } else {
-//                    ytOverlay.visibility = View.VISIBLE
-//                    player?.seekTo(player!!.currentPosition + 10000)
-//                }
-//            } else {
-//                ytOverlay.visibility = View.GONE
-//                doubleTabPlayerView.showController()
-//            }
-//            -1L
-//        }
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            if (lastClicked != -1L) {
-//                doubleTabPlayerView.showController()
-//                lastClicked = -1L
-//            }
-//        }, 300)
-//        return false
-//    }
-
-    private fun isDoubleClicked(lastClicked: Long): Boolean =
-        lastClicked - System.currentTimeMillis() <= 300
 
 //    override fun onLongPress(e: MotionEvent) = Unit
 //    override fun onFling(e1: MotionEvent, e2: MotionEvent, p2: Float, p3: Float): Boolean = false
@@ -1345,29 +1322,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         this.window.attributes = lp
     }
 
-    private var scaleFactor: Float = 0f
-//    override fun onScale(detector: ScaleGestureDetector): Boolean {
-//        scaleFactor = detector.scaleFactor
-//        return true
-//    }
-//
-//    override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-//        return true
-//    }
-//
-//    override fun onScaleEnd(detector: ScaleGestureDetector) {
-//        if (scaleFactor > 1) {
-//            doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//        } else {
-//            doubleTabPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-//        }
-//    }
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
-                player?.pause()
-                doubleTabPlayerView.hideController()
+                player.pause()
+                playerView.hideController()
             }
         }
     }

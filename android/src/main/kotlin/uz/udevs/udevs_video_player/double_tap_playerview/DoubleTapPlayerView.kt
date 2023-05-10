@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.media3.ui.PlayerView
@@ -21,7 +22,9 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 ) : PlayerView(context!!, attrs, defStyleAttr) {
 
     private val gestureDetector: GestureDetectorCompat
+    private val scaleGestureDetector: ScaleGestureDetector
     private val gestureListener: DoubleTapGestureListener = DoubleTapGestureListener(rootView)
+    private val scaleListener: ScaleGestureListener = ScaleGestureListener()
 
     private var controller: PlayerDoubleTapListener? = null
         get() = gestureListener.controls
@@ -34,6 +37,7 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 
     init {
         gestureDetector = GestureDetectorCompat(context!!, gestureListener)
+        scaleGestureDetector = ScaleGestureDetector(context, scaleListener)
 
         // Check whether controller is set through XML
         attrs?.let {
@@ -45,16 +49,8 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         }
     }
 
-    /**
-     * If this field is set to `true` this view will handle double tapping, otherwise it will
-     * handle touches the same way as the original [PlayerView][com.google.android.exoplayer2.ui.PlayerView] does
-     */
     var isDoubleTapEnabled = true
 
-    /**
-     * Time window a double tap is active, so a followed tap is calling a gesture detector
-     * method instead of normal tap (see [PlayerView.onTouchEvent])
-     */
     var doubleTapDelay: Long = 700
         get() = gestureListener.doubleTapDelay
         set(value) {
@@ -62,11 +58,6 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
             field = value
         }
 
-    /**
-     * Sets the [PlayerDoubleTapListener] which handles the gesture callbacks.
-     *
-     * Primarily used for [YouTubeOverlay][com.github.vkay94.dtpv.youtube.YouTubeOverlay]
-     */
     fun controller(controller: PlayerDoubleTapListener) = apply { this.controller = controller }
 
     /**
@@ -164,13 +155,14 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         }
 
         override fun onDown(e: MotionEvent): Boolean {
-            // Used to override the other methods
             if (isDoubleTapping) {
                 controls?.onDoubleTapProgressDown(e.x, e.y)
                 return true
             }
             return super.onDown(e)
         }
+
+        override fun onShowPress(e: MotionEvent) = Unit
 
         override fun onSingleTapUp(e: MotionEvent): Boolean {
             if (isDoubleTapping) {
@@ -182,18 +174,11 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         }
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            // Ignore this event if double tapping is still active
-            // Return true needed because this method is also called if you tap e.g. three times
-            // in a row, therefore the controller would appear since the original behavior is
-            // to hide and show on single tap
             if (isDoubleTapping) return true
-            if (DEBUG) Log.d(TAG, "onSingleTapConfirmed: isDoubleTap = false")
             return rootView.performClick()
         }
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            // First tap (ACTION_DOWN) of both taps
-            if (DEBUG) Log.d(TAG, "onDoubleTap")
             if (!isDoubleTapping) {
                 isDoubleTapping = true
                 keepInDoubleTapMode()
@@ -203,16 +188,27 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         }
 
         override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-            // Second tap (ACTION_UP) of both taps
             if (e.actionMasked == MotionEvent.ACTION_UP && isDoubleTapping) {
-                if (DEBUG) Log.d(
-                    TAG,
-                    "onDoubleTapEvent, ACTION_UP"
-                )
                 controls?.onDoubleTapProgressUp(e.x, e.y)
                 return true
             }
             return super.onDoubleTapEvent(e)
+        }
+
+        override fun onLongPress(e: MotionEvent) = Unit
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, p2: Float, p3: Float): Boolean =
+            false
+
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            if (controls == null) {
+                return true
+            }
+            return controls!!.onScroll(e1, e2, distanceX, distanceY)
         }
 
         companion object {
@@ -220,4 +216,21 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
             private var DEBUG = true
         }
     }
+
+    private class ScaleGestureListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+        private var scaleFactor: Float = 0f
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            scaleFactor = detector.scaleFactor
+            return true
+        }
+
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+            return true
+        }
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) {
+        }
+    }
+
 }

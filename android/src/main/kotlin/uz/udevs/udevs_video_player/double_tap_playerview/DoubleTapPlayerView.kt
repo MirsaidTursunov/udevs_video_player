@@ -85,10 +85,11 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        if(ev.pointerCount == 1 && ev.action == MotionEvent.ACTION_UP) {
+        if (ev.pointerCount == 1 && ev.action == MotionEvent.ACTION_UP) {
             scaleListener.onActionUp()
+        } else {
+            scaleDetector.onTouchEvent(ev)
         }
-        scaleDetector.onTouchEvent(ev)
         if (isDoubleTapEnabled) {
             gestureDetector.onTouchEvent(ev)
             return true

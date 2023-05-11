@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.media3.ui.PlayerView
@@ -21,12 +22,15 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 ) : PlayerView(context!!, attrs, defStyleAttr) {
 
     private val gestureDetector: GestureDetectorCompat
+    private val scaleDetector: ScaleGestureDetector
     private val gestureListener: DoubleTapGestureListener = DoubleTapGestureListener(rootView)
+    private val scaleListener: ScaleGestureListener = ScaleGestureListener(rootView)
 
     private var controller: PlayerDoubleTapListener? = null
         get() = gestureListener.controls
         set(value) {
             gestureListener.controls = value
+            scaleListener.controls = value
             field = value
         }
 
@@ -34,6 +38,7 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 
     init {
         gestureDetector = GestureDetectorCompat(context!!, gestureListener)
+        scaleDetector = ScaleGestureDetector(context, scaleListener)
 
         // Check whether controller is set through XML
         attrs?.let {
@@ -80,6 +85,10 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        if(ev.pointerCount == 1 && ev.action == MotionEvent.ACTION_UP) {
+            scaleListener.onActionUp()
+        }
+        scaleDetector.onTouchEvent(ev)
         if (isDoubleTapEnabled) {
             gestureDetector.onTouchEvent(ev)
             return true
@@ -115,6 +124,35 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
      * [GestureDetector.onTouchEvent][android.view.GestureDetector.onTouchEvent],
      * especially for ACTION_DOWN and ACTION_UP
      */
+
+    private class ScaleGestureListener(private val rootView: View) :
+        ScaleGestureDetector.OnScaleGestureListener {
+
+        var controls: PlayerDoubleTapListener? = null
+        private var scaleFactor: Float = 0f
+
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            scaleFactor = detector.scaleFactor
+            return true
+        }
+
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+            return true
+        }
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) {
+            if (scaleFactor > 1) {
+                controls?.onScaleEnd(scale = scaleFactor)
+            } else if (scaleFactor < 1) {
+                controls?.onScaleEnd(scale = scaleFactor)
+            }
+        }
+
+        fun onActionUp() {
+            controls?.onActionUp()
+        }
+    }
+
     private class DoubleTapGestureListener(private val rootView: View) :
         GestureDetector.SimpleOnGestureListener() {
 
@@ -212,5 +250,4 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
             private var DEBUG = true
         }
     }
-
 }

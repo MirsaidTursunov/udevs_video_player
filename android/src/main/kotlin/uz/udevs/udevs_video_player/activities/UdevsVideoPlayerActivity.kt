@@ -272,8 +272,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                                 )
                             }
                         }
-                        layoutBrightness?.visibility = View.GONE
-                        layoutVolume?.visibility = View.GONE
+//                        layoutBrightness?.visibility = View.GONE
+//                        layoutVolume?.visibility = View.GONE
                         return true
                     }
                 },
@@ -603,8 +603,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         player.play()
     }
 
-    private var lastClicked1: Long = -1L
-
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeViews() {
         playerOverlay = findViewById(R.id.ytOverlay)
@@ -672,6 +670,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             customSeekBar?.visibility = View.VISIBLE
         }
 //        findViewById<DoubleTapPlayerView>(R.id.previewPlayerView).setOnTouchListener { _, motionEvent ->
+//            Toast.makeText(
+//                this,
+//                "onSingleTapUp ${motionEvent.action} ${motionEvent.pointerCount}",
+//                Toast.LENGTH_SHORT
+//            ).show()
 //            if (!playerView.isControllerFullyVisible && motionEvent.pointerCount == 1) {
 //                if (motionEvent.action == MotionEvent.ACTION_UP) {
 //                    layoutBrightness?.visibility = View.GONE

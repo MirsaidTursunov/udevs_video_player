@@ -6,10 +6,7 @@ import android.media.session.PlaybackState
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.TextView
 import androidx.annotation.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,8 +32,7 @@ import uz.udevs.udevs_video_player.double_tap_playerview.youtybe.views.YouTubeSe
  * documentation ...).
  */
 class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
-    ConstraintLayout(context, attrs), PlayerDoubleTapListener, OnTouchListener,
-    OnScaleGestureListener {
+    ConstraintLayout(context, attrs), PlayerDoubleTapListener {
 
     private var rootLayout: ConstraintLayout
     private var secondsView: YouTubeSecondsView
@@ -471,6 +467,20 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
         }
     }
 
+    override fun onScaleEnd(scale: Float) {
+        if (performListener == null) {
+            super.onScaleEnd(scale)
+        }
+        performListener!!.onScaleEnd(scale)
+    }
+
+    override fun onActionUp() {
+        if (performListener == null) {
+            super.onActionUp()
+        }
+        performListener!!.onActionUp()
+    }
+
     override fun onScroll(
         e1: MotionEvent,
         e2: MotionEvent,
@@ -553,30 +563,5 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
 
             return null
         }
-    }
-
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        if (performListener == null) {
-            return true
-        }
-        if (event?.action == MotionEvent.ACTION_UP && event.pointerCount == 1) {
-            performListener!!.onActionUp()
-        }
-        return false
-    }
-
-    private var scaleFactor: Float = 0f
-
-    override fun onScale(detector: ScaleGestureDetector): Boolean {
-        scaleFactor = detector.scaleFactor
-        return true
-    }
-
-    override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-        return true
-    }
-
-    override fun onScaleEnd(detector: ScaleGestureDetector) {
-        performListener?.onScaleEnd(scaleFactor)
     }
 }

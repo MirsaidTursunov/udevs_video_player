@@ -20,4 +20,8 @@ interface PlayerDoubleTapListener {
     ): Boolean {
         return false
     }
+
+    fun onScaleEnd(scale: Float) {}
+
+    fun onActionUp() {}
 }

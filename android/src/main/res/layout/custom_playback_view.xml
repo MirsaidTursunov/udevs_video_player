@@ -133,7 +133,7 @@
                 android:id="@+id/video_progress_bar"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:progressTint="@color/blue" />
+                android:theme="@style/ProgressBarStyle" />
 
         </LinearLayout>
 
@@ -337,20 +337,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/semibold"
-                android:text="00:00"
                 android:gravity="center_vertical"
+                android:text="00:00"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 tools:ignore="HardcodedText" />
 
             <androidx.media3.ui.DefaultTimeBar
-                android:layout_weight="1"
                 android:id="@+id/exo_progress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingVertical="0dp"
-                android:paddingHorizontal="7dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:paddingHorizontal="7dp"
+                android:paddingVertical="0dp"
                 app:played_color="@color/blue"
                 app:scrubber_drawable="@drawable/custom_thumb"
                 app:unplayed_color="@color/white20" />
@@ -360,8 +360,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/semibold"
-                android:text="35:22"
                 android:gravity="center_vertical"
+                android:text="35:22"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 tools:ignore="HardcodedText" />

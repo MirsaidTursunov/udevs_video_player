@@ -22,16 +22,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/grey10</item>
 
-<!--        <item name="mediaRouteTheme">@style/CustomMediaRouterTheme</item>-->
-<!--        <item name="castIntroOverlayStyle">@style/CustomCastIntroOverlay</item>-->
-<!--        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>-->
-<!--        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>-->
-<!--        <item name="castExpandedControllerToolbarStyle">-->
-<!--            @style/ThemeOverlay.AppCompat.ActionBar-->
-<!--        </item>-->
-
-        <!-- The rest of your attributes -->
-        <!--item name="android:seekBarStyle">@style/YellowSeekBar</item-->
     </style>
 
     <style name="Theme.CastVideosDark" parent="Theme.AppCompat.Light.NoActionBar">
@@ -73,6 +63,9 @@
         <item name="castProgressBarColor">@color/blue</item>
     </style>
 
+    <style name="ProgressBarStyle">
+        <item name="colorAccent">@color/white</item>
+    </style>
     <!-- Customize Expanded Controller -->
     <style name="CustomCastExpandedController" parent="CastExpandedController">
         <item name="castButtonColor">#FFFFFF</item>

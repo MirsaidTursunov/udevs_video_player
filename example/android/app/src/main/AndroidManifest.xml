@@ -5,7 +5,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="udevs_video_player_example"
+        android:label="Udevs Video Player"
         android:theme="@style/Theme.AppCompat">
         <activity
             android:name=".MainActivity"

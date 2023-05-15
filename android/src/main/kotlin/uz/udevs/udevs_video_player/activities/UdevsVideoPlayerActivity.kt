@@ -68,7 +68,6 @@ import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
-import uz.udevs.udevs_video_player.utils.MyHelper
 import kotlin.math.abs
 
 
@@ -92,9 +91,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     private var forward: ImageView? = null
     private var playPause: ImageView? = null
     private var progressbar: ProgressBar? = null
-    private var timer: LinearLayout? = null
+
+    //    private var timer: LinearLayout? = null
     private var exoPosition: TextView? = null
-    private var videoPosition: TextView? = null
+//    private var videoPosition: TextView? = null
     private var live: LinearLayout? = null
     private var episodesButton: LinearLayout? = null
     private var episodesText: TextView? = null
@@ -272,8 +272,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                                 )
                             }
                         }
-//                        layoutBrightness?.visibility = View.GONE
-//                        layoutVolume?.visibility = View.GONE
                         return true
                     }
                 },
@@ -363,7 +361,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 
     private fun performViewsOnConnect() {
         pip?.visibility = View.GONE
-        videoPosition?.visibility = View.VISIBLE
+//        videoPosition?.visibility = View.VISIBLE
         exoPosition?.visibility = View.GONE
         exoProgress?.visibility = View.GONE
         customSeekBar?.visibility = View.VISIBLE
@@ -390,7 +388,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 
     private fun performViewsOnDisconnect() {
         pip?.visibility = View.VISIBLE
-        videoPosition?.visibility = View.GONE
+//        videoPosition?.visibility = View.GONE
         exoPosition?.visibility = View.VISIBLE
         exoProgress?.visibility = View.VISIBLE
         customSeekBar?.visibility = View.GONE
@@ -441,7 +439,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             override fun onProgressUpdated(current: Long, max: Long) {
                 Log.d(TAG, "loadRemoteMedia: $max -> $current")
                 customSeekBar?.progress = (current / 1000).toInt()
-                videoPosition?.text = MyHelper().formatDuration(current / 1000)
+//                videoPosition?.text = MyHelper().formatDuration(current / 1000)
                 listener = this
             }
         }, 1500)
@@ -464,6 +462,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             .build()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (player.isPlaying) {
             player.stop()
@@ -629,11 +628,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         forward = findViewById(R.id.video_forward)
         playPause = findViewById(R.id.video_play_pause)
         progressbar = findViewById(R.id.video_progress_bar)
-        timer = findViewById(R.id.timer)
-        if (playerConfiguration.isLive) {
-            timer?.visibility = View.GONE
-        }
-        videoPosition = findViewById(R.id.video_position)
+//        timer = findViewById(R.id.timer)
+//        if (playerConfiguration.isLive) {
+//            timer?.visibility = View.GONE
+//        }
+//        videoPosition = findViewById(R.id.video_position)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)
         if (playerConfiguration.isLive) {
@@ -1263,9 +1262,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                             player.play()
                         } else {
                             if (playerConfiguration.isSerial) {
-                                loadRemoteMedia(currentPosition ?: 0)
+                                loadRemoteMedia(currentPosition)
                             } else {
-                                loadRemoteMedia(currentPosition ?: 0)
+                                loadRemoteMedia(currentPosition)
                             }
                         }
                     } else {

@@ -113,7 +113,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
                 sortedResolutions.insert("1080p", at: 1)
             }
         }
-        portraitOrientation()
         view.backgroundColor = .black
         
         playerView.delegate = self
@@ -377,7 +376,9 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     }
     
     func close(duration : Double){
-        portraitOrientation()
+        if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight {
+            changeOrientation()
+        }
         self.dismiss(animated: true, completion: nil)
         delegate?.getDuration(duration: duration)
     }
@@ -388,38 +389,17 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             value = UIInterfaceOrientation.portrait.rawValue
         }
         if #available(iOS 16.0, *) {
-            DispatchQueue.main.async {
-                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                    return
-                }
-                self.setNeedsUpdateOfSupportedInterfaceOrientations()
-                windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: (UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight) ? .portrait : .landscapeRight)){
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                       return
+            }
+            self.setNeedsUpdateOfSupportedInterfaceOrientations()
+            windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: (UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight) ? .portrait : .landscapeRight)){
                         error in
                         print(error)
                         print(windowScene.effectiveGeometry)
-                }
             }
         } else {
             UIDevice.current.setValue(value, forKey: "orientation")
-            UIViewController.attemptRotationToDeviceOrientation()
-        }
-    }
-    
-    func portraitOrientation(){
-        if #available(iOS 16.0, *) {
-            DispatchQueue.main.async {
-                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                    return
-                }
-                self.setNeedsUpdateOfSupportedInterfaceOrientations()
-                windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: .portrait)){
-                        error in
-                        print(error)
-                        print(windowScene.effectiveGeometry)
-                }
-            }
-        } else {
-            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
             UIViewController.attemptRotationToDeviceOrientation()
         }
     }

@@ -1,6 +1,7 @@
 package uz.udevs.udevs_video_player.double_tap_playerview.youtybe.views
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater

@@ -157,7 +157,6 @@ internal class CircleClipTapView(context: Context?, attrs: AttributeSet) :
         if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
                 duration = animationDuration
-//                interpolator = LinearInterpolator()
                 addUpdateListener {
                     invalidateWithCurrentRadius(it.animatedValue as Float)
                 }

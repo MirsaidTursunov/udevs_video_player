@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
+    <plurals name="quick_seek_x_second" tools:ignore="UnusedQuantity">
+        <item quantity="other">%d soniya</item>
+        <item quantity="one">%d soniya</item>
+        <item quantity="many">%d soniya</item>
+    </plurals>
+</resources>

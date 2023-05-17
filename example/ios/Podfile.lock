@@ -11,10 +11,10 @@ PODS:
   - NVActivityIndicatorView (5.1.1):
     - NVActivityIndicatorView/Base (= 5.1.1)
   - NVActivityIndicatorView/Base (5.1.1)
-  - Protobuf (3.22.1)
-  - SDWebImage (5.15.5):
-    - SDWebImage/Core (= 5.15.5)
-  - SDWebImage/Core (5.15.5)
+  - Protobuf (3.23.0)
+  - SDWebImage (5.15.7):
+    - SDWebImage/Core (= 5.15.7)
+  - SDWebImage/Core (5.15.7)
   - SnapKit (4.2.0)
   - SVGKit (3.0.0):
     - CocoaLumberjack (~> 3.0)
@@ -59,8 +59,8 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   google-cast-sdk: 6731e9a206ce43e0f4433d15598ad8a19f0371d5
   NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
-  Protobuf: d7f7c8329edf5eb8af65547a8ba3e9c1cee927d5
-  SDWebImage: fd7e1a22f00303e058058278639bf6196ee431fe
+  Protobuf: 43e3764cdf3609fdd00417649561565703437fdc
+  SDWebImage: 25bac438318faf37e35650619ebc288a9061d292
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SVGKit: 1ad7513f8c74d9652f94ed64ddecda1a23864dea
   TinyConstraints: 7b7ccc0c485bb3bb47082138ff28bc33cd49897f

@@ -58,4 +58,8 @@ data class PlayerConfiguration(
     val baseUrl: String,
     @SerializedName("fromCache")
     val fromCache: Boolean,
+    @SerializedName("seconds")
+    val seconds: String,
+    @SerializedName("second")
+    val second: String,
 ) : Serializable

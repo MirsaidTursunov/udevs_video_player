@@ -253,7 +253,7 @@ class _MainPageState extends State<MainPage> {
           StreamBuilder(
             stream: currentProgressDownloadAsStream(),
             builder: (context, snapshot) {
-              var data = snapshot.data as MediaItemDownload?;
+              var data = snapshot.data;
               return Column(
                 children: [
                   Text(
@@ -279,7 +279,7 @@ class _MainPageState extends State<MainPage> {
           FutureBuilder(
             future: checkIsDownloaded(),
             builder: (context, snapshot) {
-              var data = snapshot.data as bool?;
+              var data = snapshot.data;
               return Text((data ?? false) ? 'Downloaded' : 'Not downloaded');
             },
           ),

@@ -12,6 +12,8 @@ data class PlayerConfiguration(
     val qualityText: String,
     @SerializedName("speedText")
     val speedText: String,
+    @SerializedName("programsText")
+    val programsText: String,
     @SerializedName("lastPosition")
     val lastPosition: Long,
     @SerializedName("title")

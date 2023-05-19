@@ -253,6 +253,7 @@ class UdevsVideoPlayerActivity : Activity() {
         speedButton = findViewById(R.id.speed_button)
         speedButton?.text = playerConfiguration!!.speedText
         tvButton = findViewById(R.id.tv_button)
+        tvButton?.text=playerConfiguration!!.programsText
         previousButton = findViewById(R.id.video_previous)
         nextButton = findViewById(R.id.video_next)
         if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&

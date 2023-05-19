@@ -55,7 +55,8 @@ void main() {
           megogoAccessToken: '',
           authorization: '',
           autoText: '',
-          baseUrl: ''
+          baseUrl: '',
+          programsText: 'Programs',
         )),
         '42');
   });

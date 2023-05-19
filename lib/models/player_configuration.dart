@@ -22,6 +22,7 @@ class PlayerConfiguration {
   int episodeIndex;
   String episodeText;
   String seasonText;
+  String programsText;
   bool isMegogo;
   bool isPremier;
   String videoId;
@@ -59,12 +60,13 @@ class PlayerConfiguration {
     map['authorization'] = authorization;
     map['autoText'] = autoText;
     map['baseUrl'] = baseUrl;
+    map['programsText']=programsText;
     return map;
   }
 
   @override
   String toString() {
-    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isLive: $isLive, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, episodeText: $episodeText, seasonText: $seasonText, isMegogo: $isMegogo, isPremier: $isPremier, videoId: $videoId, sessionId: $sessionId, megogoAccessToken: $megogoAccessToken, authorization: $authorization, autoText: $autoText, baseUrl: $baseUrl}';
+    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isLive: $isLive, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, episodeText: $episodeText, seasonText: $seasonText, isMegogo: $isMegogo, isPremier: $isPremier, videoId: $videoId, sessionId: $sessionId, megogoAccessToken: $megogoAccessToken, authorization: $authorization, autoText: $autoText, baseUrl: $baseUrl,programsText: $programsText}';
   }
 
   PlayerConfiguration({
@@ -94,5 +96,6 @@ class PlayerConfiguration {
     required this.authorization,
     required this.autoText,
     required this.baseUrl,
+    required this.programsText,
   });
 }

@@ -43,6 +43,12 @@ import uz.udevs.udevs_video_player.models.PlayerConfiguration
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 class UdevsVideoPlayerActivity : Activity() {
 
@@ -81,6 +87,7 @@ class UdevsVideoPlayerActivity : Activity() {
         retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
         initializeClickListeners()
 
+        trustEveryone()
         if (playerConfiguration?.playVideoFromAsset == true) {
             playFromAsset()
         } else {
@@ -139,6 +146,43 @@ class UdevsVideoPlayerActivity : Activity() {
         super.onBackPressed()
     }
 
+    private fun trustEveryone() {
+        try {
+            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+            val context: SSLContext = SSLContext.getInstance("TLS")
+            context.init(
+                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
+                object : X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Throws(CertificateException::class)
+                    override fun checkClientTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Throws(CertificateException::class)
+                    override fun checkServerTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {
+                    }
+
+                    override fun getAcceptedIssuers(): Array<X509Certificate> {
+                        TODO("Not yet implemented")
+                    }
+
+                }), SecureRandom()
+            )
+            HttpsURLConnection.setDefaultSSLSocketFactory(
+                context.socketFactory
+            )
+        } catch (e: Exception) { // should never happen
+            e.printStackTrace()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         player?.playWhenReady = false
@@ -164,7 +208,7 @@ class UdevsVideoPlayerActivity : Activity() {
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = false
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         player?.setMediaSource(mediaSource)
         player?.prepare()
         player?.playWhenReady = true
@@ -178,7 +222,7 @@ class UdevsVideoPlayerActivity : Activity() {
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration!!.showController
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration!!.lastPosition * 1000)
         player?.prepare()

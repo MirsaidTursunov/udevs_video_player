@@ -92,9 +92,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     private var playPause: ImageView? = null
     private var progressbar: ProgressBar? = null
 
-    //    private var timer: LinearLayout? = null
     private var exoPosition: TextView? = null
-//    private var videoPosition: TextView? = null
+    private var exoDuration: TextView? = null
     private var live: LinearLayout? = null
     private var episodesButton: LinearLayout? = null
     private var episodesText: TextView? = null
@@ -361,7 +360,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 
     private fun performViewsOnConnect() {
         pip?.visibility = View.GONE
-//        videoPosition?.visibility = View.VISIBLE
         exoPosition?.visibility = View.GONE
         exoProgress?.visibility = View.GONE
         customSeekBar?.visibility = View.VISIBLE
@@ -388,7 +386,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 
     private fun performViewsOnDisconnect() {
         pip?.visibility = View.VISIBLE
-//        videoPosition?.visibility = View.GONE
         exoPosition?.visibility = View.VISIBLE
         exoProgress?.visibility = View.VISIBLE
         customSeekBar?.visibility = View.GONE
@@ -632,7 +629,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 //        if (playerConfiguration.isLive) {
 //            timer?.visibility = View.GONE
 //        }
-//        videoPosition = findViewById(R.id.video_position)
+        exoDuration = findViewById(R.id.exo_duration)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)
         if (playerConfiguration.isLive) {
@@ -663,27 +660,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
         if (playerConfiguration.isLive) {
+            exoPosition?.visibility = View.GONE
+            exoDuration?.visibility = View.GONE
             exoProgress?.visibility = View.GONE
             rewind?.visibility = View.GONE
             forward?.visibility = View.GONE
             customSeekBar?.visibility = View.VISIBLE
         }
-//        findViewById<DoubleTapPlayerView>(R.id.previewPlayerView).setOnTouchListener { _, motionEvent ->
-//            Toast.makeText(
-//                this,
-//                "onSingleTapUp ${motionEvent.action} ${motionEvent.pointerCount}",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            if (!playerView.isControllerFullyVisible && motionEvent.pointerCount == 1) {
-//                if (motionEvent.action == MotionEvent.ACTION_UP) {
-//                    layoutBrightness?.visibility = View.GONE
-//                    layoutVolume?.visibility = View.GONE
-//                }
-//            }
-//            return@setOnTouchListener true
-//        }
     }
-
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initializeClickListeners() {

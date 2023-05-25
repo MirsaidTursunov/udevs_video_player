@@ -7,23 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.UdevsVideoPlayerActivity">
 
-    <!--    <androidx.media3.ui.PlayerView-->
-    <!--        android:id="@+id/exo_player_view"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:background="@color/black"-->
-    <!--        app:animation_enabled="false"-->
-    <!--        app:auto_show="true"-->
-    <!--        app:controller_layout_id="@layout/custom_playback_view"-->
-    <!--        app:hide_on_touch="true"-->
-    <!--        app:resize_mode="fit"-->
-    <!--        app:show_buffering="never"-->
-    <!--        app:show_timeout="6000"-->
-    <!--        app:shutter_background_color="@color/black"-->
-    <!--        app:surface_type="surface_view"-->
-    <!--        app:use_controller="true">-->
-
-    <!--    </androidx.media3.ui.PlayerView>-->
 
     <FrameLayout
         android:id="@+id/frameLayout"

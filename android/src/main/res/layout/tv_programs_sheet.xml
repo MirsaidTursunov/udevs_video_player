@@ -61,7 +61,7 @@
         app:tabGravity="center"
         app:tabIndicatorColor="@color/blue"
         app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/blue"
+        app:tabSelectedTextColor="@color/white"
         app:tabTextAppearance="@style/TvProgramTabText"
         app:tabTextColor="@color/grey10" />
 

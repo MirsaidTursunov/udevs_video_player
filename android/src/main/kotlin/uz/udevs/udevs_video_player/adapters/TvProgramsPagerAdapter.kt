@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.ProgramsInfo
 
+
 class TvProgramsPagerAdapter(
     var context: Context,
-    var programsInfoList: List<ProgramsInfo>,
+    private var programsInfoList: List<ProgramsInfo>,
 ) :
     RecyclerView.Adapter<TvProgramsPagerAdapter.Vh>() {
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -19,11 +20,23 @@ class TvProgramsPagerAdapter(
 
         init {
             rv = itemView.findViewById(R.id.tv_programs_rv)
+//            val verticalDecoration = DividerItemDecoration(
+//                itemView.context,
+//                DividerItemDecoration.HORIZONTAL
+//            )
+//            val verticalDivider =
+//                ContextCompat.getDrawable(
+//                    itemView.context,
+//                    R.drawable.horizontal_divider
+//                )
+//            verticalDecoration.setDrawable(verticalDivider!!)
+//            rv.addItemDecoration(verticalDecoration)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.tv_program_page, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.tv_program_page, parent, false)
         return Vh(view)
     }
 

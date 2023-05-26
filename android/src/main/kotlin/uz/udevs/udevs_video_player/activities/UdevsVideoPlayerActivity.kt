@@ -1005,7 +1005,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
 
     private fun showTvProgramsBottomSheet() {
         currentBottomSheet = BottomSheet.TV_PROGRAMS
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
@@ -1033,7 +1033,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     private var backButtonEpisodeBottomSheet: ImageView? = null
     private fun showEpisodesBottomSheet() {
         currentBottomSheet = BottomSheet.EPISODES
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.episodes)
         backButtonEpisodeBottomSheet = bottomSheetDialog.findViewById(R.id.episode_sheet_back)
@@ -1114,7 +1114,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     private var backButtonSettingsBottomSheet: ImageView? = null
     private fun showSettingsBottomSheet() {
         currentBottomSheet = BottomSheet.SETTINGS
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.settings_bottom_sheet)
         backButtonSettingsBottomSheet = bottomSheetDialog.findViewById(R.id.settings_sheet_back)
@@ -1168,7 +1168,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         initialValue: String, list: ArrayList<String>, fromQuality: Boolean
     ) {
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)

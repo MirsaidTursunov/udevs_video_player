@@ -1049,8 +1049,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         titleBottomSheet?.text = title?.text
         val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)
         val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.episode_view_pager)
-        viewPager?.adapter = EpisodePagerAdapter(viewPager!!, this,
+        viewPager?.adapter = EpisodePagerAdapter(
+            viewPager!!, this,
             playerConfiguration.seasons,
+            seasonIndex,
+            episodeIndex,
             object : EpisodePagerAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onClick(epIndex: Int, seasIndex: Int) {
@@ -1094,7 +1097,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                     }
                     bottomSheetDialog.dismiss()
                 }
-            })
+            },
+        )
         TabLayoutMediator(tabLayout!!, viewPager) { tab, position ->
             tab.text = playerConfiguration.seasons[position].title
         }.attach()

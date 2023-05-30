@@ -18,6 +18,8 @@ class EpisodePagerAdapter(
     var viewPager: ViewPager2,
     var context: Context,
     var seasons: List<Season>,
+    var seasonsIndex: Int,
+    var episodeIndex: Int,
     var onClickListener: OnClickListener
 ) :
     RecyclerView.Adapter<EpisodePagerAdapter.Vh>() {
@@ -62,6 +64,8 @@ class EpisodePagerAdapter(
         holder.rv.layoutManager = layoutManager
         holder.rv.adapter = EpisodesRvAdapter(
             context,
+            seasonsIndex == position,
+            episodeIndex,
             seasons[position].movies,
             object : EpisodesRvAdapter.OnClickListener {
                 override fun onClick(episodeIndex: Int) {

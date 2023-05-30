@@ -11,8 +11,15 @@ import com.bumptech.glide.Glide
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.Movie
 import uz.udevs.udevs_video_player.utils.MyHelper
+import java.security.AccessController.getContext
 
-class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClickListener: OnClickListener) :
+class EpisodesRvAdapter(
+    var context: Context,
+    var activeSeason: Boolean,
+    var episodeIndex: Int,
+    var list: List<Movie>,
+    var onClickListener: OnClickListener
+) :
     RecyclerView.Adapter<EpisodesRvAdapter.Vh>() {
 
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,6 +45,10 @@ class EpisodesRvAdapter(var context: Context, var list: List<Movie>, var onClick
 
     override fun onBindViewHolder(holder: Vh, position: Int) {
         holder.title.text = list[position].title
+        if (activeSeason && position == episodeIndex) {
+            holder.title.setTextColor(context.resources.getColor(R.color.blue))
+            holder.description.setTextColor(context.resources.getColor(R.color.blue))
+        }
         holder.description.text = list[position].description
         holder.duration.text = MyHelper().formatDuration(list[position].duration)
         Glide.with(context)

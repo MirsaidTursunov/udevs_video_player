@@ -191,7 +191,6 @@ class ProgramViewController: UIViewController {
         view.addSubview(backdropView)
         view.addSubview(menuView)
         menuView.addSubview(tableView)
-        menuView.backgroundColor = .white
         tableView.sectionFooterHeight = 0
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.sectionHeaderHeight = 0

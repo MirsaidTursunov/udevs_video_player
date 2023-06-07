@@ -106,13 +106,28 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         url = playerConfiguration.url
         title = playerConfiguration.title
         let resList = resolutions ?? ["480p":playerConfiguration.url]
+        var k4 = false
         sortedResolutions = Array(resList.keys).sorted().reversed()
         Array(resList.keys).sorted().reversed().forEach { quality in
-            if quality == "1080p"{
+            if quality == "1080p" {
                 sortedResolutions.removeLast()
-                sortedResolutions.insert("1080p", at: 1)
+                sortedResolutions.insert("1080p", at: k4 ? 2 : 1)
+            }
+            if quality == "4k" {
+                if let index = sortedResolutions.firstIndex(of: quality) {
+                    k4 = true
+                    sortedResolutions.remove(at: index)
+                    sortedResolutions.insert(quality, at: 1)
+                }
+            }
+            if quality == "8k" {
+                if let index = sortedResolutions.firstIndex(of: quality) {
+                    sortedResolutions.remove(at: index)
+                    sortedResolutions.insert(quality, at: 1)
+                }
             }
         }
+        
         view.backgroundColor = .black
         
         playerView.delegate = self
@@ -499,23 +514,13 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     }
     
     func showQualityBottomSheet(){
-        let resList = resolutions ?? ["480p": playerConfiguration.url]
-        let array = Array(resList.keys)
-        var listOfQuality = [String]()
-        listOfQuality = array.sorted().reversed()
-        array.sorted().reversed().forEach { quality in
-            if quality == "1080p"{
-                listOfQuality.removeLast()
-                listOfQuality.insert("1080p", at: 1)
-            }
-        }
         let bottomSheetVC = BottomSheetViewController()
         bottomSheetVC.modalPresentationStyle = .overCurrentContext
-        bottomSheetVC.items = listOfQuality
+        bottomSheetVC.items = sortedResolutions
         bottomSheetVC.labelText = qualityLabelText
         bottomSheetVC.cellDelegate = self
         bottomSheetVC.bottomSheetType = .quality
-        bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
+        bottomSheetVC.selectedIndex = sortedResolutions.firstIndex(of: selectedQualityText) ?? 0
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.present(bottomSheetVC, animated: false, completion:nil)
         }

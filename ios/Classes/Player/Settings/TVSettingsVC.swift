@@ -15,8 +15,6 @@ class TVSettingVC: UIViewController, UIGestureRecognizerDelegate {
     
     var resolutions: [String:String]?
     var movieController = VideoPlayerViewController()
-//    var delegete: TVQualityDelegate?
-//    var speedDelegate: TVSpeedDelegate?
     var speedTitle: String = "1x"
     
     var settingModel = [SettingModel]()

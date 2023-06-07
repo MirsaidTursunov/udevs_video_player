@@ -1196,35 +1196,37 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
         //sorting
         val l = mutableListOf<String>()
-        if (fromQuality) {
-            var auto = ""
-            list.forEach {
-                if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-                    l.add(it)
-                } else {
-                    auto = it
-                }
-            }
-            for (i in 0 until l.size) {
-                for (j in i until l.size) {
-                    val first = l[i]
-                    val second = l[j]
-                    if (first.substring(0, first.length - 1).toInt() < second.substring(
-                            0, second.length - 1
-                        ).toInt()
-                    ) {
-                        val a = l[i]
-                        l[i] = l[j]
-                        l[j] = a
-                    }
-                }
-            }
-            if (auto.isNotEmpty()) {
-                l.add(0, auto)
-            }
-        } else {
-            l.addAll(list)
-        }
+        l.addAll(list)
+
+//        if (fromQuality) {
+//            var auto = ""
+//            list.forEach {
+//                if (it.substring(0, it.length - 1).toIntOrNull() != null) {
+//                    l.add(it)
+//                } else {
+//                    auto = it
+//                }
+//            }
+//            for (i in 0 until l.size) {
+//                for (j in i until l.size) {
+//                    val first = l[i]
+//                    val second = l[j]
+//                    if (first.substring(0, first.length - 1).toInt() < second.substring(
+//                            0, second.length - 1
+//                        ).toInt()
+//                    ) {
+//                        val a = l[i]
+//                        l[i] = l[j]
+//                        l[j] = a
+//                    }
+//                }
+//            }
+//            if (auto.isNotEmpty()) {
+//                l.add(0, auto)
+//            }
+//        } else {
+//            l.addAll(list)
+//        }
         val adapter = QualitySpeedAdapter(
             initialValue,
             this,

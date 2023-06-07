@@ -1196,37 +1196,54 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
         //sorting
         val l = mutableListOf<String>()
-        l.addAll(list)
 
-//        if (fromQuality) {
-//            var auto = ""
-//            list.forEach {
-//                if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-//                    l.add(it)
-//                } else {
-//                    auto = it
-//                }
-//            }
-//            for (i in 0 until l.size) {
-//                for (j in i until l.size) {
-//                    val first = l[i]
-//                    val second = l[j]
-//                    if (first.substring(0, first.length - 1).toInt() < second.substring(
-//                            0, second.length - 1
-//                        ).toInt()
-//                    ) {
-//                        val a = l[i]
-//                        l[i] = l[j]
-//                        l[j] = a
-//                    }
-//                }
-//            }
-//            if (auto.isNotEmpty()) {
-//                l.add(0, auto)
-//            }
-//        } else {
-//            l.addAll(list)
-//        }
+        if (fromQuality) {
+            var auto = ""
+            var k4 = ""
+            var k8 = ""
+            list.forEach {
+                if (it.lowercase() == "4k") {
+                    k4 = it
+                } else if (it.lowercase() == "8k") {
+                    k8 = it
+                } else if (it.substring(0, it.length - 1).toIntOrNull() != null) {
+                    l.add(it)
+                } else {
+                    auto = it
+                }
+            }
+            for (i in 0 until l.size) {
+                for (j in i until l.size) {
+                    val first = l[i]
+                    val second = l[j]
+                    if (first.substring(0, first.length - 1).toInt() < second.substring(
+                            0, second.length - 1
+                        ).toInt()
+                    ) {
+                        val a = l[i]
+                        l[i] = l[j]
+                        l[j] = a
+                    }
+                }
+            }
+            if (auto.isNotEmpty()) {
+                l.add(0, auto)
+            }
+            if (auto.isNotEmpty() && k4.isNotEmpty()) {
+                l.add(1, k4)
+            } else if (k4.isNotEmpty()) {
+                l.add(0, k4)
+            }
+            if (k4.isNotEmpty() && k8.isNotEmpty()) {
+                l.add(1, k8)
+            } else if (auto.isNotEmpty() && k8.isNotEmpty()) {
+                l.add(1, k8)
+            } else {
+                l.add(0, k8)
+            }
+        } else {
+            l.addAll(list)
+        }
         val adapter = QualitySpeedAdapter(
             initialValue,
             this,

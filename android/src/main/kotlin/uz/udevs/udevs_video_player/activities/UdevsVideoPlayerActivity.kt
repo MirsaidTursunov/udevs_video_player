@@ -715,6 +715,81 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         }
     }
 
+    private fun lockAndUnlockTouch() {
+        isTouchLocked = !isTouchLocked
+        if (!isTouchLocked) {
+            exoProgress?.visibility = View.VISIBLE
+            close?.visibility = View.VISIBLE
+            pip?.visibility = View.VISIBLE
+            cast?.visibility = View.VISIBLE
+            more?.visibility = View.VISIBLE
+            rewind?.visibility = View.VISIBLE
+            forward?.visibility = View.VISIBLE
+            playPause?.visibility = View.VISIBLE
+            orientation?.visibility = View.VISIBLE
+            exoPosition?.visibility = View.VISIBLE
+            exoDuration?.visibility = View.VISIBLE
+            zoom?.visibility = View.VISIBLE
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                title1?.visibility = View.VISIBLE
+            } else {
+                title?.visibility = View.VISIBLE
+            }
+            if (playerConfiguration.isLive) {
+                live?.visibility = View.VISIBLE
+                exoPosition?.visibility = View.GONE
+                exoDuration?.visibility = View.GONE
+                exoProgress?.visibility = View.GONE
+                rewind?.visibility = View.GONE
+                forward?.visibility = View.GONE
+                customSeekBar?.visibility = View.VISIBLE
+                tvProgramsButton?.visibility = View.VISIBLE
+                tvProgramsText?.visibility = View.VISIBLE
+            }
+            if (playerConfiguration.seasons.isNotEmpty()) {
+                episodesButton?.visibility = View.VISIBLE
+                episodesText?.visibility = View.VISIBLE
+                nextText?.visibility = View.VISIBLE
+            }
+            lockTouch?.setImageResource(R.drawable.ic_lock_open)
+        } else {
+            exoProgress?.visibility = View.INVISIBLE
+            close?.visibility = View.INVISIBLE
+            pip?.visibility = View.INVISIBLE
+            cast?.visibility = View.INVISIBLE
+            more?.visibility = View.INVISIBLE
+            rewind?.visibility = View.INVISIBLE
+            forward?.visibility = View.INVISIBLE
+            playPause?.visibility = View.INVISIBLE
+            orientation?.visibility = View.INVISIBLE
+            exoPosition?.visibility = View.INVISIBLE
+            exoDuration?.visibility = View.INVISIBLE
+            zoom?.visibility = View.INVISIBLE
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                title1?.visibility = View.INVISIBLE
+            } else {
+                title?.visibility = View.INVISIBLE
+            }
+            if (playerConfiguration.isLive) {
+                live?.visibility = View.INVISIBLE
+                exoPosition?.visibility = View.GONE
+                exoDuration?.visibility = View.GONE
+                exoProgress?.visibility = View.GONE
+                rewind?.visibility = View.GONE
+                forward?.visibility = View.GONE
+                customSeekBar?.visibility = View.INVISIBLE
+                tvProgramsButton?.visibility = View.INVISIBLE
+                tvProgramsText?.visibility = View.INVISIBLE
+            }
+            if (playerConfiguration.seasons.isNotEmpty()) {
+                episodesButton?.visibility = View.INVISIBLE
+                episodesText?.visibility = View.INVISIBLE
+                nextText?.visibility = View.INVISIBLE
+            }
+            lockTouch?.setImageResource(R.drawable.ic_lock)
+        }
+    }
+
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initializeClickListeners() {
         close?.setOnClickListener {
@@ -1235,17 +1310,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE
-        }
-    }
-
-    private fun lockAndUnlockTouch() {
-        isTouchLocked = !isTouchLocked
-        if (!isTouchLocked) {
-            exoProgress?.visibility = View.VISIBLE
-            lockTouch?.setImageResource(R.drawable.ic_lock_open)
-        } else {
-            exoProgress?.visibility = View.INVISIBLE
-            lockTouch?.setImageResource(R.drawable.ic_lock)
         }
     }
 

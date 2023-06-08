@@ -71,7 +71,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_lock"
+                android:src="@drawable/ic_lock_open"
                 tools:ignore="ContentDescription" />
 
             <ImageView

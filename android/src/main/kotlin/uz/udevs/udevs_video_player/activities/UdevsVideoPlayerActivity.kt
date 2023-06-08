@@ -227,7 +227,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                         playerView: DoubleTapPlayerView,
                         posX: Float
                     ): Boolean? {
-                        if(!isTouchLocked){
+                        if (!isTouchLocked) {
                             if (player.playbackState == android.media.session.PlaybackState.STATE_ERROR ||
                                 player.playbackState == android.media.session.PlaybackState.STATE_NONE ||
                                 player.playbackState == android.media.session.PlaybackState.STATE_STOPPED
@@ -1242,8 +1242,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         isTouchLocked = !isTouchLocked
         if (!isTouchLocked) {
             exoProgress?.visibility = View.VISIBLE
+            lockTouch?.setImageResource(R.drawable.ic_lock_open)
         } else {
             exoProgress?.visibility = View.INVISIBLE
+            lockTouch?.setImageResource(R.drawable.ic_lock)
         }
     }
 

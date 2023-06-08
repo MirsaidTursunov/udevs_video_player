@@ -544,24 +544,6 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
          *
          * @return `true` to forward, `false` to rewind or `null` to ignore.
          */
-        fun shouldForward(player: Player, playerView: DoubleTapPlayerView, posX: Float): Boolean? {
-
-            if (player.playbackState == PlaybackState.STATE_ERROR ||
-                player.playbackState == PlaybackState.STATE_NONE ||
-                player.playbackState == PlaybackState.STATE_STOPPED
-            ) {
-
-                playerView.cancelInDoubleTapMode()
-                return null
-            }
-
-            if (player.currentPosition > 500 && posX < playerView.width * 0.35)
-                return false
-
-            if (player.currentPosition < player.duration && posX > playerView.width * 0.65)
-                return true
-
-            return null
-        }
+        fun shouldForward(player: Player, playerView: DoubleTapPlayerView, posX: Float): Boolean?
     }
 }

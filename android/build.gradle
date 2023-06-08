@@ -2,7 +2,7 @@ group 'uz.udevs.udevs_video_player'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.media3_version = '1.0.1'
+    ext.media3_version = '1.0.2'
     repositories {
         google()
         mavenCentral()

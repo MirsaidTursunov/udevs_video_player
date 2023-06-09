@@ -88,7 +88,7 @@ class UdevsVideoPlayerActivity : Activity() {
         initializeClickListeners()
 
         ///TODO: SSL error
-//        trustEveryone()
+        trustEveryone()
         if (playerConfiguration?.playVideoFromAsset == true) {
             playFromAsset()
         } else {

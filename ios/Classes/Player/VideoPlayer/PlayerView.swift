@@ -40,6 +40,7 @@ class PlayerView: UIView {
     var playerLayer =  AVPlayerLayer()
     private var mediaTimeObserver: Any?
     private var observingMediaPlayer: Bool = false
+    private var isLock: Bool = false
     var playerConfiguration: PlayerConfiguration!
     weak var delegate: PlayerViewDelegate?
     
@@ -170,6 +171,13 @@ class PlayerView: UIView {
         let button = IconButton()
         button.setImage(Svg.more.uiImage, for: .normal)
         button.addTarget(self, action: #selector(settingPressed(_ :)), for: .touchUpInside)
+        return button
+    }()
+    
+    private var lockButton: IconButton = {
+        let button = IconButton()
+        button.setImage(Svg.unlock.uiImage, for: .normal)
+        button.addTarget(self, action: #selector(lockPressed(_ :)), for: .touchUpInside)
         return button
     }()
     
@@ -448,6 +456,47 @@ class PlayerView: UIView {
         delegate?.settingsPressed()
     }
     
+    @objc func lockPressed(_ sender: UIButton){
+        if isLock {
+            isLock = false
+            settingsButton.isHidden = false
+            exitButton.isHidden = false
+            timeSlider.isHidden = false
+            pipButton.isHidden = false
+            if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
+                titleLabelLandacape.isHidden = false
+            } else {
+                titleLabelPortrait.isHidden = false
+            }
+            playButton.isHidden = false
+            skipForwardButton.isHidden = false
+            skipBackwardButton.isHidden = false
+            landscapeButton.isHidden = false
+            episodesButton.isHidden = false
+            currentTimeLabel.isHidden = false
+            durationTimeLabel.isHidden = false
+            castButton.isHidden = false
+            lockButton.setImage(Svg.unlock.uiImage, for: .normal)
+        } else {
+            isLock = true
+            settingsButton.isHidden = true
+            exitButton.isHidden = true
+            timeSlider.isHidden = true
+            pipButton.isHidden = true
+            titleLabelPortrait.isHidden = true
+            titleLabelLandacape.isHidden = true
+            playButton.isHidden = true
+            skipForwardButton.isHidden = true
+            skipBackwardButton.isHidden = true
+            landscapeButton.isHidden = true
+            episodesButton.isHidden = true
+            currentTimeLabel.isHidden = true
+            durationTimeLabel.isHidden = true
+            castButton.isHidden = true
+            lockButton.setImage(Svg.lock.uiImage, for: .normal)
+        }
+    }
+    
     @objc func changeOrientation(_ sender: UIButton){
         delegate?.changeOrientation()
     }
@@ -568,19 +617,22 @@ class PlayerView: UIView {
     }
     
     @objc func didpinch(_ gesture: UIPinchGestureRecognizer) {
-        if gesture.state == .changed {
-            let scale = gesture.scale
-            if scale < 0.9 {
-                if playerConfiguration.isLive {
-                    self.playerLayer.videoGravity = .resize
+        if isLock { return }
+        
+            if gesture.state == .changed {
+                let scale = gesture.scale
+                if scale < 0.9 {
+                    if playerConfiguration.isLive {
+                        self.playerLayer.videoGravity = .resize
+                    } else {
+                        self.playerLayer.videoGravity = .resizeAspect
+                    }
                 } else {
-                    self.playerLayer.videoGravity = .resizeAspect
+                    self.playerLayer.videoGravity = .resizeAspectFill
                 }
-            } else {
-                self.playerLayer.videoGravity = .resizeAspectFill
+                resetTimer()
             }
-            resetTimer()
-        }
+        
     }
     
     override func layoutSubviews() {
@@ -665,6 +717,7 @@ class PlayerView: UIView {
         topView.addSubview(exitButton)
         topView.addSubview(titleLabelLandacape)
         topView.addSubview(settingsButton)
+        topView.addSubview(lockButton)
         topView.addSubview(pipButton)
         topView.addSubview(castButton)
     }
@@ -780,6 +833,9 @@ class PlayerView: UIView {
         
         castButton.rightToLeft(of: settingsButton)
         castButton.centerY(to: topView)
+        
+        lockButton.rightToLeft(of: castButton)
+        lockButton.centerY(to: topView)
         
         pipButton.leftToRight(of: exitButton)
         pipButton.centerY(to: topView)
@@ -960,6 +1016,7 @@ class PlayerView: UIView {
     }
     
     func verticalMoved(_ value: CGFloat) {
+        if isLock {return}
         if isVolume {
             if playbackMode == .local {
                 self.volumeViewSlider.value -= Float(value / 10000)
@@ -1069,8 +1126,16 @@ class PlayerView: UIView {
     @objc func tapGestureControls() {
         let location = tapGesture.location(in: overlayView)
         if location.x > overlayView.bounds.width / 2 + 50 {
+            if isLock {
+                toggleViews()
+                return
+            }
             self.fastForward()
         } else if location.x <= overlayView.bounds.width / 2 - 50 {
+            if isLock {
+                toggleViews()
+                return
+            }
             self.fastBackward()
         } else {
             toggleViews()

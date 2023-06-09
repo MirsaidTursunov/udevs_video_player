@@ -49,6 +49,8 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
+import java.security.KeyStore
+import javax.net.ssl.TrustManagerFactory
 
 class UdevsVideoPlayerActivity : Activity() {
 

@@ -148,6 +148,45 @@ class UdevsVideoPlayerActivity : Activity() {
     }
 
     ///TODO: SSL error
+    private fun trustEveryone() {
+        try {
+            val trustManager = object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<X509Certificate?>?, authType: String?) {
+                    // Implement proper client certificate verification if needed
+                }
+
+                override fun checkServerTrusted(chain: Array<X509Certificate?>?, authType: String?) {
+                    // Implement proper server certificate verification
+                    val defaultTrustManager = getDefaultTrustManager()
+                    defaultTrustManager.checkServerTrusted(chain, authType)
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate> {
+                    // Return an empty array or null if you don't need to know accepted issuers
+                    return arrayOf()
+                }
+            }
+
+            val sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, arrayOf(trustManager), null)
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+
+            // Optionally, set a hostname verifier
+            HttpsURLConnection.setDefaultHostnameVerifier { hostname, session ->
+                // Implement proper hostname verification if needed
+                true // For example, always return true here
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun getDefaultTrustManager(): X509TrustManager {
+        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+        trustManagerFactory.init(null as KeyStore?)
+        val trustManagers = trustManagerFactory.trustManagers
+        return trustManagers[0] as X509TrustManager
+    }
 //    private fun trustEveryone() {
 //        try {
 //            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }

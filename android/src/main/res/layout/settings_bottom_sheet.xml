@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/main_dark"
+    android:background="@drawable/tv_programs_background"
     android:orientation="vertical"
     android:paddingVertical="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="48dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@color/transparent"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@color/second_black"
+        app:cardCornerRadius="100dp" />
 
     <ImageView
         android:id="@+id/settings_sheet_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_close"
         android:visibility="gone"
-        android:src="@drawable/ic_back"
-        tools:ignore="ContentDescription"
-        android:layout_marginStart="10dp" />
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:id="@+id/quality"
@@ -35,11 +45,12 @@
             android:id="@+id/quality_settings_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:fontFamily="@font/regular"
             android:text="Quality"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/quality_settings_value_text"
@@ -51,12 +62,14 @@
             android:paddingEnd="10dp"
             android:text="Auto"
             android:textColor="@color/grey10"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText,RtlSymmetry" />
 
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@drawable/ic_arrow_forward" />
+            android:src="@drawable/ic_arrow_forward"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
@@ -71,17 +84,19 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_speed" />
+            android:src="@drawable/ic_speed"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/speed_settings_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:fontFamily="@font/regular"
             android:text="Speed"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/speed_settings_value_text"
@@ -94,12 +109,14 @@
             android:text="1.0x"
             android:textColor="@color/grey10"
             android:textFontWeight="300"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText,RtlSymmetry,UnusedAttribute" />
 
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@drawable/ic_arrow_forward" />
+            android:src="@drawable/ic_arrow_forward"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 

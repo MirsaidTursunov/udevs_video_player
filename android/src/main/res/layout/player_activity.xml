@@ -7,29 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".activities.UdevsVideoPlayerActivity">
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/exo_player_view"
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main"
-        app:animation_enabled="false"
-        app:auto_show="true"
-        app:controller_layout_id="@layout/custom_playback_view"
-        app:hide_on_touch="true"
-        app:resize_mode="fit"
-        app:show_buffering="never"
-        app:show_timeout="6000"
-        app:shutter_background_color="@color/main"
-        app:surface_type="surface_view"
-        app:use_controller="true" />
+        android:animateLayoutChanges="true"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <uz.udevs.udevs_video_player.double_tap_playerview.DoubleTapPlayerView
+            android:id="@+id/previewPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@android:color/black"
+            app:controller_layout_id="@layout/custom_playback_view"
+            app:dtpv_controller="@id/ytOverlay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <uz.udevs.udevs_video_player.double_tap_playerview.youtybe.VideoPlayerOverlay
+            android:id="@+id/ytOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000"
+            android:visibility="invisible"
+            app:yt_playerView="@id/previewPlayerView"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_brightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="vertical"
@@ -38,6 +53,7 @@
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="55dp"
             android:src="@drawable/ic_brightness"
             tools:ignore="ContentDescription" />
@@ -48,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
             android:maxHeight="6dp"
+            android:paddingBottom="20dp"
             android:progress="50"
             android:progressDrawable="@drawable/volume_brightness_back"
             android:rotation="270"
@@ -58,8 +75,8 @@
         android:id="@+id/layout_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="vertical"
@@ -68,8 +85,10 @@
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="55dp"
-            android:src="@drawable/ic_volume" />
+            android:src="@drawable/ic_volume"
+            tools:ignore="ContentDescription" />
 
         <SeekBar
             android:id="@+id/volume_seek"
@@ -77,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
             android:maxHeight="6dp"
+            android:paddingTop="20dp"
             android:progress="50"
             android:progressDrawable="@drawable/volume_brightness_back"
             android:rotation="270"

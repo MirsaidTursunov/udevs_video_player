@@ -2,18 +2,21 @@
 //  EpisodeCollectionUI.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import UIKit
+import TinyConstraints
 
 protocol EpisodeDelegate{
     func onEpisodeCellTapped(seasonIndex : Int, episodeIndex : Int)
 }
 
 class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
-   
-    var seasons = [Seasons]()
+    
+    var seasons = [Season]()
+    var closeText : String = ""
+    var seasonText : String = ""
     let videoPlayer = VideoPlayerViewController()
     var selectedSeasonIndex: Int = 0
     var delegate : EpisodeDelegate?
@@ -46,51 +49,56 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     let menuView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: "moreColor")
+        view.backgroundColor = Colors.moreColor
         return view
     }()
     
-    var menuHeight = UIScreen.main.bounds.height
+    var menuHeight = UIScreen.main.bounds.height * 0.36
     var isPresenting = false
     
     var topView: UIView = {
-    let view = UIView()
+        let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
+    
     var headerView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
+    
     var backView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.clear
+        view.backgroundColor = .clear
         return view
     }()
+    
     var verticalStack: UIStackView = {
         let st = UIStackView()
         st.alignment = .leading
         st.axis = .vertical
         st.distribution = .fill
-        st.spacing = 20
+        st.spacing = 16
         st.isUserInteractionEnabled = true
         st.backgroundColor = .clear
-        st.translatesAutoresizingMaskIntoConstraints = false
+        st.translatesAutoresizingMaskIntoConstraints = true
         return st
     }()
     
     lazy var seasonSelectBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.imageView?.contentMode = .scaleAspectFill
+        button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .white
-        button.setTitle("\(videoPlayer.selectedSeason + 1) сезон", for: .normal)
-        button.setImage(UIImage(named: "down.png"), for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 16)
+        button.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
+        button.setImage(Svg.down.uiImage, for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         button.semanticContentAttribute = .forceRightToLeft
         button.backgroundColor = .red
         button.clipsToBounds = true
+        button.contentVerticalAlignment = .center
+        button.contentHorizontalAlignment = .center
         button.layer.cornerRadius = 4
         button.addTarget(self, action: #selector(seasonSelectionTapped), for: .touchUpInside)
         return button
@@ -98,10 +106,9 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     lazy var cancelBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "exitIcon"), for: .normal)
+        button.setImage(Svg.exit.uiImage, for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .white
-        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
         button.addTarget(self, action: #selector(tap), for: .touchUpInside)
         return button
     }()
@@ -116,109 +123,77 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         super.viewDidLoad()
         
         if UIDevice.current.userInterfaceIdiom == .phone {
-           menuHeight = UIScreen.main.bounds.height
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            menuHeight = UIScreen.main.bounds.height * 0.4
+            if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
+                menuHeight = UIScreen.main.bounds.width * 0.4
+            } else {
+                menuHeight = UIScreen.main.bounds.height * 0.35
+            }
+        } else {
+            if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
+                menuHeight = UIScreen.main.bounds.width * 0.4
+            } else {
+                menuHeight = UIScreen.main.bounds.height * 0.4
+            }
         }
+        seasonSelectBtn.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
         
         setupUI()
         
         if UIDevice.current.userInterfaceIdiom == .phone {
-           print("running on iPhone")
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
+            print("running on iPhone")
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
             print("running on iPad")
         }
         
         view.backgroundColor = .clear
-//        view.addSubview(collectionView)
         view.addSubview(backdropView)
         view.addSubview(menuView)
         menuView.addSubview(verticalStack)
-        verticalStack.addArrangedSubviews(topView,backView)
-//        view.addSubview(backView)
+        verticalStack.addArrangedSubviews(topView , backView)
         backView.addSubview(collectionView)
-//        menuView.addSubview(headerView)
-//        menuView.addSubview(topView)
         topView.addSubview(headerView)
         headerView.addSubview(seasonSelectBtn)
-        seasonSelectBtn.backgroundColor = UIColor(named: "seasonColor")
+        seasonSelectBtn.backgroundColor = Colors.seasonColor
         headerView.addSubview(cancelBtn)
         menuView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         backdropView.addGestureRecognizer(tapGesture)
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            seasonSelectBtn.snp.makeConstraints { make in
-                make.height.equalTo(40)
-                make.width.equalTo(110)
-                make.left.equalTo(headerView)
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            seasonSelectBtn.snp.makeConstraints { make in
-                make.height.equalTo(40)
-                make.width.equalTo(110)
-                make.left.equalTo(headerView)
-                make.centerY.equalToSuperview()
-
-            }
+        seasonSelectBtn.snp.makeConstraints { make in
+            make.height.equalTo(40)
+            make.width.equalTo(124)
+            make.left.equalTo(headerView)
         }
+        
         cancelBtn.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-50)
+            make.height.equalTo(40)
+            make.width.equalTo(40)
+            make.right.equalToSuperview()
             make.centerY.equalToSuperview()
         }
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            headerView.snp.makeConstraints { make in
-                make.height.equalTo(topView)
-                make.top.equalTo(topView).offset(0)
-                make.left.equalTo(topView).offset(0)
-                make.right.equalTo(topView).offset(-40)
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            headerView.snp.makeConstraints { make in
-                make.height.equalTo(topView)
-                make.top.equalTo(topView).offset(0)
-                make.left.equalTo(topView).offset(0)
-                make.right.equalTo(topView).offset(-20)
-            }
+        headerView.snp.makeConstraints { make in
+            make.height.equalTo(topView)
+            make.top.equalTo(topView).offset(0)
+            make.left.equalTo(topView).offset(16)
+            make.right.equalTo(topView).offset(-8)
         }
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            topView.snp.makeConstraints { make in
-                make.width.equalTo(verticalStack)
-                make.height.equalTo(verticalStack).multipliedBy(0.12)
-            }
-            
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            topView.snp.makeConstraints { make in
-                make.width.equalTo(verticalStack)
-                make.height.equalTo(verticalStack).multipliedBy(0.12)
-                make.top.equalTo(verticalStack).offset(20)
-            }
-            
-        }
-       
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            verticalStack.snp.makeConstraints { make in
-                make.left.equalTo(menuView).offset(40)
-                make.right.equalTo(menuView)
-                make.bottom.equalTo(menuView).offset(-30)
-                make.top.equalTo(menuView).offset(32)
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            verticalStack.snp.makeConstraints { make in
-                make.left.equalTo(menuView)
-                make.right.equalTo(menuView).offset(-32)
-                make.bottom.equalTo(menuView).offset(-30)
-                make.top.equalTo(menuView)
-            }
+        topView.snp.makeConstraints { make in
+            make.right.left.equalTo(backView)
+            make.height.equalTo(40)
         }
         
+        verticalStack.snp.makeConstraints { make in
+            make.left.equalTo(menuView).offset(0)
+            make.right.equalTo(menuView)
+            make.bottom.equalTo(menuView).offset(0)
+            make.top.equalTo(menuView).offset(18)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print("COLLL")
         collectionView.reloadData()
     }
     
@@ -230,10 +205,10 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         let seasonVC = SeasonSelectionController()
         seasonVC.modalPresentationStyle = .overCurrentContext
         seasonVC.items = seasons
+        seasonVC.closeText = closeText
         seasonVC.cellDelegate = self
         seasonVC.bottomSheetType = .season
-        seasonVC.selectedIndex = videoPlayer.selectedSeason
-        print("SelectedIndex \(videoPlayer.selectedSeason)")
+        seasonVC.selectedIndex = selectedSeasonIndex
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.present(seasonVC, animated: false, completion:nil)
         }
@@ -249,48 +224,20 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-    
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            collectionView.snp.makeConstraints { make in
-                make.width.equalTo(backView)
-                make.height.equalTo(backView).multipliedBy(0.9)
-                make.bottom.equalTo(backView)
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            collectionView.snp.makeConstraints { make in
-                make.width.equalTo(backView)
-                make.height.equalTo(backView)
-                make.bottom.equalTo(backView)
-            }
+        collectionView.snp.makeConstraints { make in
+            make.width.equalTo(backView)
+            make.height.equalTo(backView)
+            make.bottom.equalTo(backView)
         }
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            backView.snp.makeConstraints { make in
-                make.height.equalTo(verticalStack).multipliedBy(0.88)
-                make.width.equalToSuperview()
-                make.left.equalTo(50)
-                make.right.equalTo(0)
-                make.bottom.equalToSuperview().offset(-30)
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            backView.snp.makeConstraints { make in
-                make.height.equalTo(verticalStack).multipliedBy(0.78)
-                make.width.equalToSuperview()
-                make.left.equalTo(50)
-                make.right.equalTo(0)
-            }
-        }
+        backView.leading(to: view.safeAreaLayoutGuide, offset: 0)
+        backView.trailing(to: view.safeAreaLayoutGuide, offset: 0)
+        backView.bottom(to: view.safeAreaLayoutGuide, offset: 0)
         
-        if UIDevice.current.userInterfaceIdiom == .phone  {
-            menuView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
-        }else if UIDevice.current.userInterfaceIdiom == .pad {
-            menuView.snp.makeConstraints { make in
-                make.height.equalTo(menuHeight)
-                make.bottom.equalToSuperview()
-                make.right.left.equalToSuperview().inset(0)
-            }
+        menuView.snp.makeConstraints { make in
+            make.height.equalTo(menuHeight)
+            make.bottom.equalToSuperview()
+            make.right.left.equalToSuperview()
         }
     }
     
@@ -300,16 +247,17 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.contentInsetAdjustmentBehavior = .never
-        if UIDevice.current.userInterfaceIdiom == .phone {
+//        if UIDevice.current.userInterfaceIdiom == .phone {
             collectionView.snp.makeConstraints { make in
                 make.height.equalTo(collectionView.snp_height).multipliedBy(0.5)
             }
-        }else {
-        collectionView.snp.makeConstraints { make in
-            make.width.equalTo(collectionView.snp_width).multipliedBy(0.5)
-          }
-       }
+//        } else {
+//            collectionView.snp.makeConstraints { make in
+//                make.width.equalTo(collectionView.snp_width).multipliedBy(0.5)
+//            }
+//        }
     }
+    
     func onBottomSheetCellTapped(index: Int, type: SeasonBottomSheetType) {
         videoPlayer.updateSeasonNum(index: index)
         selectedSeasonIndex = index
@@ -318,18 +266,35 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
             self.collectionView.reloadData()
         }
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
+                menuHeight = UIScreen.main.bounds.width * 0.4
+            } else {
+                menuHeight = UIScreen.main.bounds.height * 0.35
+            }
+        } else {
+            if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
+                menuHeight = UIScreen.main.bounds.width * 0.4
+            } else {
+                menuHeight = UIScreen.main.bounds.height * 0.4
+            }
+        }
+    }
 }
 
 extension EpisodeCollectionUI: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  seasons[selectedSeasonIndex].episodeList.count
+        return seasons[selectedSeasonIndex].movies.count
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! EpisodeCollectionCell
         cell.backgroundColor = .clear
         cell.layer.cornerRadius = 8
-        cell.episodes = seasons[selectedSeasonIndex].episodeList[indexPath.row]
-        let url = URL(string: seasons[selectedSeasonIndex].episodeList[indexPath.row].logoImage)
+        cell.episodes = seasons[selectedSeasonIndex].movies[indexPath.row]
+        let url = URL(string: seasons[selectedSeasonIndex].movies[indexPath.row].image ?? "")
         cell.episodeImage.sd_setImage(with: url, completed: nil)
         return cell
     }
@@ -339,14 +304,28 @@ extension EpisodeCollectionUI: UICollectionViewDelegateFlowLayout, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return  CGSize(width: 168, height: 242)
+        let safeFrame = view.safeAreaLayoutGuide.layoutFrame
+        let size = CGSize(width: safeFrame.width, height: safeFrame.height)
+        return setCollectionViewItemSize(size: size)
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-           return UIEdgeInsets(top: 20, left: 0, bottom: 16, right: 16)
+        return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.onEpisodeCellTapped(seasonIndex: selectedSeasonIndex, episodeIndex: indexPath.row)
         dismiss(animated: true, completion: nil)
+    }
+    
+    func setCollectionViewItemSize(size: CGSize) -> CGSize {
+        if UIApplication.shared.statusBarOrientation.isPortrait {
+            let width = (size.width - 3 * 16) / 2
+            return CGSize(width: width, height: menuHeight - 60)
+        } else {
+            let width = (size.width - 2 * 12) / 3
+            return CGSize(width: width, height: width)
+        }
     }
 }
 

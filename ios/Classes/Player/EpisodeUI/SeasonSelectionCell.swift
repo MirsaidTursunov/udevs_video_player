@@ -2,7 +2,7 @@
 //  SeasonSelectionCell.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import UIKit
 
 
 class SeasonSelectionCell : UITableViewCell{
-
+    
     var title : String?{
         didSet{
             headerTitle.text = title
@@ -24,8 +24,9 @@ class SeasonSelectionCell : UITableViewCell{
     
     lazy var checkIcon: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "checkIcon")
+        let image = UIImage(named: "ic_done",in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self),compatibleWith: nil)
         imageView.image = image
+        imageView.tintColor = Colors.white
         imageView.size(CGSize(width: 24, height: 24))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -73,7 +74,7 @@ class SeasonSelectionCell : UITableViewCell{
     private func setupLayout() {
         headerView.addSubview(headerTitle)
         headerView.addSubview(checkIcon)
-
+        
         headerView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.height.equalTo(contentView)

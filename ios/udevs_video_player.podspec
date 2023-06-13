@@ -18,11 +18,14 @@ A new Flutter plugin project.
   s.dependency 'TinyConstraints'
   s.dependency 'NVActivityIndicatorView'
   s.dependency 'XLActionController'
+  s.dependency 'SVGKit'
+  s.dependency 'google-cast-sdk', '< 5.0', '>=4.7.0'
   s.dependency 'SnapKit', '~> 4.0'
   s.dependency 'SDWebImage', '~> 5.0'
-  s.resources = 'Assets/*.png'
+  s.resources = 'Assets/*'
+  s.static_framework = true
 
-  s.platform = :ios, '11.0'
+  s.platform = :ios, '12.0'
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'

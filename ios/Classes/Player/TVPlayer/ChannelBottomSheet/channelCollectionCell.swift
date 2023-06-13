@@ -2,14 +2,14 @@
 //  channelCollectionCell.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 import UIKit
 import SnapKit
 import SDWebImage
 
 class channelCollectionCell: UICollectionViewCell {
-
+    
     var model : Channels? {
         didSet{
             cellTitle.text = model?.title
@@ -18,7 +18,7 @@ class channelCollectionCell: UICollectionViewCell {
             progressView.progress = stringToFloat(value: model?.passedPercentage ?? "")
         }
     }
-  lazy  var channelImage: UIImageView = {
+    lazy  var channelImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "image.png")
         image.backgroundColor = .white
@@ -29,40 +29,40 @@ class channelCollectionCell: UICollectionViewCell {
         return image
     }()
     
-   lazy var cellTitle: UILabel = {
+    lazy var cellTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-       label.text = model?.title
+        label.text = model?.title
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 13)
-       label.numberOfLines = 1
+        label.numberOfLines = 1
         return label
     }()
-   lazy var subtitle: UILabel = {
+    lazy var subtitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-       label.text = model?.subtitle
+        label.text = model?.subtitle
         label.textColor = .white
         label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 17)
         return label
     }()
-  lazy  var timeLbl: UILabel = {
+    lazy  var timeLbl: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-      label.text = model?.remindedTime
+        label.text = model?.remindedTime
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 13)
         return label
     }()
-   lazy var progressView: UIProgressView = {
+    lazy var progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .white
         view.tintColor = .yellow
         view.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-       view.progress = stringToFloat(value: model?.passedPercentage ?? "")
+        view.progress = stringToFloat(value: model?.passedPercentage ?? "")
         return view
     }()
     var verticalStack: UIStackView = {
@@ -112,7 +112,7 @@ class channelCollectionCell: UICollectionViewCell {
     }()
     
     override init(frame: CGRect) {
-            super.init(frame: .zero)
+        super.init(frame: .zero)
         
         contentView.addSubview(containerStack)
         contentView.backgroundColor = .clear
@@ -121,8 +121,8 @@ class channelCollectionCell: UICollectionViewCell {
         horizontalStack2.addArrangedSubviews(progressView,timeLbl)
         containerStack.addArrangedSubviews(horizontalStack,horizontalStack2)
         setupUI()
-        }
-        
+    }
+    
     func setupUI(){
         
         channelImage.snp.makeConstraints { make in

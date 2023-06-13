@@ -2,7 +2,7 @@
 //  SettingsCell.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 
@@ -13,9 +13,9 @@ class SettingCell: UITableViewCell {
     
     var model: SettingModel?  {
         didSet{
-        leftIcon.image = UIImage(named: model!.leftIcon)
-        leftTitle.text = model?.title ?? ""
-        configureLabel.text = model?.configureLabel ?? ""
+            leftIcon.image = model?.leftIcon
+            leftTitle.text = model?.title ?? ""
+            configureLabel.text = model?.configureLabel ?? ""
         }
     }
     var containerStack: UIStackView = {
@@ -29,7 +29,7 @@ class SettingCell: UITableViewCell {
         st.translatesAutoresizingMaskIntoConstraints = false
         return st
     }()
-   lazy var leftStack: UIStackView = {
+    lazy var leftStack: UIStackView = {
         let st = UIStackView()
         st.alignment = .leading
         st.axis = .horizontal
@@ -40,22 +40,23 @@ class SettingCell: UITableViewCell {
         st.translatesAutoresizingMaskIntoConstraints = false
         return st
     }()
-   lazy var rightStack: UIStackView = {
+    lazy var rightStack: UIStackView = {
         let st = UIStackView()
         st.alignment = .trailing
         st.axis = .horizontal
-       st.distribution = .fillProportionally
+        st.distribution = .fillProportionally
         st.spacing = 12
         st.backgroundColor = .clear
         st.isUserInteractionEnabled = false
         st.translatesAutoresizingMaskIntoConstraints = false
         return st
     }()
+    
     lazy var leftIcon: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
-        image.image = UIImage(named: model?.leftIcon ?? "")
+        image.image = model?.leftIcon
         return image
     }()
     
@@ -66,11 +67,12 @@ class SettingCell: UITableViewCell {
         label.font = UIFont.systemFont(ofSize: 15,weight: .regular)
         return label
     }()
+    
     lazy var rightIcon: UIImageView = {
         let image = UIImageView()
         image.backgroundColor = .clear
         image.sizeToFit()
-        image.image = UIImage(named: "rightIcon")
+        image.image = Svg.right.uiImage
         return image
     }()
     
@@ -86,7 +88,7 @@ class SettingCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
@@ -100,7 +102,7 @@ class SettingCell: UITableViewCell {
         containerStack.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.height.equalTo(48)
-//            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(0)
+            //            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(0)
             make.right.equalTo(self.safeAreaLayoutGuide).offset(-16)
             make.left.equalTo(self.safeAreaLayoutGuide).offset(16)
             make.top.equalToSuperview()
@@ -133,7 +135,6 @@ class SettingCell: UITableViewCell {
         containerStack.addArrangedSubviews(leftStack,rightStack)
         leftStack.addArrangedSubviews(leftIcon,leftTitle)
         rightStack.addArrangedSubviews(configureLabel,rightIcon)
-
     }
 }
 

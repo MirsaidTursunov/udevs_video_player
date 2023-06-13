@@ -2,7 +2,7 @@
 //  SettingsVC.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import UIKit
@@ -31,7 +31,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         table.delegate = self
         table.allowsSelection = true
         table.separatorColor = .clear
-        table.backgroundColor =  UIColor(named: "moreColor")
+        table.backgroundColor =  Colors.moreColor
         table.isScrollEnabled = false
         table.contentInsetAdjustmentBehavior = .never
         let inset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -39,19 +39,20 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         return table
     }()
     
-
+    
     lazy var topView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
+    
     lazy var contentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 24
         view.backgroundColor = .clear
         return view
     }()
-
+    
     lazy var mainStack: UIStackView = {
         let stackView = UIStackView()
         stackView.addArrangedSubviews(contentView)
@@ -69,27 +70,22 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         view.backgroundColor = .clear
         return view
     }()
-    lazy var cancelBtn: UIButton = {
-        let cancelBtn = UIButton()
-        cancelBtn.setImage(UIImage(named: "cancelIcon"), for: .normal)
-        cancelBtn.imageView?.contentMode = .scaleAspectFit
-        cancelBtn.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
-        return cancelBtn
-    }()
-    
     
     lazy var backdropView: UIView = {
         let bdView = UIView(frame: self.view.bounds)
         bdView.backgroundColor = .clear
         return bdView
     }()
-   
+    
     let menuView :UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 24
-        view.backgroundColor = .clear
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        view.backgroundColor = .black
         return view
     }()
+    
     var menuHeight = UIScreen.main.bounds.height
     var isPresenting = false
     
@@ -101,7 +97,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-   
+    
     @objc func cancelTapped() {
         self.dismiss(animated: true, completion: nil)
     }
@@ -111,20 +107,18 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         view.backgroundColor = .clear
         tableView.contentInsetAdjustmentBehavior = .never
         if UIDevice.current.userInterfaceIdiom == .phone {
-           menuHeight = 150
+            menuHeight = 150
         }else {
             menuHeight = 180
         }
-              
+        
         view.addSubview(backdropView)
         view.addSubview(menuView)
         menuView.addSubview(backView)
-//        menuView.addSubview(cancelBtn)
         backView.addSubview(mainStack)
-//        topView.addSubview(cancelBtn)
         contentView.addSubview(tableView)
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        menuView.backgroundColor = .black
+        menuView.backgroundColor = Colors.moreColor
         tableView.backgroundColor = .clear
         menuView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -145,11 +139,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
             make.top.equalTo(menuView)
             make.edges.equalTo(menuView)
         }
-    
-//        topView.snp.makeConstraints { make in
-//            make.width.equalTo(mainStack)
-//            make.height.equalTo(mainStack).multipliedBy(0)
-//        }
+        
         contentView.snp.makeConstraints { make in
             make.width.equalTo(mainStack)
             make.height.equalTo(mainStack).multipliedBy(1)
@@ -160,24 +150,13 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
             make.width.equalTo(contentView).offset(50)
             make.height.equalTo(125)
         }
-       
-//        tableView.estimatedRowHeight = 100
         
-//        cancelBtn.snp.makeConstraints { make in
-//            make.right.equalTo(view.safeAreaLayoutGuide)
-//            make.width.height.equalTo(50)
-//            make.bottom.equalTo(topView).offset(0)
-//
-//        }
         
         menuView.snp.makeConstraints { make in
             make.height.equalTo(menuHeight)
             make.bottom.equalToSuperview()
             make.right.left.equalToSuperview().inset(0)
         }
-//        cancelBtn.snp.makeConstraints { make in
-//            make.width.height.equalTo(24)
-//        }
         
     }
     
@@ -185,7 +164,6 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         dismiss(animated: true, completion: nil)
     }
     @objc func tapFunction(sender:UITapGestureRecognizer) {
-        print("Tapped")
         self.dismiss(animated: true, completion: nil)
     }
 }
@@ -209,12 +187,10 @@ extension SettingVC: UITableViewDataSource, UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (indexPath.row == 0) {
-           
             self.dismiss(animated: true) {
                 self.delegete?.qualityBottomSheet()
             }
-            print("TAPPED 0")
-        }else {
+        } else {
             self.dismiss(animated: true) {
                 self.speedDelegate?.speedBottomSheet()
             }

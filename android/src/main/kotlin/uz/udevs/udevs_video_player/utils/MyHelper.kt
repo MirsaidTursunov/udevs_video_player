@@ -26,6 +26,6 @@ class MyHelper {
             "00"
         else "0$seconds"
 
-        return "${if (hoursString == "00") "" else "$hoursString : "}$minutesString : $secondsString"
+        return "${if (hoursString == "00") "" else "$hoursString:"}$minutesString:$secondsString"
     }
 }

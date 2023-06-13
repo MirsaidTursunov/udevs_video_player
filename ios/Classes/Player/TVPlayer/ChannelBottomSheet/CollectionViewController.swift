@@ -2,7 +2,7 @@
 //  CollectionViewController.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 import UIKit
 import SnapKit
@@ -53,8 +53,8 @@ class CollectionViewController: UIViewController {
     var isPresenting = false
     
     var backView: UIView =  {
-      let view = UIView()
-        view.backgroundColor = UIColor(named: "channel_background")
+        let view = UIView()
+        view.backgroundColor = Colors.mainColor
         return view
     }()
     
@@ -73,8 +73,7 @@ class CollectionViewController: UIViewController {
     
     lazy var cancelBtn: UIButton = {
         let button = UIButton(type: .custom)
-      
-            button.setImage(UIImage(named: "exitIcon"), for: .normal)
+        button.setImage(UIImage(named: "ic_exit",in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self),compatibleWith: nil), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .white
         button.addTarget(self, action: #selector(tap), for: .touchUpInside)
@@ -96,9 +95,7 @@ class CollectionViewController: UIViewController {
         
         view.addSubview(backdropView)
         view.addSubview(menuView)
-        menuView.backgroundColor = UIColor(named: "channel_background")
-//        menuView.addSubview(collectionView)
-//        menuView.addSubview(headerView)
+        menuView.backgroundColor = Colors.backgroudColor
         menuView.addSubview(backView)
         backView.addSubview(collectionView)
         backView.addSubview(headerView)
@@ -121,7 +118,7 @@ class CollectionViewController: UIViewController {
                 make.centerY.equalToSuperview()
             }
         }
-       
+        
         
         cancelBtn.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-16)
@@ -137,12 +134,11 @@ class CollectionViewController: UIViewController {
     }
     
     @objc func tap() {
-        print("Hello")
         dismiss(animated: true, completion: nil)
     }
     
     @objc func handleTap() {
-            dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -165,7 +161,6 @@ class CollectionViewController: UIViewController {
     }
     func setupUI() {
         view.addSubview(collectionView)
-//        collectionView.backgroundColor = UIColor(named: "channel_background")
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -189,7 +184,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! channelCollectionCell
-        cell.backgroundColor = UIColor(named: "channels")
+        cell.backgroundColor = Colors.channels
         cell.layer.cornerRadius = 8
         cell.model = channels[indexPath.row]
         let time = channels[indexPath.row].remindedTime.floatValue
@@ -219,7 +214,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
         return CGSize(width: 343, height: 126)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-           return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }
 

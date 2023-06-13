@@ -1,10 +1,8 @@
-
 import Foundation
 import UIKit
 
-
 class BottomSheetCell : UITableViewCell{
-
+    
     var title : String?{
         didSet{
             headerTitle.text = title
@@ -17,12 +15,11 @@ class BottomSheetCell : UITableViewCell{
         }
     }
     
-   
-    
     lazy var checkIcon: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "ic_done")
+        let image = Svg.done.uiImage
         imageView.image = image
+        imageView.size(CGSize(width: 32, height: 32))
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .white.withAlphaComponent(0.5)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,17 +69,10 @@ class BottomSheetCell : UITableViewCell{
         self.setupView()
     }
     
-    
     override var intrinsicContentSize: CGSize {
         let height = CGFloat(21)
         return CGSize(width: 200, height: height)
     }
-    
-//    required init(model:BottomSheetModel) {
-//        super.init(frame: CGRect.zero)
-//        self.model = model
-//        setupView()
-//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

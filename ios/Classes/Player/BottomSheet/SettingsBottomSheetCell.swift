@@ -2,13 +2,13 @@
 //  SettingsBottomSheetCell.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import Foundation
 import UIKit
 class SettingsBottomSheetCell : UITableViewCell{
-
+    
     var model : SettingsBottomSheetModel?{
         didSet{
             headerImage.image = UIImage(named: model!.icon)
@@ -19,7 +19,7 @@ class SettingsBottomSheetCell : UITableViewCell{
     
     lazy var forwardIcon: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "chevronForward")
+        let image = Svg.right.uiImage
         imageView.image = image
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .white.withAlphaComponent(0.5)
@@ -108,12 +108,6 @@ class SettingsBottomSheetCell : UITableViewCell{
         let height = CGFloat(21)
         return CGSize(width: 200, height: height)
     }
-    
-//    required init(model:BottomSheetModel) {
-//        super.init(frame: CGRect.zero)
-//        self.model = model
-//        setupView()
-//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

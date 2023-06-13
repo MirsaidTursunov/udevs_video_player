@@ -2,7 +2,7 @@
 //  BottomSheetViewController.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import Foundation
@@ -24,7 +24,7 @@ extension String {
             return self
         }
     }
-
+    
     mutating func capitalizeFirstLetter() {
         self = self.capitalizingFirstLetter()
     }
@@ -43,6 +43,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         label.text = labelText
         label.font = .boldSystemFont(ofSize: 17)
         label.textColor = .white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -55,7 +56,8 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     lazy var cancelBtn: UIButton = {
         let cancelBtn = UIButton()
-        cancelBtn.setImage(UIImage(named: "ic_back"), for: .normal)
+        cancelBtn.setImage(Svg.back.uiImage, for: .normal)
+        cancelBtn.size(CGSize(width: 32, height: 32))
         cancelBtn.imageView?.contentMode = .scaleAspectFit
         cancelBtn.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         return cancelBtn
@@ -79,9 +81,8 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: "moreColor")
-        view.layer.cornerRadius = 24
-//        view.roundCorners(corners: [.topLeft,.topRight], radius: 24)
+        view.backgroundColor = Colors.black
+        view.layer.cornerRadius = 16
         view.clipsToBounds = true
         view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         return view
@@ -89,7 +90,6 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     lazy var horizontalStack : UIStackView = {
         let stack = UIStackView(arrangedSubviews: [cancelBtn,labelView])
-//        stack.distribution = .equalSpacing
         stack.axis = .horizontal
         stack.backgroundColor = .clear
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -127,25 +127,27 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        defaultHeight = 300
+        if bottomSheetType != .speed {
+            defaultHeight = 380
+        } else {
+            defaultHeight = 340
+        }
         dismissibleHeight = UIScreen.main.bounds.height
         contentTableView.delegate = self
         contentTableView.dataSource = self
         contentTableView.separatorStyle = UITableViewCell.SeparatorStyle.none
-        containerView.backgroundColor = UIColor(named: "moreColor")
+        containerView.backgroundColor = Colors.moreColor
         contentTableView.register(BottomSheetCell.self, forCellReuseIdentifier: "BottomSheetCell")
         setupView()
         setupConstraints()
-        // tap gesture on dimmed view to dismiss
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleCloseAction))
         dimmedView.addGestureRecognizer(tapGesture)
-        
-//        setupPanGesture()
     }
     
     @objc func handleCloseAction() {
         animateDismissView()
     }
+    
     @objc func cancelTapped() {
         self.dismiss(animated: true, completion: nil)
     }
@@ -162,7 +164,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "BottomSheetCell") as! BottomSheetCell
-        if bottomSheetType == .speed{
+        if bottomSheetType == .speed {
             cell.title = "\(items[indexPath.row])x"
         } else {
             cell.title = items[indexPath.row]
@@ -209,8 +211,6 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
             mainVerticalStack.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -8),
             mainVerticalStack.leadingAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leadingAnchor,constant: 16),
             mainVerticalStack.trailingAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.trailingAnchor,constant: -16),
-//            horizontalStack.leadingAnchor.constraint(equalTo: mainVerticalStack.leftAnchor,constant: 0),
-//            horizontalStack.topAnchor.constraint(equalTo: mainVerticalStack.topAnchor,constant: 16),
             labelView.heightAnchor.constraint(equalToConstant: 32)
             
         ])
@@ -228,7 +228,6 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         cancelBtn.snp.makeConstraints { make in
             make.left.equalTo(horizontalStack)
             make.width.equalTo(50)
-        
         }
         containerViewHeightConstraint = containerView.heightAnchor.constraint(equalToConstant: defaultHeight)
         containerViewBottomConstraint = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: defaultHeight)
@@ -246,18 +245,18 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     // MARK: Pan gesture handler
-//        @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {}
+    //        @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {}
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: view)
         // Drag to top will be minus value and vice versa
         print("Pan gesture y offset: \(translation.y)")
-
+        
         // Get drag direction
         let isDraggingDown = translation.y > 0
-
+        
         // New height is based on value of dragging plus current container height
         let newHeight = currentContainerHeight - translation.y
-
+        
         // Handle based on gesture state
         switch gesture.state {
         case .changed:
@@ -271,7 +270,7 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         case .ended:
             // This happens when user stop drag,
             // so we will get the last height of container
-
+            
             // Condition 1: If new height is below min, dismiss controller
             if newHeight < dismissibleHeight {
                 self.animateDismissView()
@@ -280,14 +279,6 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
                 // Condition 2: If new height is below default, animate back to default
                 animateContainerHeight(defaultHeight)
             }
-            //            else if newHeight < maximumContainerHeight && isDraggingDown {
-            //                // Condition 3: If new height is below max and going down, set to default height
-            //                animateContainerHeight(defaultHeight)
-            //            }
-            //            else if newHeight > defaultHeight && !isDraggingDown {
-            //                // Condition 4: If new height is below max and going up, set to max height at top
-            //                animateContainerHeight(maximumContainerHeight)
-            //            }
         default:
             break
         }
@@ -338,6 +329,3 @@ class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 }
-
-
-

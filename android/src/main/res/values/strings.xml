@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id" translatable="false">7B356178</string>
+    <string name="app_id_sample" translatable="false">C0868879</string>
+    <string name="app_name" translatable="false">udevs_video_player_example</string>
+    <string name="media_route_menu_title" translatable="false">Play on&#8230;</string>
+</resources>

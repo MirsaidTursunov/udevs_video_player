@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="exo_download_notification_channel_name" translatable="false">Downloads</string>
+    <string name="error_drm_unsupported_before_api_18" translatable="false">DRM content not supported on API levels below 18</string>
+    <string name="download_start_error_offline_license" translatable="false">Failed to obtain offline license</string>
+    <string name="download_live_unsupported" translatable="false">This demo app does not support downloading live content</string>
+    <string name="download_start_error" translatable="false">Failed to start download</string>
+    <string name="track_selection_title" translatable="false">Select tracks</string>
+</resources>

@@ -2,7 +2,7 @@
 //  ChannelModel.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 import UIKit
 

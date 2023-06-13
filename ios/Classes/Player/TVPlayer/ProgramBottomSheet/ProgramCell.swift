@@ -2,16 +2,16 @@
 //  ProgramCell.swift
 //  Runner
 //
-//  Created by Nuriddin Jumayev on 21/04/22.
+//  Created by Sunnatillo Shavkatov on 21/04/22.
 //
 
 import UIKit
 
 class ProgramCell: UITableViewCell {
     
-    var programModel : Programms?{
+    var programModel : TvProgram?{
         didSet{
-            timeLB.text = programModel?.startTime
+            timeLB.text = programModel?.scheduledTime
             channelNamesLB.text = programModel?.programTitle
         }
     }
@@ -51,7 +51,7 @@ class ProgramCell: UITableViewCell {
     
    lazy var timeLB: UILabel = {
         let label = UILabel()
-        label.text = programModel?.startTime
+        label.text = programModel?.scheduledTime
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .darkGray
     
@@ -117,15 +117,6 @@ class ProgramCell: UITableViewCell {
             make.height.equalTo(0)
             make.width.equalToSuperview()
         }
-        
-//        circleView.snp.makeConstraints { make in
-//            make.size.equalTo(10)
-//        }
-        
-//        circleView.layer.cornerRadius = 5
-//        circleView.clipsToBounds = true
-        
-//        circleView.backgroundColor = .green
     }
     
     func setUp() {

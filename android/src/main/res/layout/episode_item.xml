@@ -53,15 +53,15 @@
         android:textColor="@color/white"
         android:textSize="17sp" />
 
-    <TextView
-        android:id="@+id/episode_item_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/regular"
-        android:maxLines="4"
-        android:text="После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей."
-        android:textColor="@color/grey10"
-        android:textSize="15sp" />
+<!--    <TextView-->
+<!--        android:id="@+id/episode_item_description"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:ellipsize="end"-->
+<!--        android:fontFamily="@font/regular"-->
+<!--        android:maxLines="4"-->
+<!--        android:text="После переливания крови двоюродная сестра Брюса Бэннера юристка Дженнифер Уолтерс получает способность во время стресса перевоплощаться в сверхсильное существо. Дженнифер предстоит научиться управлять этим даром и применять его во благо при этом продолжать работать в недавно созданном Отделе по правам сверхлюдей."-->
+<!--        android:textColor="@color/grey10"-->
+<!--        android:textSize="15sp" />-->
 </LinearLayout>

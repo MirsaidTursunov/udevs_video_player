@@ -24,13 +24,13 @@ class EpisodesRvAdapter(
 
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView
-        val description: TextView
+//        val description: TextView
         val duration: TextView
         val image: ImageView
 
         init {
             title = itemView.findViewById(R.id.episode_item_title)
-            description = itemView.findViewById(R.id.episode_item_description)
+//            description = itemView.findViewById(R.id.episode_item_description)
             duration = itemView.findViewById(R.id.episode_item_duration)
             image = itemView.findViewById(R.id.episode_item_image)
         }
@@ -47,9 +47,9 @@ class EpisodesRvAdapter(
         holder.title.text = list[position].title
         if (activeSeason && position == episodeIndex) {
             holder.title.setTextColor(context.resources.getColor(R.color.blue))
-            holder.description.setTextColor(context.resources.getColor(R.color.blue))
+//            holder.description.setTextColor(context.resources.getColor(R.color.blue))
         }
-        holder.description.text = list[position].description
+//        holder.description.text = list[position].description
         holder.duration.text = MyHelper().formatDuration(list[position].duration)
         Glide.with(context)
             .load(list[position].image)

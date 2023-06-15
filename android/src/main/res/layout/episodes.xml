@@ -23,29 +23,29 @@
             android:src="@drawable/ic_back"
             tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/episodes_sheet_title"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/episode_tabs"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:fontFamily="@font/semibold"
-            android:gravity="center"
-            android:text="S1 E2"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
-    </RelativeLayout>
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="20dp"
+            app:tabIndicatorColor="@color/blue"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/blue"
+            app:tabTextAppearance="@style/EpisodeTabText"
+            app:tabTextColor="@color/grey10" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/episode_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:paddingStart="20dp"
-        app:tabIndicatorColor="@color/blue"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/blue"
-        app:tabTextAppearance="@style/EpisodeTabText"
-        app:tabTextColor="@color/grey10" />
+<!--        <TextView-->
+<!--            android:id="@+id/episodes_sheet_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:fontFamily="@font/semibold"-->
+<!--            android:gravity="center"-->
+<!--            android:text="S1 E2"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="18sp"-->
+<!--            tools:ignore="HardcodedText" />-->
+    </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/episode_view_pager"

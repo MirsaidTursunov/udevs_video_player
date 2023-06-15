@@ -1191,8 +1191,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         backButtonEpisodeBottomSheet?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
-        titleBottomSheet?.text = title?.text
+//        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
+//        titleBottomSheet?.text = title?.text
         val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)
         val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.episode_view_pager)
         viewPager?.adapter = EpisodePagerAdapter(

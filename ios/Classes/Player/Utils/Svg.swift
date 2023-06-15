@@ -27,5 +27,7 @@ struct Svg {
     static let programmes :SVGKImage = SVGKImage(named: "programmes", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serial :SVGKImage = SVGKImage(named: "serial", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serialPlay :SVGKImage = SVGKImage(named: "serial_play", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let lock :SVGKImage = SVGKImage(named: "lock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let unlock :SVGKImage = SVGKImage(named: "unlock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     
 }

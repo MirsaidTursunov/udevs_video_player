@@ -165,7 +165,7 @@ class UdevsVideoPlayerActivity : Activity() {
 
                 override fun getAcceptedIssuers(): Array<X509Certificate> {
                     // Return an empty array or null if you don't need to know accepted issuers
-                    return arrayOf()
+                    return emptyArray()
                 }
             }
 

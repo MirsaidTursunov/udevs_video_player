@@ -18,10 +18,6 @@ let kPrefEnableMediaNotifications = "enable_media_notifications"
     fileprivate var firstUserDefaultsSync = false
     fileprivate var useCastContainerViewController = false
     
-    override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-             return .all
-        }
-    
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?

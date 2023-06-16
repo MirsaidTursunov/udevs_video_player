@@ -159,8 +159,12 @@ class UdevsVideoPlayerActivity : Activity() {
 
                 override fun checkServerTrusted(chain: Array<X509Certificate?>?, authType: String?) {
                     // Implement proper server certificate verification
-                    val defaultTrustManager = getDefaultTrustManager()
-                    defaultTrustManager.checkServerTrusted(chain, authType)
+                    // Allow certificates with insecure hash functions
+                    // (not recommended for production use)
+                    // Remove this block in production environments
+                    for (cert in chain!!) {
+                        cert?.checkValidity()
+                    }
                 }
 
                 override fun getAcceptedIssuers(): Array<X509Certificate> {

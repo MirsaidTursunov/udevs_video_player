@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:udevs_video_player/models/movie.dart';
 import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
 
@@ -31,6 +32,7 @@ class PlayerConfiguration {
   String autoText;
   String baseUrl;
   bool fromCache;
+  final List<Channel> channels;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
@@ -61,6 +63,7 @@ class PlayerConfiguration {
     map['autoText'] = autoText;
     map['baseUrl'] = baseUrl;
     map['fromCache'] = fromCache;
+    map['channels'] = channels.map((v) => v.toJson()).toList();
     return map;
   }
 
@@ -94,6 +97,7 @@ class PlayerConfiguration {
         'autoText: $autoText '
         'baseUrl: $baseUrl, '
         'fromCache: $fromCache'
+        'channels: $channels'
         '}';
   }
 
@@ -125,5 +129,6 @@ class PlayerConfiguration {
     required this.autoText,
     required this.baseUrl,
     required this.fromCache,
+    required this.channels,
   });
 }

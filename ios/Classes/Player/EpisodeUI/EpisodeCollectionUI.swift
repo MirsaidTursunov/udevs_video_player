@@ -49,11 +49,11 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     let menuView: UIView = {
         let view = UIView()
-        view.backgroundColor = Colors.moreColor
+        view.backgroundColor = Colors.primary85
         return view
     }()
     
-    var menuHeight = UIScreen.main.bounds.height * 0.36
+    var menuHeight = UIScreen.main.bounds.height * 0.30
     var isPresenting = false
     
     var topView: UIView = {
@@ -124,9 +124,9 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         if UIDevice.current.userInterfaceIdiom == .phone {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.4
+                menuHeight = UIScreen.main.bounds.width * 0.32
             } else {
-                menuHeight = UIScreen.main.bounds.height * 0.35
+                menuHeight = UIScreen.main.bounds.height * 0.3
             }
         } else {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
@@ -270,7 +270,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.userInterfaceIdiom == .phone {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.4
+                menuHeight = UIScreen.main.bounds.width * 0.3
             } else {
                 menuHeight = UIScreen.main.bounds.height * 0.35
             }
@@ -323,8 +323,8 @@ extension EpisodeCollectionUI: UICollectionViewDelegateFlowLayout, UICollectionV
             let width = (size.width - 3 * 16) / 2
             return CGSize(width: width, height: menuHeight - 60)
         } else {
-            let width = (size.width - 2 * 12) / 3
-            return CGSize(width: width, height: width)
+            let width = (size.width - 2 * 12) / 4
+            return CGSize(width: width, height: menuHeight - 60)
         }
     }
 }

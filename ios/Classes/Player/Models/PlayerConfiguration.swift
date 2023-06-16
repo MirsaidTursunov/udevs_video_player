@@ -151,8 +151,8 @@ struct Movie{
         self.resolutions = resolutions
     }
     
-    static func fromMap(map : [String:Any])->Movie{
-        return Movie(id: (map["id"] as? String),title: (map["title"] as? String), description: map["description"] as? String, image: (map["image"] as? String), duration: (map["druation"] as? Int), resolutions: (map["resolutions"] as! [String:String]))
+    static func fromMap(map : [String:Any])-> Movie{
+        return Movie(id: (map["id"] as? String),title: (map["title"] as? String), description: map["description"] as? String, image: (map["image"] as? String), duration: (map["duration"] as? Int), resolutions: (map["resolutions"] as! [String:String]))
     }
 }
 

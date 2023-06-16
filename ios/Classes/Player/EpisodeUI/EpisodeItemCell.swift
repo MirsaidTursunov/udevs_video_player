@@ -12,27 +12,14 @@ class EpisodeCollectionCell: UICollectionViewCell {
     var episodes : Movie? {
         didSet {
             titleLbl.text = episodes?.title ?? ""
-            descriptionLabel.text = episodes?.description ?? ""
             durationLbl.text = VGPlayerUtils.getTimeIntString(from: episodes?.duration ?? 0)
         }
     }
     
-    var containerStack: UIStackView = {
-        let st = UIStackView()
-        st.alignment = .leading
-        st.axis = .vertical
-        st.distribution = .fill
-        st.spacing = 8
+    var containerStack: UIView = {
+        let st = UIView()
         st.backgroundColor = .clear
-        st.isUserInteractionEnabled = true
-        st.translatesAutoresizingMaskIntoConstraints = false
         return st
-    }()
-    
-    var descriptionView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .clear
-        return view
     }()
     
     var episodeImage: UIImageView = {
@@ -42,7 +29,7 @@ class EpisodeCollectionCell: UICollectionViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
-        image.layer.cornerRadius = 4
+        image.layer.cornerRadius = 8
         return image
     }()
     
@@ -51,7 +38,7 @@ class EpisodeCollectionCell: UICollectionViewCell {
         image.image = Svg.serialPlay.uiImage
         image.backgroundColor = .clear
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleToFill
         image.clipsToBounds = true
         image.layer.cornerRadius = 16
         return image
@@ -63,9 +50,10 @@ class EpisodeCollectionCell: UICollectionViewCell {
         label.text = episodes?.title
         label.textColor = .white
         label.backgroundColor = .clear
-        label.font = UIFont.systemFont(ofSize: 15,weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 15 , weight: .semibold)
         return label
     }()
+    
    lazy var durationLbl: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -76,61 +64,38 @@ class EpisodeCollectionCell: UICollectionViewCell {
         return label
     }()
     
-     lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = episodes?.description
-        label.textColor = UIColor(rgb: 0xFF9D9D9D)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        label.numberOfLines = 3
-        label.sizeToFit()
-        label.backgroundColor = .clear
-        label.font = UIFont.systemFont(ofSize: 11,weight: .medium)
-        return label
-    }()
-    
     override init(frame: CGRect) {
             super.init(frame: .zero)
         contentView.addSubview(containerStack)
         contentView.backgroundColor = .clear
-        containerStack.addArrangedSubviewss(episodeImage,titleLbl,durationLbl,descriptionView,playIcon)
         setupUI()
-        episodeImage.addSubview(playIcon)
     }
         
     func setupUI(){
+        containerStack.addSubview(episodeImage)
+        containerStack.addSubview(titleLbl)
+        containerStack.addSubview(durationLbl)
+        episodeImage.addSubview(playIcon)
         playIcon.snp.makeConstraints { make in
             make.width.height.equalTo(32)
-            make.top.equalTo(episodeImage).offset(36)
             make.centerY.equalTo(episodeImage)
             make.centerX.equalTo(episodeImage)
         }
         containerStack.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        episodeImage.top(to: containerStack, offset: 32)
         episodeImage.snp.makeConstraints { make in
-            make.height.equalTo(168)
+            make.height.equalTo(100)
             make.width.equalTo(containerStack)
-            make.top.left.right.equalTo(containerStack)
         }
+        titleLbl.topToBottom(of: episodeImage, offset: 4)
         titleLbl.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(116)
             make.left.right.equalTo(containerStack)
-            make.height.equalTo(20)
         }
+        durationLbl.topToBottom(of: titleLbl, offset: 2)
         durationLbl.snp.makeConstraints { make in
             make.left.right.equalTo(containerStack).offset(0)
-            make.height.equalTo(20)
-        }
-        descriptionView.snp.makeConstraints { make in
-            make.left.right.equalTo(containerStack)
-        }
-        
-        descriptionView.addSubview(descriptionLabel)
-        
-        descriptionLabel.snp.makeConstraints { make in
-            make.width.equalTo(descriptionView)
         }
     }
     

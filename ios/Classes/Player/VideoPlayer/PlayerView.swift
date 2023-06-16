@@ -91,7 +91,12 @@ class PlayerView: UIView {
         return view
     }()
     
-    private var titleLabelPortrait: TitleLabel = TitleLabel()
+    private var titleLabelPortrait: TitleLabel = {
+        let label = TitleLabel()
+        label.isHidden = false
+        return label;
+    }()
+    
     private var titleLabelLandacape: TitleLabel = TitleLabel()
     
     private var liveLabel: UILabel = {
@@ -126,6 +131,14 @@ class PlayerView: UIView {
         let button = IconButton()
         button.setImage(Svg.horizontal.uiImage, for: .normal)
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    private var zoomButton: IconButton = {
+        let button = IconButton()
+        button.setImage(Svg.fit.uiImage, for: .normal)
+        button.addTarget(self, action: #selector(changeZoom(_:)), for: .touchUpInside)
+        button.isHidden = true
         return button
     }()
     
@@ -465,6 +478,7 @@ class PlayerView: UIView {
             pipButton.isHidden = false
             if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
                 titleLabelLandacape.isHidden = false
+                zoomButton.isHidden = false
             } else {
                 titleLabelPortrait.isHidden = false
             }
@@ -485,6 +499,7 @@ class PlayerView: UIView {
             pipButton.isHidden = true
             titleLabelPortrait.isHidden = true
             titleLabelLandacape.isHidden = true
+            zoomButton.isHidden = true
             playButton.isHidden = true
             skipForwardButton.isHidden = true
             skipBackwardButton.isHidden = true
@@ -499,6 +514,20 @@ class PlayerView: UIView {
     
     @objc func changeOrientation(_ sender: UIButton){
         delegate?.changeOrientation()
+    }
+    
+    
+    @objc func changeZoom(_ sender: UIButton){
+        if self.playerLayer.videoGravity == .resize {
+            self.playerLayer.videoGravity = .resizeAspect
+            zoomButton.setImage(Svg.fit.uiImage, for: .normal)
+        } else if self.playerLayer.videoGravity == .resizeAspect {
+            self.playerLayer.videoGravity = .resizeAspectFill
+            zoomButton.setImage(Svg.strech.uiImage, for: .normal)
+        } else {
+            self.playerLayer.videoGravity = .resize
+            zoomButton.setImage(Svg.cropFit.uiImage, for: .normal)
+        }
     }
     
     @objc func episodesButtonPressed(_ sender: UIButton){
@@ -664,15 +693,17 @@ class PlayerView: UIView {
         } else {
             self.playerLayer.videoGravity = .resizeAspect
         }
-        titleLabelLandacape.isHidden = true
-        titleLabelPortrait.isHidden = false
+        titleLabelLandacape.isHidden = false
+        titleLabelPortrait.isHidden = true
+        zoomButton.isHidden = false
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     
     private func addVideoLandscapeConstraints() {
         self.playerLayer.videoGravity = .resizeAspect
-        titleLabelLandacape.isHidden = false
-        titleLabelPortrait.isHidden = true
+        titleLabelLandacape.isHidden = true
+        titleLabelPortrait.isHidden = false
+        zoomButton.isHidden = true
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     
@@ -696,6 +727,7 @@ class PlayerView: UIView {
         overlayView.addSubview(activityIndicatorView)
         overlayView.addSubview(bottomView)
         overlayView.addSubview(landscapeButton)
+        overlayView.addSubview(zoomButton)
         overlayView.addSubview(topView)
         overlayView.addSubview(titleLabelPortrait)
         addTopViewSubviews()
@@ -723,7 +755,6 @@ class PlayerView: UIView {
     }
     
     func addConstraints(area:UILayoutGuide) {
-        addVideoPortaitConstraints()
         addBottomViewConstraints(area: area)
         addTopViewConstraints(area: area)
         addControlButtonConstraints()
@@ -794,13 +825,16 @@ class PlayerView: UIView {
             make.right.equalTo(bottomView).offset(0)
         }
         
+        zoomButton.rightToLeft(of: landscapeButton, offset: 8)
+        zoomButton.centerY(to: landscapeButton)
+        
+        showsBtn.rightToLeft(of: zoomButton, offset: -8)
+        showsBtn.centerY(to: zoomButton)
+        
         episodesButton.snp.makeConstraints{make in
             make.left.equalTo(bottomView).offset(8)
         }
         episodesButton.centerY(to: landscapeButton)
-        
-        showsBtn.rightToLeft(of: landscapeButton, offset: -8)
-        showsBtn.centerY(to: landscapeButton)
         
         liveStackView.bottomToTop(of: timeSlider)
         liveStackView.spacing = 24

@@ -9,43 +9,43 @@
     android:paddingTop="10dp"
     android:paddingBottom="30dp">
 
-    <RelativeLayout
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--&lt;!&ndash;        <ImageView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/episode_sheet_back"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="40dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="40dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginStart="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:padding="10dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:visibility="gone"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:src="@drawable/ic_back"&ndash;&gt;-->
+<!--&lt;!&ndash;            tools:ignore="ContentDescription" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/episodes_sheet_title"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="40dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:fontFamily="@font/semibold"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:gravity="center"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="S1 E2"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textColor="@color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="18sp"&ndash;&gt;-->
+<!--&lt;!&ndash;            tools:ignore="HardcodedText" />&ndash;&gt;-->
+<!--    </RelativeLayout>-->
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/episode_tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/episode_sheet_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="30dp"
-            android:padding="10dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_back"
-            tools:ignore="ContentDescription" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/episode_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            android:paddingStart="20dp"
-            app:tabIndicatorColor="@color/blue"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/blue"
-            app:tabTextAppearance="@style/EpisodeTabText"
-            app:tabTextColor="@color/grey10" />
-
-<!--        <TextView-->
-<!--            android:id="@+id/episodes_sheet_title"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:fontFamily="@font/semibold"-->
-<!--            android:gravity="center"-->
-<!--            android:text="S1 E2"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="18sp"-->
-<!--            tools:ignore="HardcodedText" />-->
-    </RelativeLayout>
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        app:tabGravity="start"
+        app:tabIndicatorColor="@color/blue"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextAppearance="@style/EpisodeTabText"
+        app:tabTextColor="@color/grey10" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/episode_view_pager"

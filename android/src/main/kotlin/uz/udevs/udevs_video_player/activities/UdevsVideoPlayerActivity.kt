@@ -1086,7 +1086,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             orientation?.setImageResource(R.drawable.ic_portrait)
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {
-                    backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
+//                    backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
                 }
 
                 BottomSheet.SETTINGS -> {
@@ -1111,7 +1111,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {
-                    backButtonEpisodeBottomSheet?.visibility = View.GONE
+//                    backButtonEpisodeBottomSheet?.visibility = View.GONE
                 }
 
                 BottomSheet.SETTINGS -> {
@@ -1176,21 +1176,21 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         }
     }
 
-    private var backButtonEpisodeBottomSheet: ImageView? = null
+//    private var backButtonEpisodeBottomSheet: ImageView? = null
     private fun showEpisodesBottomSheet() {
         currentBottomSheet = BottomSheet.EPISODES
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.episodes)
-        backButtonEpisodeBottomSheet = bottomSheetDialog.findViewById(R.id.episode_sheet_back)
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            backButtonEpisodeBottomSheet?.visibility = View.GONE
-        } else {
-            backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
-        }
-        backButtonEpisodeBottomSheet?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
+//        backButtonEpisodeBottomSheet = bottomSheetDialog.findViewById(R.id.episode_sheet_back)
+//        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            backButtonEpisodeBottomSheet?.visibility = View.GONE
+//        } else {
+//            backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
+//        }
+//        backButtonEpisodeBottomSheet?.setOnClickListener {
+//            bottomSheetDialog.dismiss()
+//        }
 //        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
 //        titleBottomSheet?.text = title?.text
         val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)

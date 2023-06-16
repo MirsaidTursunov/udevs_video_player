@@ -70,6 +70,7 @@ import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
+import java.util.Locale
 import kotlin.math.abs
 
 
@@ -1176,7 +1177,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         }
     }
 
-//    private var backButtonEpisodeBottomSheet: ImageView? = null
+    //    private var backButtonEpisodeBottomSheet: ImageView? = null
     private fun showEpisodesBottomSheet() {
         currentBottomSheet = BottomSheet.EPISODES
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
@@ -1246,7 +1247,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
             },
         )
         TabLayoutMediator(tabLayout!!, viewPager) { tab, position ->
-            tab.text = playerConfiguration.seasons[position].title
+            tab.text = playerConfiguration.seasons[position].title.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
         }.attach()
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {

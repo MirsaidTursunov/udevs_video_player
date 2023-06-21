@@ -474,7 +474,6 @@ class PlayerView: UIView {
             isLock = false
             settingsButton.isHidden = false
             exitButton.isHidden = false
-            timeSlider.isHidden = false
             pipButton.isHidden = false
             if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
                 titleLabelLandacape.isHidden = false
@@ -483,15 +482,16 @@ class PlayerView: UIView {
                 titleLabelPortrait.isHidden = false
             }
             playButton.isHidden = false
-            skipForwardButton.isHidden = false
-            skipBackwardButton.isHidden = false
             landscapeButton.isHidden = false
             if playerConfiguration.isSerial{
                 episodesButton.isHidden = false
             }
             if !playerConfiguration.isLive {
+                skipForwardButton.isHidden = false
+                skipBackwardButton.isHidden = false
                 currentTimeLabel.isHidden = false
                 durationTimeLabel.isHidden = false
+                timeSlider.isHidden = false
             }
             if playerConfiguration.isLive{
                 showsBtn.isHidden  = false
@@ -862,6 +862,7 @@ class PlayerView: UIView {
             liveLabel.isHidden = false
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
+            timeSlider.isHidden = true
         }
     }
     

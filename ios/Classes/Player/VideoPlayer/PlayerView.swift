@@ -486,9 +486,16 @@ class PlayerView: UIView {
             skipForwardButton.isHidden = false
             skipBackwardButton.isHidden = false
             landscapeButton.isHidden = false
-            episodesButton.isHidden = false
-            currentTimeLabel.isHidden = false
-            durationTimeLabel.isHidden = false
+            if playerConfiguration.isSerial{
+                episodesButton.isHidden = false
+            }
+            if !playerConfiguration.isLive {
+                currentTimeLabel.isHidden = false
+                durationTimeLabel.isHidden = false
+            }
+            if playerConfiguration.isLive{
+                showsBtn.isHidden  = false
+            }
             castButton.isHidden = false
             lockButton.setImage(Svg.unlock.uiImage, for: .normal)
         } else {
@@ -504,9 +511,14 @@ class PlayerView: UIView {
             skipForwardButton.isHidden = true
             skipBackwardButton.isHidden = true
             landscapeButton.isHidden = true
-            episodesButton.isHidden = true
+            if playerConfiguration.isSerial{
+                episodesButton.isHidden = true
+            }
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
+            if playerConfiguration.isLive{
+                showsBtn.isHidden  = true
+            }
             castButton.isHidden = true
             lockButton.setImage(Svg.lock.uiImage, for: .normal)
         }
@@ -751,7 +763,7 @@ class PlayerView: UIView {
         topView.addSubview(settingsButton)
         topView.addSubview(lockButton)
         topView.addSubview(pipButton)
-        topView.addSubview(castButton)
+//        topView.addSubview(castButton)
     }
     
     func addConstraints(area:UILayoutGuide) {
@@ -865,10 +877,10 @@ class PlayerView: UIView {
         settingsButton.right(to: topView)
         settingsButton.centerY(to: topView)
         
-        castButton.rightToLeft(of: settingsButton)
-        castButton.centerY(to: topView)
+//        castButton.rightToLeft(of: settingsButton)
+//        castButton.centerY(to: topView)
         
-        lockButton.rightToLeft(of: castButton)
+        lockButton.rightToLeft(of: settingsButton)
         lockButton.centerY(to: topView)
         
         pipButton.leftToRight(of: exitButton)
@@ -876,7 +888,7 @@ class PlayerView: UIView {
         
         titleLabelLandacape.centerY(to: topView)
         titleLabelLandacape.centerX(to: topView)
-        titleLabelLandacape.rightToLeft(of: castButton)
+        titleLabelLandacape.rightToLeft(of: lockButton)
         titleLabelLandacape.leftToRight(of: pipButton)
         titleLabelLandacape.layoutMargins = .horizontal(8)
         titleLabelPortrait.centerX(to: overlayView)

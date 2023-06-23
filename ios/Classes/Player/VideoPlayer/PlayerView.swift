@@ -492,6 +492,9 @@ class PlayerView: UIView {
             if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
                 titleLabelLandacape.isHidden = false
                 zoomButton.isHidden = false
+                if playerConfiguration.isLive{
+                channelsButton.isHidden  = false
+              }
             } else {
                 titleLabelPortrait.isHidden = false
             }
@@ -509,7 +512,6 @@ class PlayerView: UIView {
             }
             if playerConfiguration.isLive{
                 showsBtn.isHidden  = false
-                channelsButton.isHidden  = false
             }
             castButton.isHidden = false
             lockButton.setImage(Svg.unlock.uiImage, for: .normal)

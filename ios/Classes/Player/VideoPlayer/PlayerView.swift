@@ -16,6 +16,7 @@ protocol PlayerViewDelegate: NSObjectProtocol {
     func close(duration: Double)
     func settingsPressed()
     func episodesButtonPressed()
+    func channelsButtonPressed()
     func showPressed()
     func changeOrientation()
     func togglePictureInPictureMode()
@@ -227,6 +228,18 @@ class PlayerView: UIView {
         return button
     }()
     
+    private var channelsButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Svg.channels.uiImage, for: .normal)
+        button.setTitle("", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
+        button.setTitleColor(.white, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
     private var showsBtn: UIButton = {
         let button = UIButton()
         button.setImage(Svg.programmes.uiImage, for: .normal)
@@ -319,6 +332,7 @@ class PlayerView: UIView {
             episodesButton.isHidden = true
         } else {
             showsBtn.isHidden = true
+            channelsButton.isHidden = true
         }
         if #available(iOS 13.0, *) {
             setSliderThumbTintColor(Colors.mainColor)
@@ -495,6 +509,7 @@ class PlayerView: UIView {
             }
             if playerConfiguration.isLive{
                 showsBtn.isHidden  = false
+                channelsButton.isHidden  = false
             }
             castButton.isHidden = false
             lockButton.setImage(Svg.unlock.uiImage, for: .normal)
@@ -518,6 +533,7 @@ class PlayerView: UIView {
             durationTimeLabel.isHidden = true
             if playerConfiguration.isLive{
                 showsBtn.isHidden  = true
+                channelsButton.isHidden = true
             }
             castButton.isHidden = true
             lockButton.setImage(Svg.lock.uiImage, for: .normal)
@@ -544,6 +560,10 @@ class PlayerView: UIView {
     
     @objc func episodesButtonPressed(_ sender: UIButton){
         delegate?.episodesButtonPressed()
+    }
+    
+     @objc func channelsButtonPressed(_ sender: UIButton){
+        delegate?.channelsButtonPressed()
     }
     
     @objc func showPressed(_ sender: UIButton){
@@ -702,6 +722,7 @@ class PlayerView: UIView {
     private func addVideoPortaitConstraints() {
         if playerConfiguration.isLive {
             self.playerLayer.videoGravity = .resize
+            channelsButton.isHidden = false
         } else {
             self.playerLayer.videoGravity = .resizeAspect
         }
@@ -716,6 +737,7 @@ class PlayerView: UIView {
         titleLabelLandacape.isHidden = true
         titleLabelPortrait.isHidden = false
         zoomButton.isHidden = true
+        channelsButton.isHidden = true
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     
@@ -752,6 +774,7 @@ class PlayerView: UIView {
         bottomView.addSubview(durationTimeLabel)
         bottomView.addSubview(timeSlider)
         bottomView.addSubview(episodesButton)
+        bottomView.addSubview(channelsButton)
         bottomView.addSubview(showsBtn)
         bottomView.addSubview(landscapeButton)
         bottomView.addSubview(liveStackView)
@@ -842,6 +865,8 @@ class PlayerView: UIView {
         
         showsBtn.rightToLeft(of: zoomButton, offset: -8)
         showsBtn.centerY(to: zoomButton)
+        channelsButton.leftToRight(of: liveStackView, offset: 8)
+        channelsButton.centerY(to: landscapeButton)
         
         episodesButton.snp.makeConstraints{make in
             make.left.equalTo(bottomView).offset(8)

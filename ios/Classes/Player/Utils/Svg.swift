@@ -32,5 +32,6 @@ struct Svg {
     static let fit :SVGKImage = SVGKImage(named: "fit", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let cropFit :SVGKImage = SVGKImage(named: "crop_fit", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let strech :SVGKImage = SVGKImage(named: "strech", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let channels :SVGKImage = SVGKImage(named: "channels", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     
 }

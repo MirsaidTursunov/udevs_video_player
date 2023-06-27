@@ -427,9 +427,8 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     func channelsButtonPressed(){
         let episodeVC = CollectionViewController()
         episodeVC.modalPresentationStyle = .custom
-//        episodeVC.channels = self.playerConfiguration
+        episodeVC.channels = self.playerConfiguration.channels
 //        episodeVC.delegate = self
-//        episodeVC.selectedSeasonIndex = selectedSeason
         self.present(episodeVC, animated: true, completion: nil)
     }
     

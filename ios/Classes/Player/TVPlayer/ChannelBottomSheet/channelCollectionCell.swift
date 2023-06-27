@@ -10,12 +10,21 @@ import SDWebImage
 
 class channelCollectionCell: UICollectionViewCell {
     
-    var model : Channels? {
+//    var model : Channel? {
+//        didSet{
+//            cellTitle.text = model?.title
+//            subtitle.text = model?.subtitle
+//            timeLbl.text = model?.remindedTime
+//            progressView.progress = stringToFloat(value: model?.passedPercentage ?? "")
+//        }
+//    }
+    
+    var model : Channel? {
         didSet{
-            cellTitle.text = model?.title
-            subtitle.text = model?.subtitle
-            timeLbl.text = model?.remindedTime
-            progressView.progress = stringToFloat(value: model?.passedPercentage ?? "")
+            cellTitle.text = nil
+            subtitle.text = nil
+            timeLbl.text = nil
+            progressView.progress = 0.0
         }
     }
     lazy  var channelImage: UIImageView = {
@@ -32,7 +41,7 @@ class channelCollectionCell: UICollectionViewCell {
     lazy var cellTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = model?.title
+        label.text = ""
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 13)
         label.numberOfLines = 1
@@ -41,7 +50,7 @@ class channelCollectionCell: UICollectionViewCell {
     lazy var subtitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = model?.subtitle
+        label.text = ""
         label.textColor = .white
         label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 17)
@@ -50,7 +59,7 @@ class channelCollectionCell: UICollectionViewCell {
     lazy  var timeLbl: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = model?.remindedTime
+        label.text = ""
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 13)
         return label
@@ -62,7 +71,7 @@ class channelCollectionCell: UICollectionViewCell {
         view.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.progress = stringToFloat(value: model?.passedPercentage ?? "")
+        view.progress = 0.0
         return view
     }()
     var verticalStack: UIStackView = {

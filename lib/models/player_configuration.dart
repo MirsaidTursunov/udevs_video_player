@@ -32,7 +32,7 @@ class PlayerConfiguration {
   String autoText;
   String baseUrl;
   bool fromCache;
-  final List<Channel> channels;
+  List<Channel> channels;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};

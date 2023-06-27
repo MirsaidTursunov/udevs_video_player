@@ -21,7 +21,7 @@ class CollectionViewController: UIViewController {
     var channelsCount: Int?
     var delegate : ChannelTappedDelegate?
     
-    var channels = [Channels]()
+    var channels = [Channel]()
     
     let deviceIdiom = UIScreen.main.traitCollection.userInterfaceIdiom
     
@@ -71,15 +71,15 @@ class CollectionViewController: UIViewController {
         return view
     }()
     
-    lazy var cancelBtn: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "ic_exit",in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self),compatibleWith: nil), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFill
-        button.tintColor = .white
-        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
-        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
-        return button
-    }()
+//    lazy var cancelBtn: UIButton = {
+//        let button = UIButton(type: .custom)
+//        button.setImage(UIImage(named: "ic_exit",in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self),compatibleWith: nil), for: .normal)
+//        button.imageView?.contentMode = .scaleAspectFill
+//        button.tintColor = .white
+//        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
+//        return button
+//    }()
     
     lazy var backdropView: UIView = {
         let bdView = UIView(frame: self.view.bounds)
@@ -101,7 +101,7 @@ class CollectionViewController: UIViewController {
         backView.addSubview(collectionView)
         backView.addSubview(headerView)
         headerView.addSubview(mainTitle)
-        headerView.addSubview(cancelBtn)
+//        headerView.addSubview(cancelBtn)
         menuView.backgroundColor = .clear
         menuView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -121,10 +121,10 @@ class CollectionViewController: UIViewController {
         }
         
         
-        cancelBtn.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-16)
-            make.centerY.equalToSuperview()
-        }
+//        cancelBtn.snp.makeConstraints { make in
+//            make.right.equalToSuperview().offset(-16)
+//            make.centerY.equalToSuperview()
+//        }
         
         headerView.snp.makeConstraints { make in
             make.width.equalTo(backView).inset(16)
@@ -188,16 +188,16 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
         cell.backgroundColor = Colors.channels
         cell.layer.cornerRadius = 8
         cell.model = channels[indexPath.row]
-        let time = channels[indexPath.row].remindedTime.floatValue
-        let timeFormat = Int(time).secondsToTime()
-        if (time == 0.0) {
-            cell.timeLbl.text = "\(timeFormat)"
-        }else {
-            cell.timeLbl.text = "-\(timeFormat)"
-        }
-        let url = URL(string: channels[indexPath.row].logoImage)
+//        let time = channels[indexPath.row].remindedTime.floatValue
+//        let timeFormat = Int(time).secondsToTime()
+//        if (time == 0.0) {
+//            cell.timeLbl.text = "\(timeFormat)"
+//        }else {
+//            cell.timeLbl.text = "-\(timeFormat)"
+//        }
+        let url = URL(string: channels[indexPath.row].image ?? "")
         cell.channelImage.sd_setImage(with: url, completed: nil)
-        cell.progressView.progress = stringToFloat(value: channels[indexPath.row].passedPercentage) / 100
+//        cell.progressView.progress = stringToFloat(value: channels[indexPath.row].passedPercentage) / 100
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

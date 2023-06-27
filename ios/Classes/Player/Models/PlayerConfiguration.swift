@@ -34,8 +34,9 @@ struct PlayerConfiguration{
     var authorization: String
     var autoText: String
     var baseUrl: String
+    var channels: [Channel]
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramsInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, channels: [Channel]) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -63,10 +64,12 @@ struct PlayerConfiguration{
         self.autoText = autoText
         self.baseUrl = baseUrl
         self.url = url
+        self.channels = channels
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
         var season : [Season] = []
+        var channels : [Channel] = []
         var programInfos: [ProgramsInfo] = []
         var programsInfoListMap : [Dictionary<String, Any>]?
         var seasonsMap : [Dictionary<String, Any>]?
@@ -107,7 +110,8 @@ struct PlayerConfiguration{
                                    authorization: map["authorization"] as! String,
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
-                                   url: (map["initialResolution"] as! [String:String]).values.first ?? ""
+                                   url: (map["initialResolution"] as! [String:String]).values.first ?? "",
+                                   channels: channels
                                    
         )
     }
@@ -185,5 +189,22 @@ struct TvProgram{
     
     static func fromMap(map : [String:String])->TvProgram{
         return TvProgram(scheduledTime: map["scheduledTime"]!, programTitle: map["programTitle"]!)
+    }
+}
+
+
+struct Channel{
+    var id: String?
+    var image: String?
+    var resolutions: [String:String]
+    
+    init(id: String? = nil, title: String? = nil, description: String? = nil, image: String? = nil, duration: Int? = nil, resolutions: [String : String]) {
+        self.id = id
+        self.image = image
+        self.resolutions = resolutions
+    }
+    
+    static func fromMap(map : [String:Any])-> Movie{
+        return Movie(id: (map["id"] as? String), image: (map["image"] as? String), resolutions: (map["resolutions"] as! [String:String]))
     }
 }

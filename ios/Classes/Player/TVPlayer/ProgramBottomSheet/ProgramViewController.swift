@@ -18,7 +18,7 @@ class ProgramViewController: UIViewController {
         let table = UITableView(frame: .zero, style: .grouped)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.tableFooterView = UIView(frame: .zero)
-        table.backgroundColor = Colors.mainBackground
+        table.backgroundColor = Colors.moreColor
         table.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         table.register(ProgramCell.self,forCellReuseIdentifier: "cell")
         table.dataSource = self

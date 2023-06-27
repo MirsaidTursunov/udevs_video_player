@@ -425,12 +425,12 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     
     //MARK: - ****** Channels *******
     func channelsButtonPressed(){
-//        let episodeVC = EpisodeCollectionUI()
-//        episodeVC.modalPresentationStyle = .custom
-//        episodeVC.seasons = self.seasons
+        let episodeVC = CollectionViewController()
+        episodeVC.modalPresentationStyle = .custom
+//        episodeVC.channels = self.playerConfiguration
 //        episodeVC.delegate = self
 //        episodeVC.selectedSeasonIndex = selectedSeason
-//        self.present(episodeVC, animated: true, completion: nil)
+        self.present(episodeVC, animated: true, completion: nil)
     }
     
     //MARK: - ****** SEASONS *******

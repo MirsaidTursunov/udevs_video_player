@@ -49,12 +49,12 @@ class CollectionViewController: UIViewController {
         return collectionView
     }()
     let menuView = UIView()
-    let menuHeight = UIDevice.current.userInterfaceIdiom == .pad ? 250 : UIScreen.main.bounds.height * 0.60
+    let menuHeight = UIDevice.current.userInterfaceIdiom == .pad ? 250 : UIScreen.main.bounds.height * 0.40
     var isPresenting = false
     
     var backView: UIView =  {
         let view = UIView()
-        view.backgroundColor = Colors.mainColor
+        view.backgroundColor = Colors.moreColor
         return view
     }()
     
@@ -91,6 +91,7 @@ class CollectionViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         view.backgroundColor = .clear
+        backView.layer.cornerRadius = 16
         view.addSubview(collectionView)
         
         view.addSubview(backdropView)

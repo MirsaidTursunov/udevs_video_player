@@ -151,42 +151,43 @@ class UdevsVideoPlayerActivity : Activity() {
 
     ///TODO: SSL error
 
-    private fun trustEveryone() {
-        try {
-            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-            val context: SSLContext = SSLContext.getInstance("TLS")
-            context.init(
-                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
-                object : X509TrustManager {
-                    @SuppressLint("TrustAllX509TrustManager")
-                    @Throws(CertificateException::class)
-                    override fun checkClientTrusted(
-                        chain: Array<X509Certificate?>?,
-                        authType: String?
-                    ) {
-                    }
+//    private fun trustEveryone() {
+//        try {
+//            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+//            val context: SSLContext = SSLContext.getInstance("TLS")
+//            context.init(
+//                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
+//                object : X509TrustManager {
+//                    @SuppressLint("TrustAllX509TrustManager")
+//                    @Throws(CertificateException::class)
+//                    override fun checkClientTrusted(
+//                        chain: Array<X509Certificate?>?,
+//                        authType: String?
+//                    ) {
+//                    }
+//
+//                    @SuppressLint("TrustAllX509TrustManager")
+//                    @Throws(CertificateException::class)
+//                    override fun checkServerTrusted(
+//                        chain: Array<X509Certificate?>?,
+//                        authType: String?
+//                    ) {
+//                    }
+//
+//                    override fun getAcceptedIssuers(): Array<X509Certificate> {
+//                        TODO("Not yet implemented")
+//                    }
+//
+//                }), SecureRandom()
+//            )
+//            HttpsURLConnection.setDefaultSSLSocketFactory(
+//                context.socketFactory
+//            )
+//        } catch (e: Exception) { // should never happen
+//            e.printStackTrace()
+//        }
+//    }
 
-                    @SuppressLint("TrustAllX509TrustManager")
-                    @Throws(CertificateException::class)
-                    override fun checkServerTrusted(
-                        chain: Array<X509Certificate?>?,
-                        authType: String?
-                    ) {
-                    }
-
-                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-                        TODO("Not yet implemented")
-                    }
-
-                }), SecureRandom()
-            )
-            HttpsURLConnection.setDefaultSSLSocketFactory(
-                context.socketFactory
-            )
-        } catch (e: Exception) { // should never happen
-            e.printStackTrace()
-        }
-    }
 //    private fun trustEveryone() {
 //        try {
 //            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }

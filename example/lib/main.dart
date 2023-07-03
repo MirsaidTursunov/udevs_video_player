@@ -158,7 +158,7 @@ class _MainPageState extends State<MainPage> {
   Stream<MediaItemDownload> currentProgressDownloadAsStream() =>
       _udevsVideoPlayerPlugin.currentProgressDownloadAsStream;
 
-  playVideo() async {
+  void playVideo() async {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(

@@ -162,6 +162,7 @@ class _MainPageState extends State<MainPage> {
     try {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            ip: "",
             baseUrl: "https://api.spec.uzd.udevs.io/v1/",
             initialResolution: {
               "240p":

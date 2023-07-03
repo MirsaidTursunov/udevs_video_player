@@ -44,6 +44,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     private var localPlaybackImplicitlyPaused: Bool = false
     ///
     weak var delegate: VideoPlayerDelegate?
+    
     private var url: String?
     var qualityLabelText = ""
     var speedLabelText = ""
@@ -53,8 +54,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     var resolutions: [String:String]?
     var sortedResolutions: [String] = []
     var seasons : [Season] = [Season]()
-    var qualityDelegate: QualityDelegate!
-    var speedDelegte: SpeedDelegate!
+    
     var playerConfiguration: PlayerConfiguration!
     private var isVolume = false
     private var volumeViewSlider: UISlider!
@@ -62,7 +62,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     private var selectedSpeedText = "1.0x"
     var selectedQualityText = "Auto"
     
-    private var playerView: PlayerView = {
+    lazy private var playerView: PlayerView = {
         return PlayerView()
     }()
     
@@ -428,7 +428,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         let episodeVC = CollectionViewController()
         episodeVC.modalPresentationStyle = .custom
         episodeVC.channels = self.playerConfiguration.channels
-//        episodeVC.delegate = self
+        episodeVC.delegate = self
         self.present(episodeVC, animated: true, completion: nil)
     }
     
@@ -679,7 +679,13 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
     }
 }
 
-extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate {
+extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, ChannelTappedDelegate {
+    func onChannelTapped(channelIndex: Int) {
+        print(self.playerConfiguration.channels[channelIndex].id ?? "")
+        print(self.playerConfiguration.channels[channelIndex].image)
+        print(self.playerConfiguration.channels[channelIndex].resolutions)
+    }
+    
     
     func onEpisodeCellTapped(seasonIndex: Int, episodeIndex: Int) {
         var resolutions: [String:String] = [:]

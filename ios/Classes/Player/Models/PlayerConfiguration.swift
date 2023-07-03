@@ -73,8 +73,10 @@ struct PlayerConfiguration{
         var programInfos: [ProgramsInfo] = []
         var programsInfoListMap : [Dictionary<String, Any>]?
         var seasonsMap : [Dictionary<String, Any>]?
-        programsInfoListMap = map["programsInfoList"] as! [Dictionary<String, Any>]
-        seasonsMap = map["seasons"] as! [Dictionary<String, Any>]
+        var channelsMap : [Dictionary<String, Any>]?
+        programsInfoListMap = map["programsInfoList"] as? [Dictionary<String, Any>]
+        seasonsMap = map["seasons"] as? [Dictionary<String, Any>]
+        channelsMap = map["channels"] as? [Dictionary<String, Any>]
         programsInfoListMap?.forEach({ data in
             let program = ProgramsInfo.fromMap(map: data)
             programInfos.append(program)
@@ -83,7 +85,10 @@ struct PlayerConfiguration{
             let program = Season.fromMap(map: data)
             season.append(program)
         })
-        
+        channelsMap?.forEach({ data in
+            let program = Channel.fromMap(map: data)
+            channels.append(program)
+        })
         return PlayerConfiguration(initialResolution: map["initialResolution"] as! [String:String],
                                    resolutions: map["resolutions"] as! [String:String],
                                    qualityText: map["qualityText"] as! String,
@@ -204,7 +209,7 @@ struct Channel{
         self.resolutions = resolutions
     }
     
-    static func fromMap(map : [String:Any])-> Movie{
-        return Movie(id: (map["id"] as? String), image: (map["image"] as? String), resolutions: (map["resolutions"] as! [String:String]))
+    static func fromMap(map : [String:Any])-> Channel{
+        return Channel(id: (map["id"] as? String), image: (map["image"] as? String), resolutions: (map["resolutions"] as! [String:String]))
     }
 }

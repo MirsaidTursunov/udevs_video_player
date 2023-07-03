@@ -33,6 +33,7 @@ class PlayerConfiguration {
   String baseUrl;
   bool fromCache;
   List<Channel> channels;
+  String ip;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
@@ -64,6 +65,7 @@ class PlayerConfiguration {
     map['baseUrl'] = baseUrl;
     map['fromCache'] = fromCache;
     map['channels'] = channels.map((v) => v.toJson()).toList();
+    map['ip'] = ip;
     return map;
   }
 
@@ -98,6 +100,7 @@ class PlayerConfiguration {
         'baseUrl: $baseUrl, '
         'fromCache: $fromCache'
         'channels: $channels'
+        'ip: $ip'
         '}';
   }
 
@@ -130,5 +133,6 @@ class PlayerConfiguration {
     required this.baseUrl,
     required this.fromCache,
     required this.channels,
+    required this.ip,
   });
 }

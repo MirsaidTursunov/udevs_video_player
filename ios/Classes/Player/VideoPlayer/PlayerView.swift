@@ -236,7 +236,7 @@ class PlayerView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
-        button.isHidden = true
+        button.isHidden = false
         return button
     }()
     
@@ -492,7 +492,7 @@ class PlayerView: UIView {
             if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
                 titleLabelLandacape.isHidden = false
                 zoomButton.isHidden = false
-                if playerConfiguration.isLive{
+                if playerConfiguration.isLive {
                 channelsButton.isHidden  = false
               }
             } else {
@@ -533,7 +533,7 @@ class PlayerView: UIView {
             }
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
-            if playerConfiguration.isLive{
+            if playerConfiguration.isLive {
                 showsBtn.isHidden  = true
                 channelsButton.isHidden = true
             }

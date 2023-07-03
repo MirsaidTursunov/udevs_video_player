@@ -36,8 +36,9 @@ struct PlayerConfiguration{
     var baseUrl: String
     var channels: [Channel]
     var ip: String
+    var selectChannelIndex: Int
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, channels: [Channel], ip : String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, channels: [Channel], ip : String, selectChannelIndex: Int) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -67,6 +68,7 @@ struct PlayerConfiguration{
         self.url = url
         self.channels = channels
         self.ip = ip
+        self.selectChannelIndex = selectChannelIndex
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -118,7 +120,7 @@ struct PlayerConfiguration{
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
                                    url: (map["initialResolution"] as! [String:String]).values.first ?? "",
-                                   channels: channels, ip: map["ip"] as! String
+                                   channels: channels, ip: map["ip"] as! String, selectChannelIndex: map["selectChannelIndex"] as! Int
         )
     }
 }

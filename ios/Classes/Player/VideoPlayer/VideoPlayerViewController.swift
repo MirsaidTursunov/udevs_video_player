@@ -50,6 +50,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     var speedLabelText = ""
     var selectedSeason: Int = 0
     var selectSesonNum: Int = 0
+    var selectChannelIndex: Int = 0
     var isRegular: Bool = false
     var resolutions: [String:String]?
     var sortedResolutions: [String] = []
@@ -706,9 +707,11 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
 
 extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, ChannelTappedDelegate {
     func onChannelTapped(channelIndex: Int) {
+        if self.selectChannelIndex == channelIndex { return }
         let channel : Channel = self.playerConfiguration.channels[channelIndex];
-        var success : ChannelResponse? = getChannel(id: channel.id ?? "")
+        let success : ChannelResponse? = getChannel(id: channel.id ?? "")
         if success != nil {
+            self.selectChannelIndex = channelIndex
             self.url = success?.channelStreamIos ?? ""
             self.resolutions = ["Auto": success?.channelStreamIos ?? ""]
             self.playerView.changeUrl(url: self.url, title: channel.name ?? "")

@@ -1,18 +1,3 @@
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
-//
-//   let megogoStreamResponse = try MegogoStreamResponse(json)
-
-//
-// To read values from URLs:
-//
-//   let task = URLSession.shared.megogoStreamResponseTask(with: url) { megogoStreamResponse, response, error in
-//     if let megogoStreamResponse = megogoStreamResponse {
-//       ...
-//     }
-//   }
-//   task.resume()
-
 import Foundation
 
 // MARK: - MegogoStreamResponse

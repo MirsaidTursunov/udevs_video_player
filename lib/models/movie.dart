@@ -34,12 +34,14 @@ class Movie {
 
 class Channel {
   final String id;
+  final String name;
   final String image;
   final Map<String, String> resolutions;
 
   const Channel({
     required this.id,
     required this.image,
+    required this.name,
     required this.resolutions,
   });
 
@@ -47,12 +49,13 @@ class Channel {
     var map = <String, dynamic>{};
     map['id'] = id;
     map['image'] = image;
+    map['name'] = name;
     map['resolutions'] = resolutions;
     return map;
   }
 
   @override
   String toString() {
-    return 'Channel{id: $id, image: $image, resolutions: $resolutions}';
+    return 'Channel{id: $id, image: $image, resolutions: $resolutions, name: $name}';
   }
 }

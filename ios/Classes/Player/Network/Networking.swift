@@ -50,7 +50,7 @@ struct Networking {
         return result
     }
     
-    func getChannel(_ baseUrl:String, token: String, sessionId: String, parameters: [String: String]) -> Result<MegogoStreamResponse, NetworkError> {
+    func getChannel(_ baseUrl: String, token: String, sessionId: String, parameters: [String: String]) -> Result<ChannelResponse, NetworkError> {
         var components = URLComponents(string: baseUrl)!
         components.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
@@ -59,18 +59,46 @@ struct Networking {
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
         request.setValue(token, forHTTPHeaderField: "Authorization")
-        request.setValue(sessionId, forHTTPHeaderField:"SessionId" )
+        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
         
-        var result: Result<MegogoStreamResponse, NetworkError>!
+        var result: Result<ChannelResponse, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)
-        session.dataTask(with: request){data,_,_ in
+        session.dataTask(with: request){data,_,__ in
             guard let json = data else{
                 result = .failure(.NoDataAvailable)
                 return
             }
             do {
                 let decoder = JSONDecoder()
-                let response = try decoder.decode(MegogoStreamResponse.self, from: Data(json))
+                let response = try decoder.decode(ChannelResponse.self, from: Data(json))
+                print("response")
+                print(response)
+                result = .success(response)
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
+    
+    func getStreamUrl(_ baseUrl: String) -> Result<String, NetworkError> {
+        var components = URLComponents(string: baseUrl)!
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        
+        var result: Result<String, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,_,__ in
+            guard let json = data else{
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do {
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(String.self, from: Data(json))
                 result = .success(response)
             }
             catch{

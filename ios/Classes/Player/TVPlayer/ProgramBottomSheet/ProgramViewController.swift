@@ -12,7 +12,7 @@ import SnapKit
 
 class ProgramViewController: UIViewController {
     
-    var programInfo = [ProgramsInfo]()
+    var programInfo = [ProgramInfo]()
     
     lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)

@@ -577,6 +577,31 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         return premierSteamResponse
     }
     
+    func getChannel(id : String) -> ChannelResponse? {
+        let _url : String = playerConfiguration.baseUrl+"tv/channel/\(id)"
+        var channelResponse: ChannelResponse?
+        let result = Networking.sharedInstance.getChannel(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId,parameters: ["client_ip" : playerConfiguration.ip])
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(let success):
+            channelResponse = success
+        }
+        return channelResponse
+    }
+    
+    func getStreamUrl(url : String) -> String? {
+        var channelResponse: String?
+        let result = Networking.sharedInstance.getStreamUrl(url)
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(let success):
+            channelResponse = success
+        }
+        return channelResponse
+    }
+    
     func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
         self.selectedSeason = _seasonIndex
         self.selectSesonNum = _episodeIndex
@@ -681,9 +706,13 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
 
 extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, ChannelTappedDelegate {
     func onChannelTapped(channelIndex: Int) {
-        print(self.playerConfiguration.channels[channelIndex].id ?? "")
-        print(self.playerConfiguration.channels[channelIndex].image)
-        print(self.playerConfiguration.channels[channelIndex].resolutions)
+        let channel : Channel = self.playerConfiguration.channels[channelIndex];
+        var success : ChannelResponse? = getChannel(id: channel.id ?? "")
+        if success != nil {
+            self.url = success?.channelStreamIos ?? ""
+            self.resolutions = ["Auto": success?.channelStreamIos ?? ""]
+            self.playerView.changeUrl(url: self.url, title: channel.name ?? "")
+        }
     }
     
     

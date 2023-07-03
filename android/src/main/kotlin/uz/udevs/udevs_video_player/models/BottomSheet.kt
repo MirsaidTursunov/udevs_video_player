@@ -5,5 +5,6 @@ enum class BottomSheet {
     SETTINGS,
     QUALITY_OR_SPEED,
     EPISODES,
-    TV_PROGRAMS
+    TV_PROGRAMS,
+    CHANNELS
 }

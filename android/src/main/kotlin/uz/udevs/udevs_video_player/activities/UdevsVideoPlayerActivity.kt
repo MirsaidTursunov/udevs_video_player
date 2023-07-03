@@ -57,6 +57,7 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
+import uz.udevs.udevs_video_player.adapters.ChannelsPagerAdapter
 import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
@@ -876,6 +877,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                 }
             }
         }
+        live?.setOnClickListener {
+            if (!isTouchLocked) {
+                if (playerConfiguration.isLive)
+                    showChannelsBottomSheet()
+            }
+        }
         episodesButton?.setOnClickListener {
             if (!isTouchLocked) {
                 if (playerConfiguration.seasons.isNotEmpty())
@@ -1097,7 +1104,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                 BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonQualitySpeedBottomSheet?.visibility =
                     View.VISIBLE
-
+                BottomSheet.CHANNELS -> {}
                 BottomSheet.NONE -> {}
             }
         } else {
@@ -1122,7 +1129,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                 BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonSettingsBottomSheet?.visibility =
                     View.GONE
-
+                BottomSheet.CHANNELS -> {}
                 BottomSheet.NONE -> {}
             }
         }
@@ -1260,29 +1267,18 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     }
 
     private fun showChannelsBottomSheet() {
-        currentBottomSheet = BottomSheet.EPISODES
+        currentBottomSheet = BottomSheet.CHANNELS
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.setContentView(R.layout.episodes)
-//        backButtonEpisodeBottomSheet = bottomSheetDialog.findViewById(R.id.episode_sheet_back)
-//        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            backButtonEpisodeBottomSheet?.visibility = View.GONE
-//        } else {
-//            backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
-//        }
-//        backButtonEpisodeBottomSheet?.setOnClickListener {
-//            bottomSheetDialog.dismiss()
-//        }
-//        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
-//        titleBottomSheet?.text = title?.text
-        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)
-        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.episode_view_pager)
-        viewPager?.adapter = EpisodePagerAdapter(
+        bottomSheetDialog.setContentView(R.layout.channels)
+        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.channels_tabs)
+        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.channels_view_pager)
+        viewPager?.adapter = ChannelsPagerAdapter(
             viewPager!!, this,
-            playerConfiguration.seasons,
+            playerConfiguration.channels,
             seasonIndex,
             episodeIndex,
-            object : EpisodePagerAdapter.OnClickListener {
+            object : ChannelsPagerAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onClick(epIndex: Int, seasIndex: Int) {
                     seasonIndex = seasIndex

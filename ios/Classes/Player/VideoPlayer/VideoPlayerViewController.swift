@@ -715,7 +715,6 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
         }
     }
     
-    
     func onEpisodeCellTapped(seasonIndex: Int, episodeIndex: Int) {
         var resolutions: [String:String] = [:]
         var startAt :Int64?

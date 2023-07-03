@@ -236,7 +236,7 @@ class PlayerView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
-        button.isHidden = false
+        button.isHidden = true
         return button
     }()
     
@@ -887,6 +887,7 @@ class PlayerView: UIView {
         if playerConfiguration.isLive {
             liveCircle.isHidden = false
             liveLabel.isHidden = false
+            channelsButton.isHidden = false
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
             timeSlider.isHidden = true

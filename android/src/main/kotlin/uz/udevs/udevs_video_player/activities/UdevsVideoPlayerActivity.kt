@@ -151,43 +151,6 @@ class UdevsVideoPlayerActivity : Activity() {
 
     ///TODO: SSL error
 
-    private fun trustEveryone() {
-        try {
-            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-            val context: SSLContext = SSLContext.getInstance("TLS")
-            context.init(
-                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
-                object : X509TrustManager {
-                    @SuppressLint("TrustAllX509TrustManager")
-                    @Throws(CertificateException::class)
-                    override fun checkClientTrusted(
-                        chain: Array<X509Certificate?>?,
-                        authType: String?
-                    ) {
-                    }
-
-                    @SuppressLint("TrustAllX509TrustManager")
-                    @Throws(CertificateException::class)
-                    override fun checkServerTrusted(
-                        chain: Array<X509Certificate?>?,
-                        authType: String?
-                    ) {
-                    }
-
-                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-                        TODO("Not yet implemented")
-                    }
-
-                }), SecureRandom()
-            )
-            HttpsURLConnection.setDefaultSSLSocketFactory(
-                context.socketFactory
-            )
-        } catch (e: Exception) { // should never happen
-            e.printStackTrace()
-        }
-    }
-
 //    private fun trustEveryone() {
 //        try {
 //            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
@@ -224,6 +187,48 @@ class UdevsVideoPlayerActivity : Activity() {
 //            e.printStackTrace()
 //        }
 //    }
+
+    ///
+    private fun trustEveryone() {
+        try {
+            val trustManager = object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                    // Implement proper client certificate validation if needed
+                }
+
+                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                    try {
+                        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                        trustManagerFactory.init(null as KeyStore?)
+                        val defaultTrustManagers = trustManagerFactory.trustManagers
+
+                        for (trustManager in defaultTrustManagers) {
+                            (trustManager as? X509TrustManager)?.let {
+                                it.checkServerTrusted(chain, authType)
+                                return
+                            }
+                        }
+                    } catch (e: Exception) {
+                        // Handle the validation error, e.g., log an error message or throw an exception
+                    }
+
+                    throw CertificateException("Failed to validate server certificate")
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate> {
+                    return emptyArray()
+                }
+            }
+
+            val sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, arrayOf(trustManager), SecureRandom())
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onPause() {
         super.onPause()

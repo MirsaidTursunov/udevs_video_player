@@ -7,7 +7,7 @@ data class PlayerConfiguration(
     @SerializedName("initialResolution")
     val initialResolution: HashMap<String, String>,
     @SerializedName("resolutions")
-    val resolutions: HashMap<String, String>,
+    var resolutions: HashMap<String, String>,
     @SerializedName("qualityText")
     val qualityText: String,
     @SerializedName("speedText")
@@ -66,4 +66,6 @@ data class PlayerConfiguration(
     val channels: List<TvChannel>,
     @SerializedName("ip")
     val ip: String,
+    @SerializedName("selectChannelIndex")
+    val selectChannelIndex: Int,
 ) : Serializable

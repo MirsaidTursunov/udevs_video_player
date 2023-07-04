@@ -169,6 +169,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration
         seasonIndex = playerConfiguration.seasonIndex
         episodeIndex = playerConfiguration.episodeIndex
+        channelIndex = playerConfiguration.selectChannelIndex
         currentQuality =
             if (playerConfiguration.initialResolution.isNotEmpty()) playerConfiguration.initialResolution.keys.first() else ""
         titleText = playerConfiguration.title
@@ -1079,6 +1080,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                 if (body != null) {
                     val map: HashMap<String, String> = hashMapOf()
                     map["Auto"] = body.channelStreamAll
+                    playerConfiguration.resolutions = map
+
                     url = body.channelStreamAll
                     title?.text = playerConfiguration.channels[index].name
                     title1?.text = playerConfiguration.channels[index].name
@@ -1361,7 +1364,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                         true,
                     )
             } else {
-                if (playerConfiguration.resolutions.isNotEmpty())
+                if (playerConfiguration.resolutions.size > 1)
                     showQualitySpeedSheet(
                         currentQuality,
                         playerConfiguration.resolutions.keys.toList() as ArrayList,

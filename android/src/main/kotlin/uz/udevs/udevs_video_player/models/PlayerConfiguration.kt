@@ -1,9 +1,7 @@
 package uz.udevs.udevs_video_player.models
 
-import android.media.tv.TvContract.Channels
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-import java.nio.channels.Channel
 
 data class PlayerConfiguration(
     @SerializedName("initialResolution")
@@ -66,4 +64,6 @@ data class PlayerConfiguration(
     val second: String,
     @SerializedName("channels")
     val channels: List<TvChannel>,
+    @SerializedName("ip")
+    val ip: String,
 ) : Serializable

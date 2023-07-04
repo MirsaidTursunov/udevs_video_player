@@ -1306,12 +1306,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
                 override fun onClick(index: Int) {
                     if (index == channelIndex) {
                         bottomSheetDialog.dismiss()
-                        return
                     } else {
                         channelIndex = index
                         getSingleTvChannel(index)
                         bottomSheetDialog.dismiss()
-                        return
                     }
                 }
             },

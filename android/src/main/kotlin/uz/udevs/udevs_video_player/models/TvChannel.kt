@@ -8,6 +8,8 @@ data class TvChannel(
     val id: String,
     @SerializedName("image")
     val image: String,
+    @SerializedName("name")
+    val name: String,
     @SerializedName("resolutions")
     var resolutions: HashMap<String, String>
 ) : Serializable

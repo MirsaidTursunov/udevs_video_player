@@ -12,7 +12,6 @@ import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.media.session.PlaybackState
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -25,6 +24,7 @@ import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -35,11 +35,11 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.mediarouter.app.MediaRouteButton
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
@@ -57,16 +57,10 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.adapters.ChannelsPagerAdapter
-import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
-import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
-import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
+import uz.udevs.udevs_video_player.adapters.*
 import uz.udevs.udevs_video_player.double_tap_playerview.DoubleTapPlayerView
 import uz.udevs.udevs_video_player.double_tap_playerview.youtybe.VideoPlayerOverlay
-import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
@@ -123,6 +117,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
     private var sWidth: Int = 0
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
+    private var channelIndex: Int = 0
     private var retrofitService: RetrofitService? = null
     private val TAG = "TAG1"
     private var currentOrientation: Int = Configuration.ORIENTATION_PORTRAIT
@@ -1071,6 +1066,37 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         })
     }
 
+    private fun getSingleTvChannel(index: Int) {
+        retrofitService?.getSingleTvChannel(
+            playerConfiguration.authorization,
+            playerConfiguration.channels[index].id,
+            playerConfiguration.ip,
+        )?.enqueue(object : Callback<TvChannelResponse> {
+            override fun onResponse(
+                call: Call<TvChannelResponse>, response: Response<TvChannelResponse>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    val map: HashMap<String, String> = hashMapOf()
+                    map["Auto"] = body.channelStreamAll
+                    url = body.channelStreamAll
+                    title?.text = playerConfiguration.channels[index].name
+                    title1?.text = playerConfiguration.channels[index].name
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    player.playWhenReady
+                }
+            }
+
+            override fun onFailure(call: Call<TvChannelResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         currentOrientation = newConfig.orientation
@@ -1270,66 +1296,26 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         currentBottomSheet = BottomSheet.CHANNELS
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.setContentView(R.layout.channels)
-        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.channels_tabs)
-        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.channels_view_pager)
-        viewPager?.adapter = ChannelsPagerAdapter(
-            viewPager!!, this,
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_channels)
+        val viewPager = bottomSheetDialog.findViewById<RecyclerView>(R.id.bottom_sheet_channels_rv)
+        viewPager?.adapter = ChannelsRvAdapter(
+            this,
             playerConfiguration.channels,
-            seasonIndex,
-            episodeIndex,
-            object : ChannelsPagerAdapter.OnClickListener {
+            object : ChannelsRvAdapter.OnClickListener {
                 @SuppressLint("SetTextI18n")
-                override fun onClick(epIndex: Int, seasIndex: Int) {
-                    seasonIndex = seasIndex
-                    episodeIndex = epIndex
-                    if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                        titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
-                        title?.text = titleText
-                        title1?.text = title?.text
-                        title1?.visibility = View.VISIBLE
-                        title?.text = ""
-                        title?.visibility = View.INVISIBLE
+                override fun onClick(index: Int) {
+                    if (index == channelIndex) {
+                        bottomSheetDialog.dismiss()
+                        return
                     } else {
-                        titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
-                        title?.text = titleText
-                        title?.visibility = View.VISIBLE
-                        title1?.text = ""
-                        title1?.visibility = View.GONE
+                        channelIndex = index
+                        getSingleTvChannel(index)
+                        bottomSheetDialog.dismiss()
+                        return
                     }
-                    if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
-                        getMegogoStream()
-                    } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
-                        getPremierStream()
-                    } else {
-                        url =
-                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-                        val dataSourceFactory: DataSource.Factory =
-                            DefaultHttpDataSource.Factory()
-                        val hlsMediaSource: HlsMediaSource =
-                            HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player.setMediaSource(hlsMediaSource)
-                        player.prepare()
-                        if (mLocation == PlaybackLocation.LOCAL) {
-                            player.playWhenReady
-                        } else {
-                            loadRemoteMedia(0)
-                        }
-                    }
-                    bottomSheetDialog.dismiss()
                 }
             },
         )
-        TabLayoutMediator(tabLayout!!, viewPager) { tab, position ->
-            tab.text = playerConfiguration.seasons[position].title.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            }
-        }.attach()
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
             currentBottomSheet = BottomSheet.NONE

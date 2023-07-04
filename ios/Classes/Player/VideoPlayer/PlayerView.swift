@@ -236,7 +236,6 @@ class PlayerView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
-        button.isHidden = true
         return button
     }()
     
@@ -492,9 +491,6 @@ class PlayerView: UIView {
             if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
                 titleLabelLandacape.isHidden = false
                 zoomButton.isHidden = false
-                if playerConfiguration.isLive {
-                channelsButton.isHidden  = false
-              }
             } else {
                 titleLabelPortrait.isHidden = false
             }
@@ -512,6 +508,7 @@ class PlayerView: UIView {
             }
             if playerConfiguration.isLive{
                 showsBtn.isHidden  = false
+                channelsButton.isHidden  = false
             }
             castButton.isHidden = false
             lockButton.setImage(Svg.unlock.uiImage, for: .normal)
@@ -724,7 +721,6 @@ class PlayerView: UIView {
     private func addVideoPortaitConstraints() {
         if playerConfiguration.isLive {
             self.playerLayer.videoGravity = .resize
-            channelsButton.isHidden = false
         } else {
             self.playerLayer.videoGravity = .resizeAspect
         }
@@ -739,7 +735,6 @@ class PlayerView: UIView {
         titleLabelLandacape.isHidden = true
         titleLabelPortrait.isHidden = false
         zoomButton.isHidden = true
-        channelsButton.isHidden = true
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     

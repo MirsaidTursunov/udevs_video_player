@@ -325,8 +325,8 @@ class PlayerView: UIView {
     
     private func uiSetup(){
         configureVolume()
-        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
-        showsBtn.setTitle(" "+playerConfiguration.tvProgramsText, for: .normal)
+//        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
+//        showsBtn.setTitle(" "+playerConfiguration.tvProgramsText, for: .normal)
         if playerConfiguration.isLive {
             episodesButton.isHidden = true
         } else {
@@ -862,7 +862,7 @@ class PlayerView: UIView {
         
         showsBtn.rightToLeft(of: zoomButton, offset: -8)
         showsBtn.centerY(to: zoomButton)
-        channelsButton.leftToRight(of: liveStackView, offset: 8)
+        channelsButton.leftToRight(of: liveStackView, offset: 48)
         channelsButton.centerY(to: landscapeButton)
         
         episodesButton.snp.makeConstraints{make in

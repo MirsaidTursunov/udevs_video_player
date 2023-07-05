@@ -161,14 +161,14 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         backdropView.addGestureRecognizer(tapGesture)
         
         seasonSelectBtn.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.width.equalTo(124)
+            make.height.equalTo(30)
+            make.width.equalTo(100)
             make.left.equalTo(headerView)
         }
         
         cancelBtn.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.width.equalTo(40)
+            make.height.equalTo(30)
+            make.width.equalTo(30)
             make.right.equalToSuperview()
             make.centerY.equalToSuperview()
         }
@@ -182,14 +182,14 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         topView.snp.makeConstraints { make in
             make.right.left.equalTo(backView)
-            make.height.equalTo(40)
+            make.height.equalTo(30)
         }
         
         verticalStack.snp.makeConstraints { make in
             make.left.equalTo(menuView).offset(0)
             make.right.equalTo(menuView)
             make.bottom.equalTo(menuView).offset(0)
-            make.top.equalTo(menuView).offset(18)
+            make.top.equalTo(menuView).offset(16)
         }
     }
     

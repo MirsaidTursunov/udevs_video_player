@@ -16,7 +16,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     var seasons = [Season]()
     var closeText : String = ""
-    var seasonText : String = ""
+//    var seasonText : String = ""
     let videoPlayer = VideoPlayerViewController()
     var selectedSeasonIndex: Int = 0
     var delegate : EpisodeDelegate?
@@ -53,7 +53,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         return view
     }()
     
-    var menuHeight = UIScreen.main.bounds.height * 0.30
+    var menuHeight = UIScreen.main.bounds.height * 0.23
     var isPresenting = false
     
     var topView: UIView = {
@@ -79,7 +79,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         st.alignment = .leading
         st.axis = .vertical
         st.distribution = .fill
-        st.spacing = 16
+        st.spacing = 8
         st.isUserInteractionEnabled = true
         st.backgroundColor = .clear
         st.translatesAutoresizingMaskIntoConstraints = true
@@ -90,10 +90,10 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .white
-        button.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
+        button.setTitle("\(selectedSeasonIndex + 1)", for: .normal)
         button.setImage(Svg.down.uiImage, for: .normal)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         button.semanticContentAttribute = .forceRightToLeft
         button.backgroundColor = .red
         button.clipsToBounds = true
@@ -124,18 +124,18 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         if UIDevice.current.userInterfaceIdiom == .phone {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.32
+                menuHeight = UIScreen.main.bounds.width * 0.23
             } else {
-                menuHeight = UIScreen.main.bounds.height * 0.3
+                menuHeight = UIScreen.main.bounds.height * 0.25
             }
         } else {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.4
+                menuHeight = UIScreen.main.bounds.width * 0.3
             } else {
                 menuHeight = UIScreen.main.bounds.height * 0.4
             }
         }
-        seasonSelectBtn.setTitle("\(selectedSeasonIndex + 1) \(seasonText)", for: .normal)
+        seasonSelectBtn.setTitle("\(selectedSeasonIndex + 1)", for: .normal)
         
         setupUI()
         
@@ -161,14 +161,14 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         backdropView.addGestureRecognizer(tapGesture)
         
         seasonSelectBtn.snp.makeConstraints { make in
-            make.height.equalTo(30)
-            make.width.equalTo(100)
+            make.height.equalTo(25)
+            make.width.equalTo(70)
             make.left.equalTo(headerView)
         }
         
         cancelBtn.snp.makeConstraints { make in
-            make.height.equalTo(30)
-            make.width.equalTo(30)
+            make.height.equalTo(25)
+            make.width.equalTo(25)
             make.right.equalToSuperview()
             make.centerY.equalToSuperview()
         }
@@ -182,14 +182,14 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
         
         topView.snp.makeConstraints { make in
             make.right.left.equalTo(backView)
-            make.height.equalTo(30)
+            make.height.equalTo(25)
         }
         
         verticalStack.snp.makeConstraints { make in
             make.left.equalTo(menuView).offset(0)
             make.right.equalTo(menuView)
             make.bottom.equalTo(menuView).offset(0)
-            make.top.equalTo(menuView).offset(16)
+            make.top.equalTo(menuView).offset(8)
         }
     }
     
@@ -261,7 +261,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     func onBottomSheetCellTapped(index: Int, type: SeasonBottomSheetType) {
         videoPlayer.updateSeasonNum(index: index)
         selectedSeasonIndex = index
-        seasonSelectBtn.setTitle("\(selectedSeasonIndex+1) сезон", for: .normal)
+        seasonSelectBtn.setTitle("\(selectedSeasonIndex+1)", for: .normal)
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
@@ -270,13 +270,13 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.userInterfaceIdiom == .phone {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.3
+                menuHeight = UIScreen.main.bounds.width * 0.23
             } else {
-                menuHeight = UIScreen.main.bounds.height * 0.35
+                menuHeight = UIScreen.main.bounds.height * 0.25
             }
         } else {
             if(UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                menuHeight = UIScreen.main.bounds.width * 0.4
+                menuHeight = UIScreen.main.bounds.width * 0.3
             } else {
                 menuHeight = UIScreen.main.bounds.height * 0.4
             }

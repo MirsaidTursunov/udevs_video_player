@@ -84,7 +84,7 @@ class EpisodeCollectionCell: UICollectionViewCell {
         containerStack.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        episodeImage.top(to: containerStack, offset: 32)
+        episodeImage.top(to: containerStack)
         episodeImage.snp.makeConstraints { make in
             make.height.equalTo(100)
             make.width.equalTo(containerStack)

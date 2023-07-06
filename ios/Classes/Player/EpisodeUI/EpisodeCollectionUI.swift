@@ -49,7 +49,7 @@ class EpisodeCollectionUI: UIViewController, BottomSheetCellDelegateSeason{
     
     let menuView: UIView = {
         let view = UIView()
-        view.backgroundColor = Colors.primary85
+        view.backgroundColor = Colors.primary73
         return view
     }()
     

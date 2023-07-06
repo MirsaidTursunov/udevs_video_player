@@ -14,7 +14,7 @@ class Colors {
     static let baseTextColor = UIColor(red: 157, green: 157, blue: 157)
     static let channels = UIColor(red: 30, green: 30, blue: 30)
     static let moreColor = UIColor(red:2, green: 12, blue: 36)
-    static let primary85 = UIColor(red: 2/255, green: 12/255, blue: 36/255, alpha: 0.9)
+    static let primary73 = UIColor(red: 2/255, green: 12/255, blue: 36/255, alpha: 0.73)
     static let mainColor = UIColor(red:3, green: 169, blue: 244)
     static let mainBackground = UIColor(red: 17, green: 14, blue: 25)
     static let seasonColor = UIColor(red: 46, green: 46, blue: 48)

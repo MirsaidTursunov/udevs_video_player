@@ -2,6 +2,7 @@ import Flutter
 import AVFoundation
 import AVFAudio
 import UIKit
+import ScreenshotPreventing
 
 public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDelegate {
     
@@ -28,6 +29,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         viewController = (UIApplication.shared.delegate?.window??.rootViewController)! as! FlutterViewController
+        viewController.view = ScreenshotPreventingView(contentView: viewController.view)
         channel = FlutterMethodChannel(name: "udevs_video_player", binaryMessenger: registrar.messenger())
         let instance = SwiftUdevsVideoPlayerPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel!)

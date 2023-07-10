@@ -146,7 +146,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(),
         setContentView(R.layout.player_activity)
         actionBar?.hide()
         val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         window.statusBarColor = Color.BLACK
         window.navigationBarColor = Color.BLACK
 

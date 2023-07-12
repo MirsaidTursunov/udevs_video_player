@@ -18,6 +18,7 @@ struct Svg {
     static let pip :SVGKImage = SVGKImage(named: "picture_in_picture.svg", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let replay :SVGKImage = SVGKImage(named: "replay", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let forward :SVGKImage = SVGKImage(named: "forward", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let portrait :SVGKImage = SVGKImage(named: "portrait", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let horizontal :SVGKImage = SVGKImage(named: "horizontal", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let back :SVGKImage = SVGKImage(named: "back", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let right :SVGKImage = SVGKImage(named: "right", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
@@ -27,11 +28,7 @@ struct Svg {
     static let programmes :SVGKImage = SVGKImage(named: "programmes", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serial :SVGKImage = SVGKImage(named: "serial", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serialPlay :SVGKImage = SVGKImage(named: "serial_play", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let lock :SVGKImage = SVGKImage(named: "lock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let unlock :SVGKImage = SVGKImage(named: "unlock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let fit :SVGKImage = SVGKImage(named: "fit", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let cropFit :SVGKImage = SVGKImage(named: "crop_fit", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let strech :SVGKImage = SVGKImage(named: "strech", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let channels :SVGKImage = SVGKImage(named: "channels", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let subtitle :SVGKImage = SVGKImage(named: "play_speed", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let share :SVGKImage = SVGKImage(named: "share", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     
 }

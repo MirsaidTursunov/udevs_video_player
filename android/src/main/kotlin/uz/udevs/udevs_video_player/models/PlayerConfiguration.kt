@@ -12,14 +12,16 @@ data class PlayerConfiguration(
     val qualityText: String,
     @SerializedName("speedText")
     val speedText: String,
-    @SerializedName("programsText")
-    val programsText: String,
     @SerializedName("lastPosition")
     val lastPosition: Long,
     @SerializedName("title")
     val title: String,
     @SerializedName("isSerial")
     val isSerial: Boolean,
+    @SerializedName("episodeButtonText")
+    val episodeButtonText: String,
+    @SerializedName("nextButtonText")
+    val nextButtonText: String,
     @SerializedName("seasons")
     val seasons: List<Season>,
     @SerializedName("isLive")
@@ -38,10 +40,6 @@ data class PlayerConfiguration(
     val seasonIndex: Int,
     @SerializedName("episodeIndex")
     val episodeIndex: Int,
-    @SerializedName("episodeText")
-    val episodeText: String,
-    @SerializedName("seasonText")
-    val seasonText: String,
     @SerializedName("isMegogo")
     val isMegogo: Boolean,
     @SerializedName("isPremier")
@@ -58,4 +56,8 @@ data class PlayerConfiguration(
     val autoText: String,
     @SerializedName("baseUrl")
     val baseUrl: String,
+    @SerializedName("fromCache")
+    val fromCache: Boolean,
+    @SerializedName("movieShareLink")
+    val movieShareLink: String,
 ) : Serializable

@@ -17,6 +17,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
     var movieController = VideoPlayerViewController()
     var delegete: QualityDelegate?
     var speedDelegate: SpeedDelegate?
+    var subtitleDelegate: SubtitleDelegate?
     var speedTitle: String = "1x"
     
     var settingModel = [SettingModel]()
@@ -107,9 +108,9 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         view.backgroundColor = .clear
         tableView.contentInsetAdjustmentBehavior = .never
         if UIDevice.current.userInterfaceIdiom == .phone {
-            menuHeight = 150
+            menuHeight = 140
         }else {
-            menuHeight = 180
+            menuHeight = 300
         }
         
         view.addSubview(backdropView)
@@ -148,7 +149,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
             make.left.right.equalTo(view.safeAreaLayoutGuide)
             make.top.equalTo(contentView).offset(-16)
             make.width.equalTo(contentView).offset(50)
-            make.height.equalTo(125)
+            make.height.equalTo(menuHeight)
         }
         
         
@@ -190,9 +191,13 @@ extension SettingVC: UITableViewDataSource, UITableViewDelegate {
             self.dismiss(animated: true) {
                 self.delegete?.qualityBottomSheet()
             }
-        } else {
+        } else if(indexPath.row == 1) {
             self.dismiss(animated: true) {
                 self.speedDelegate?.speedBottomSheet()
+            }
+        } else {
+            self.dismiss(animated: true) {
+                self.subtitleDelegate?.subtitleBottomSheet()
             }
         }
     }

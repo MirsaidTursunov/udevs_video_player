@@ -16,3 +16,6 @@ protocol QualityDelegate {
 protocol SpeedDelegate {
     func speedBottomSheet()
 }
+protocol SubtitleDelegate {
+    func subtitleBottomSheet()
+}

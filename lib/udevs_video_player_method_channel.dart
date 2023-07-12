@@ -23,7 +23,9 @@ class MethodChannelUdevsVideoPlayer extends UdevsVideoPlayerPlatform {
   }
 
   @override
-  Future downloadVideo({required String downloadConfigJsonString}) async {
+  Future downloadVideo({
+    required String downloadConfigJsonString,
+  }) async {
     await methodChannel.invokeMethod('downloadVideo', <String, dynamic>{
       'downloadConfigJsonString': downloadConfigJsonString
     });

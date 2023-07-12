@@ -11,6 +11,8 @@ class PlayerConfiguration {
   int lastPosition;
   String title;
   bool isSerial;
+  String episodeButtonText;
+  String nextButtonText;
   List<Season> seasons;
   bool isLive;
   String tvProgramsText;
@@ -20,9 +22,6 @@ class PlayerConfiguration {
   String assetPath;
   int seasonIndex;
   int episodeIndex;
-  String episodeText;
-  String seasonText;
-  String programsText;
   bool isMegogo;
   bool isPremier;
   String videoId;
@@ -31,6 +30,8 @@ class PlayerConfiguration {
   String authorization;
   String autoText;
   String baseUrl;
+  String movieShareLink;
+  bool fromCache;
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
@@ -41,6 +42,8 @@ class PlayerConfiguration {
     map['lastPosition'] = lastPosition;
     map['title'] = title;
     map['isSerial'] = isSerial;
+    map['episodeButtonText'] = episodeButtonText;
+    map['nextButtonText'] = nextButtonText;
     map['seasons'] = seasons.map((v) => v.toJson()).toList();
     map['isLive'] = isLive;
     map['tvProgramsText'] = tvProgramsText;
@@ -50,8 +53,6 @@ class PlayerConfiguration {
     map['assetPath'] = assetPath;
     map['seasonIndex'] = seasonIndex;
     map['episodeIndex'] = episodeIndex;
-    map['episodeText'] = episodeText;
-    map['seasonText'] = seasonText;
     map['isMegogo'] = isMegogo;
     map['isPremier'] = isPremier;
     map['videoId'] = videoId;
@@ -60,13 +61,43 @@ class PlayerConfiguration {
     map['authorization'] = authorization;
     map['autoText'] = autoText;
     map['baseUrl'] = baseUrl;
-    map['programsText']=programsText;
+    map['fromCache'] = fromCache;
+    map['movieShareLink'] = movieShareLink;
     return map;
   }
 
   @override
   String toString() {
-    return 'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isLive: $isLive, tvProgramsText: $tvProgramsText, programsInfoList: $programsInfoList, showController: $showController, playVideoFromAsset: $playVideoFromAsset, assetPath: $assetPath, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, episodeText: $episodeText, seasonText: $seasonText, isMegogo: $isMegogo, isPremier: $isPremier, videoId: $videoId, sessionId: $sessionId, megogoAccessToken: $megogoAccessToken, authorization: $authorization, autoText: $autoText, baseUrl: $baseUrl,programsText: $programsText}';
+    return 'PlayerConfiguration{'
+        'initialResolution: $initialResolution, '
+        'resolutions: $resolutions, '
+        'qualityText: $qualityText, '
+        'speedText: $speedText, '
+        'lastPosition: $lastPosition, '
+        'title: $title, '
+        'isSerial: $isSerial, '
+        'episodeButtonText: $episodeButtonText, '
+        'nextButtonText: $nextButtonText, '
+        'seasons: $seasons, '
+        'isLive: $isLive, '
+        'tvProgramsText: $tvProgramsText, '
+        'programsInfoList: $programsInfoList, '
+        'showController: $showController, '
+        'playVideoFromAsset: $playVideoFromAsset, '
+        'assetPath: $assetPath, '
+        'seasonIndex: $seasonIndex, '
+        'episodeIndex: $episodeIndex, '
+        'isMegogo: $isMegogo, '
+        'isPremier: $isPremier, '
+        'videoId: $videoId, '
+        'sessionId: $sessionId, '
+        'megogoAccessToken: $megogoAccessToken, '
+        'authorization: $authorization, '
+        'autoText: $autoText '
+        'baseUrl: $baseUrl, '
+        'fromCache: $fromCache, '
+        'movieShareLink: $movieShareLink, '
+        '}';
   }
 
   PlayerConfiguration({
@@ -77,6 +108,8 @@ class PlayerConfiguration {
     required this.lastPosition,
     required this.title,
     required this.isSerial,
+    required this.episodeButtonText,
+    required this.nextButtonText,
     required this.seasons,
     required this.isLive,
     required this.tvProgramsText,
@@ -86,8 +119,6 @@ class PlayerConfiguration {
     required this.assetPath,
     required this.seasonIndex,
     required this.episodeIndex,
-    required this.episodeText,
-    required this.seasonText,
     required this.isMegogo,
     required this.isPremier,
     required this.videoId,
@@ -96,6 +127,7 @@ class PlayerConfiguration {
     required this.authorization,
     required this.autoText,
     required this.baseUrl,
-    required this.programsText,
+    required this.fromCache,
+    required this.movieShareLink,
   });
 }

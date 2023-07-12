@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //  udevs_video_player
 //
-//  Created by Mirsaid Tursunov on 05/04/23.
+//  Created by Sunnatillo Shavkatov on 13/11/22.
 //
 
 import AVKit
@@ -16,7 +16,6 @@ protocol PlayerViewDelegate: NSObjectProtocol {
     func close(duration: Double)
     func settingsPressed()
     func episodesButtonPressed()
-    func channelsButtonPressed()
     func showPressed()
     func changeOrientation()
     func togglePictureInPictureMode()
@@ -26,6 +25,7 @@ protocol PlayerViewDelegate: NSObjectProtocol {
     func sliderValueChanged(value: Float)
     func volumeChanged(value: Float)
     func isCheckPlay()
+    func share()
 }
 
 enum LocalPlayerState: Int {
@@ -41,7 +41,6 @@ class PlayerView: UIView {
     var playerLayer =  AVPlayerLayer()
     private var mediaTimeObserver: Any?
     private var observingMediaPlayer: Bool = false
-    private var isLock: Bool = false
     var playerConfiguration: PlayerConfiguration!
     weak var delegate: PlayerViewDelegate?
     
@@ -92,12 +91,7 @@ class PlayerView: UIView {
         return view
     }()
     
-    private var titleLabelPortrait: TitleLabel = {
-        let label = TitleLabel()
-        label.isHidden = false
-        return label;
-    }()
-    
+    private var titleLabelPortrait: TitleLabel = TitleLabel()
     private var titleLabelLandacape: TitleLabel = TitleLabel()
     
     private var liveLabel: UILabel = {
@@ -130,16 +124,8 @@ class PlayerView: UIView {
     
     private var landscapeButton: IconButton = {
         let button = IconButton()
-        button.setImage(Svg.horizontal.uiImage, for: .normal)
+        button.setImage(Svg.portrait.uiImage, for: .normal)
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    private var zoomButton: IconButton = {
-        let button = IconButton()
-        button.setImage(Svg.fit.uiImage, for: .normal)
-        button.addTarget(self, action: #selector(changeZoom(_:)), for: .touchUpInside)
-        button.isHidden = true
         return button
     }()
     
@@ -159,10 +145,18 @@ class PlayerView: UIView {
         return label
     }()
     
+    private var seperatorLabel: UILabel = {
+        let label = UILabel()
+        label.text = " / "
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        return label
+    }()
+    
     private var timeSlider: UISlider = {
         let slider = UISlider()
         slider.tintColor = Colors.mainColor
-        slider.maximumTrackTintColor = Colors.white20
+        slider.maximumTrackTintColor = .lightGray
         slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         return slider
     }()
@@ -188,10 +182,11 @@ class PlayerView: UIView {
         return button
     }()
     
-    private var lockButton: IconButton = {
+    private var shareButton: IconButton = {
         let button = IconButton()
-        button.setImage(Svg.unlock.uiImage, for: .normal)
-        button.addTarget(self, action: #selector(lockPressed(_ :)), for: .touchUpInside)
+        button.setImage(Svg.share.uiImage, for: .normal)
+        button.addTarget(self, action: #selector(share(_ :)), for: .touchUpInside)
+        button.isHidden = true
         return button
     }()
     
@@ -225,17 +220,6 @@ class PlayerView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    private var channelsButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Svg.channels.uiImage, for: .normal)
-        button.setTitle("", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
-        button.setTitleColor(.white, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -325,13 +309,12 @@ class PlayerView: UIView {
     
     private func uiSetup(){
         configureVolume()
-//        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
-//        showsBtn.setTitle(" "+playerConfiguration.tvProgramsText, for: .normal)
+        episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
+        showsBtn.setTitle(" "+playerConfiguration.tvProgramsText, for: .normal)
         if playerConfiguration.isLive {
             episodesButton.isHidden = true
         } else {
             showsBtn.isHidden = true
-            channelsButton.isHidden = true
         }
         if #available(iOS 13.0, *) {
             setSliderThumbTintColor(Colors.mainColor)
@@ -355,31 +338,17 @@ class PlayerView: UIView {
         return image
     }
     
-    fileprivate func makeCircleWithBorder(size: CGSize, backgroundColor: UIColor, borderColor: UIColor, borderWidth: CGFloat) -> UIImage? {
-        let halfBorderWidth = borderWidth / 2
-         let circleRect = CGRect(x: halfBorderWidth, y: halfBorderWidth, width: size.width - borderWidth, height: size.height - borderWidth)
-         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-         let context = UIGraphicsGetCurrentContext()!
-         context.setFillColor(backgroundColor.cgColor)
-         context.setStrokeColor(borderColor.cgColor)
-         context.setLineWidth(borderWidth)
-         context.fillEllipse(in: circleRect)
-         context.strokeEllipse(in: circleRect)
-         let image = UIGraphicsGetImageFromCurrentImageContext()
-         UIGraphicsEndImageContext()
-         return image
-    }
-
     private func setSliderThumbTintColor(_ color: UIColor) {
-        let circle = makeCircleWith(size: CGSize(width: 4, height: 4), backgroundColor: UIColor.white)
+        let circle = makeCircleWith(size: CGSize(width: 4, height: 4),
+                                         backgroundColor: UIColor.white)
         brightnessSlider.setThumbImage(circle, for: .normal)
         brightnessSlider.setThumbImage(circle, for: .highlighted)
         ///
-        let circleImage = makeCircleWithBorder(size: CGSize(width: 20, height: 20), backgroundColor: .white, borderColor: color, borderWidth: 4)
+        let circleImage = makeCircleWith(size: CGSize(width: 24, height: 24),
+                                         backgroundColor: color)
         timeSlider.setThumbImage(circleImage, for: .normal)
         timeSlider.setThumbImage(circleImage, for: .highlighted)
     }
-
     
     func loadMediaPlayer(asset:AVURLAsset){
         player.automaticallyWaitsToMinimizeStalling = true
@@ -457,6 +426,17 @@ class PlayerView: UIView {
         self.player.automaticallyWaitsToMinimizeStalling = true
     }
     
+    func setSubtitleCurrentItem() -> [String]{
+        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? ["None"]
+        subtitles.insert("None", at: 0)
+        
+        return subtitles
+    }
+    
+    func getSubtitleTrackIsEmpty(selectedSubtitleLabel: String) -> Bool{
+        return (player.currentItem?.select(type: .subtitle, name: selectedSubtitleLabel)) != nil
+    }
+    
     func changeSpeed(rate: Float){
         self.playerRate = rate
         self.player.preroll(atRate: self.playerRate, completionHandler: nil)
@@ -482,87 +462,16 @@ class PlayerView: UIView {
         delegate?.settingsPressed()
     }
     
-    @objc func lockPressed(_ sender: UIButton){
-        if isLock {
-            isLock = false
-            settingsButton.isHidden = false
-            exitButton.isHidden = false
-            pipButton.isHidden = false
-            if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight{
-                titleLabelLandacape.isHidden = false
-                zoomButton.isHidden = false
-            } else {
-                titleLabelPortrait.isHidden = false
-            }
-            playButton.isHidden = false
-            landscapeButton.isHidden = false
-            if playerConfiguration.isSerial{
-                episodesButton.isHidden = false
-            }
-            if !playerConfiguration.isLive {
-                skipForwardButton.isHidden = false
-                skipBackwardButton.isHidden = false
-                currentTimeLabel.isHidden = false
-                durationTimeLabel.isHidden = false
-                timeSlider.isHidden = false
-            }
-            if playerConfiguration.isLive{
-                showsBtn.isHidden  = false
-                channelsButton.isHidden  = false
-            }
-            castButton.isHidden = false
-            lockButton.setImage(Svg.unlock.uiImage, for: .normal)
-        } else {
-            isLock = true
-            settingsButton.isHidden = true
-            exitButton.isHidden = true
-            timeSlider.isHidden = true
-            pipButton.isHidden = true
-            titleLabelPortrait.isHidden = true
-            titleLabelLandacape.isHidden = true
-            zoomButton.isHidden = true
-            playButton.isHidden = true
-            skipForwardButton.isHidden = true
-            skipBackwardButton.isHidden = true
-            landscapeButton.isHidden = true
-            if playerConfiguration.isSerial{
-                episodesButton.isHidden = true
-            }
-            currentTimeLabel.isHidden = true
-            durationTimeLabel.isHidden = true
-            if playerConfiguration.isLive {
-                showsBtn.isHidden  = true
-                channelsButton.isHidden = true
-            }
-            castButton.isHidden = true
-            lockButton.setImage(Svg.lock.uiImage, for: .normal)
-        }
+    @objc func share(_ sender : UIButton){
+        delegate?.share()
     }
     
     @objc func changeOrientation(_ sender: UIButton){
         delegate?.changeOrientation()
     }
     
-    
-    @objc func changeZoom(_ sender: UIButton){
-        if self.playerLayer.videoGravity == .resize {
-            self.playerLayer.videoGravity = .resizeAspect
-            zoomButton.setImage(Svg.fit.uiImage, for: .normal)
-        } else if self.playerLayer.videoGravity == .resizeAspect {
-            self.playerLayer.videoGravity = .resizeAspectFill
-            zoomButton.setImage(Svg.strech.uiImage, for: .normal)
-        } else {
-            self.playerLayer.videoGravity = .resize
-            zoomButton.setImage(Svg.cropFit.uiImage, for: .normal)
-        }
-    }
-    
     @objc func episodesButtonPressed(_ sender: UIButton){
         delegate?.episodesButtonPressed()
-    }
-    
-     @objc func channelsButtonPressed(_ sender: UIButton){
-        delegate?.channelsButtonPressed()
     }
     
     @objc func showPressed(_ sender: UIButton){
@@ -677,22 +586,19 @@ class PlayerView: UIView {
     }
     
     @objc func didpinch(_ gesture: UIPinchGestureRecognizer) {
-        if isLock { return }
-        
-            if gesture.state == .changed {
-                let scale = gesture.scale
-                if scale < 0.9 {
-                    if playerConfiguration.isLive {
-                        self.playerLayer.videoGravity = .resize
-                    } else {
-                        self.playerLayer.videoGravity = .resizeAspect
-                    }
+        if gesture.state == .changed {
+            let scale = gesture.scale
+            if scale < 0.9 {
+                if playerConfiguration.isLive {
+                    self.playerLayer.videoGravity = .resize
                 } else {
-                    self.playerLayer.videoGravity = .resizeAspectFill
+                    self.playerLayer.videoGravity = .resizeAspect
                 }
-                resetTimer()
+            } else {
+                self.playerLayer.videoGravity = .resizeAspectFill
             }
-        
+            resetTimer()
+        }
     }
     
     override func layoutSubviews() {
@@ -720,21 +626,19 @@ class PlayerView: UIView {
     
     private func addVideoPortaitConstraints() {
         if playerConfiguration.isLive {
-            self.playerLayer.videoGravity = .resize
+            self.playerLayer.videoGravity = .resizeAspectFill
         } else {
             self.playerLayer.videoGravity = .resizeAspect
         }
-        titleLabelLandacape.isHidden = false
-        titleLabelPortrait.isHidden = true
-        zoomButton.isHidden = false
-        landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
+        titleLabelLandacape.isHidden = true
+        titleLabelPortrait.isHidden = false
+        landscapeButton.setImage(Svg.portrait.uiImage, for: .normal)
     }
     
     private func addVideoLandscapeConstraints() {
         self.playerLayer.videoGravity = .resizeAspect
-        titleLabelLandacape.isHidden = true
-        titleLabelPortrait.isHidden = false
-        zoomButton.isHidden = true
+        titleLabelLandacape.isHidden = false
+        titleLabelPortrait.isHidden = true
         landscapeButton.setImage(Svg.horizontal.uiImage, for: .normal)
     }
     
@@ -758,7 +662,6 @@ class PlayerView: UIView {
         overlayView.addSubview(activityIndicatorView)
         overlayView.addSubview(bottomView)
         overlayView.addSubview(landscapeButton)
-        overlayView.addSubview(zoomButton)
         overlayView.addSubview(topView)
         overlayView.addSubview(titleLabelPortrait)
         addTopViewSubviews()
@@ -769,9 +672,9 @@ class PlayerView: UIView {
     func addBottomViewSubviews() {
         bottomView.addSubview(currentTimeLabel)
         bottomView.addSubview(durationTimeLabel)
+        bottomView.addSubview(seperatorLabel)
         bottomView.addSubview(timeSlider)
         bottomView.addSubview(episodesButton)
-        bottomView.addSubview(channelsButton)
         bottomView.addSubview(showsBtn)
         bottomView.addSubview(landscapeButton)
         bottomView.addSubview(liveStackView)
@@ -781,12 +684,13 @@ class PlayerView: UIView {
         topView.addSubview(exitButton)
         topView.addSubview(titleLabelLandacape)
         topView.addSubview(settingsButton)
-        topView.addSubview(lockButton)
+        topView.addSubview(shareButton)
         topView.addSubview(pipButton)
-//        topView.addSubview(castButton)
+        topView.addSubview(castButton)
     }
     
     func addConstraints(area:UILayoutGuide) {
+        addVideoPortaitConstraints()
         addBottomViewConstraints(area: area)
         addTopViewConstraints(area: area)
         addControlButtonConstraints()
@@ -838,37 +742,34 @@ class PlayerView: UIView {
         
         bottomView.height(82)
         
-        currentTimeLabel.snp.makeConstraints { make in
-            make.left.equalTo(bottomView).offset(8)
-        }
-        currentTimeLabel.centerY(to: timeSlider)
-        currentTimeLabel.rightToLeft(of: timeSlider, offset: -12)
-        
         timeSlider.bottom(to: bottomView, offset: -8)
-    
-        durationTimeLabel.snp.makeConstraints { make in
-            make.right.equalTo(bottomView).offset(-8)
+        timeSlider.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(8)
+            make.right.equalToSuperview().offset(-8)
         }
-        durationTimeLabel.centerY(to: timeSlider)
-        durationTimeLabel.leftToRight(of: timeSlider, offset: 12)
         
         landscapeButton.bottomToTop(of: timeSlider, offset: 8)
         landscapeButton.snp.makeConstraints { make in
             make.right.equalTo(bottomView).offset(0)
         }
         
-        zoomButton.rightToLeft(of: landscapeButton, offset: 8)
-        zoomButton.centerY(to: landscapeButton)
-        
-        showsBtn.rightToLeft(of: zoomButton, offset: -8)
-        showsBtn.centerY(to: zoomButton)
-        channelsButton.leftToRight(of: liveStackView, offset: 48)
-        channelsButton.centerY(to: landscapeButton)
-        
-        episodesButton.snp.makeConstraints{make in
+        currentTimeLabel.snp.makeConstraints { make in
             make.left.equalTo(bottomView).offset(8)
         }
+        currentTimeLabel.centerY(to: landscapeButton)
+        
+        seperatorLabel.leftToRight(of: currentTimeLabel)
+        seperatorLabel.centerY(to: currentTimeLabel)
+        
+        durationTimeLabel.leftToRight(of: seperatorLabel)
+        durationTimeLabel.centerY(to: seperatorLabel)
+        
+        
+        episodesButton.rightToLeft(of: landscapeButton, offset: -8)
         episodesButton.centerY(to: landscapeButton)
+        
+        showsBtn.rightToLeft(of: landscapeButton, offset: -8)
+        showsBtn.centerY(to: landscapeButton)
         
         liveStackView.bottomToTop(of: timeSlider)
         liveStackView.spacing = 24
@@ -882,10 +783,9 @@ class PlayerView: UIView {
         if playerConfiguration.isLive {
             liveCircle.isHidden = false
             liveLabel.isHidden = false
-            channelsButton.isHidden = false
             currentTimeLabel.isHidden = true
             durationTimeLabel.isHidden = true
-            timeSlider.isHidden = true
+            seperatorLabel.isHidden = true
         }
     }
     
@@ -900,19 +800,23 @@ class PlayerView: UIView {
         //
         settingsButton.right(to: topView)
         settingsButton.centerY(to: topView)
+        if (playerConfiguration.isLive) {
+            shareButton.isHidden = true
+        } else {
+            shareButton.isHidden = false
+            shareButton.rightToLeft(of: settingsButton)
+            shareButton.centerY(to: topView)
+        }
         
-//        castButton.rightToLeft(of: settingsButton)
-//        castButton.centerY(to: topView)
-        
-        lockButton.rightToLeft(of: settingsButton)
-        lockButton.centerY(to: topView)
+        castButton.rightToLeft(of: playerConfiguration.isLive ? settingsButton: shareButton)
+        castButton.centerY(to: topView)
         
         pipButton.leftToRight(of: exitButton)
         pipButton.centerY(to: topView)
         
         titleLabelLandacape.centerY(to: topView)
         titleLabelLandacape.centerX(to: topView)
-        titleLabelLandacape.rightToLeft(of: lockButton)
+        titleLabelLandacape.rightToLeft(of: castButton, offset:  playerConfiguration.isLive ?0:32)
         titleLabelLandacape.leftToRight(of: pipButton)
         titleLabelLandacape.layoutMargins = .horizontal(8)
         titleLabelPortrait.centerX(to: overlayView)
@@ -961,7 +865,7 @@ class PlayerView: UIView {
     }
     
     func handleMediaPlayerReady() {
-        print("handleMediaPlayerReady \(pendingPlay)")
+//        print("handleMediaPlayerReady \(pendingPlay)")
         if(!playerConfiguration.isLive){
             if let duration = player.currentItem?.duration, CMTIME_IS_INDEFINITE(duration) {
                 purgeMediaPlayer()
@@ -982,7 +886,7 @@ class PlayerView: UIView {
         }
         
         if !pendingPlayPosition.isNaN, pendingPlayPosition > 0 {
-            print("seeking to pending position \(pendingPlayPosition)")
+//            print("seeking to pending position \(pendingPlayPosition)")
             player.seek(to: CMTimeMakeWithSeconds(pendingPlayPosition, preferredTimescale: 1)) { [weak self] _ in
                 if self?.playerState == .starting {
                     self?.pendingPlay = true
@@ -1086,7 +990,6 @@ class PlayerView: UIView {
     }
     
     func verticalMoved(_ value: CGFloat) {
-        if isLock {return}
         if isVolume {
             if playbackMode == .local {
                 self.volumeViewSlider.value -= Float(value / 10000)
@@ -1196,16 +1099,8 @@ class PlayerView: UIView {
     @objc func tapGestureControls() {
         let location = tapGesture.location(in: overlayView)
         if location.x > overlayView.bounds.width / 2 + 50 {
-            if isLock {
-                toggleViews()
-                return
-            }
             self.fastForward()
         } else if location.x <= overlayView.bounds.width / 2 - 50 {
-            if isLock {
-                toggleViews()
-                return
-            }
             self.fastBackward()
         } else {
             toggleViews()

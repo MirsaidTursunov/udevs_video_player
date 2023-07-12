@@ -44,26 +44,28 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     private var localPlaybackImplicitlyPaused: Bool = false
     ///
     weak var delegate: VideoPlayerDelegate?
-    
     private var url: String?
     var qualityLabelText = ""
     var speedLabelText = ""
+    var subtitleLabelText = "Субтитле"
     var selectedSeason: Int = 0
     var selectSesonNum: Int = 0
-    var selectChannelIndex: Int = 0
     var isRegular: Bool = false
     var resolutions: [String:String]?
     var sortedResolutions: [String] = []
     var seasons : [Season] = [Season]()
-    
+    var qualityDelegate: QualityDelegate!
+    var speedDelegte: SpeedDelegate!
+    var subtitleDelegte: SubtitleDelegate!
     var playerConfiguration: PlayerConfiguration!
     private var isVolume = false
     private var volumeViewSlider: UISlider!
     private var playerRate: Float = 1.0
     private var selectedSpeedText = "1.0x"
     var selectedQualityText = "Auto"
+    private var selectedSubtitle = "None"
     
-    lazy private var playerView: PlayerView = {
+    private var playerView: PlayerView = {
         return PlayerView()
     }()
     
@@ -107,28 +109,13 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         url = playerConfiguration.url
         title = playerConfiguration.title
         let resList = resolutions ?? ["480p":playerConfiguration.url]
-        var k4 = false
         sortedResolutions = Array(resList.keys).sorted().reversed()
         Array(resList.keys).sorted().reversed().forEach { quality in
-            if quality == "1080p" {
+            if quality == "1080p"{
                 sortedResolutions.removeLast()
-                sortedResolutions.insert("1080p", at: k4 ? 2 : 1)
-            }
-            if quality == "4k" {
-                if let index = sortedResolutions.firstIndex(of: quality) {
-                    k4 = true
-                    sortedResolutions.remove(at: index)
-                    sortedResolutions.insert(quality, at: 1)
-                }
-            }
-            if quality == "8k" {
-                if let index = sortedResolutions.firstIndex(of: quality) {
-                    sortedResolutions.remove(at: index)
-                    sortedResolutions.insert(quality, at: 1)
-                }
+                sortedResolutions.insert("1080p", at: 1)
             }
         }
-        
         view.backgroundColor = .black
         
         playerView.delegate = self
@@ -149,7 +136,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         let hasConnectedSession: Bool = (sessionManager.hasConnectedSession())
         if hasConnectedSession, (playbackMode != .remote) {
             populateMediaInfo(false, playPosition: 0)
@@ -266,7 +252,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         } else {
             let castSession = sessionManager.currentCastSession
             if castSession != nil {
-                let remoteMediaClient = sessionManager.currentSession?.remoteMediaClient
+                _ = sessionManager.currentSession?.remoteMediaClient
                 mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: position, url: url ?? "")
                 mediaLoadRequestDataBuilder.startTime = position
             }
@@ -399,21 +385,31 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         delegate?.getDuration(duration: duration)
     }
     
+    func share() {
+        if let link = NSURL(string: playerConfiguration.movieShareLink)
+        {
+            let objectsToShare = [link] as [Any]
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
+            self.present(activityVC, animated: true, completion: nil)
+        }
+    }
+    
     func changeOrientation(){
         var value = UIInterfaceOrientation.landscapeRight.rawValue
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight {
             value = UIInterfaceOrientation.portrait.rawValue
         }
         if #available(iOS 16.0, *) {
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                       return
-            }
-            self.setNeedsUpdateOfSupportedInterfaceOrientations()
-            windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: (UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight) ? .portrait : .landscapeRight)){
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                    return
+                }
+                self.setNeedsUpdateOfSupportedInterfaceOrientations()
+                windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: (UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight) ? .portrait : .landscapeRight)){
                         error in
                         print(error)
                         print(windowScene.effectiveGeometry)
-            }
+                }
         } else {
             UIDevice.current.setValue(value, forKey: "orientation")
             UIViewController.attemptRotationToDeviceOrientation()
@@ -422,15 +418,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     
     func updateSeasonNum(index:Int) {
         selectedSeason = index
-    }
-    
-    //MARK: - ****** Channels *******
-    func channelsButtonPressed(){
-        let episodeVC = CollectionViewController()
-        episodeVC.modalPresentationStyle = .custom
-        episodeVC.channels = self.playerConfiguration.channels
-        episodeVC.delegate = self
-        self.present(episodeVC, animated: true, completion: nil)
     }
     
     //MARK: - ****** SEASONS *******
@@ -448,9 +435,11 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         vc.modalPresentationStyle = .custom
         vc.delegete = self
         vc.speedDelegate = self
+        vc.subtitleDelegate = self
         vc.settingModel = [
             SettingModel(leftIcon: Svg.settings.uiImage, title: qualityLabelText, configureLabel: selectedQualityText),
-            SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText)
+            SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
+//            SettingModel(leftIcon: Svg.subtitle.uiImage, title: subtitleLabelText, configureLabel: selectedSubtitle)
         ]
         self.present(vc, animated: true, completion: nil)
     }
@@ -483,7 +472,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             showSpeedBottomSheet()
             break
         case 2:
-            //            showSubtitleBottomSheet()
+            showSubtitleBottomSheet()
             break
         case 3:
             //            showAudioTrackBottomSheet()
@@ -517,20 +506,50 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             }
             break
         case .subtitle:
+            var subtitles = playerView.setSubtitleCurrentItem()
+            let selectedSubtitleLabel = subtitles[index]
+            if (playerView.getSubtitleTrackIsEmpty(selectedSubtitleLabel: selectedSubtitleLabel)){
+                    selectedSubtitle = selectedSubtitleLabel
+            }
             break
         case .audio:
             break
         }
     }
     
+    private func showSubtitleBottomSheet(){
+           let subtitles = playerView.setSubtitleCurrentItem()
+           let bottomSheetVC = BottomSheetViewController()
+           bottomSheetVC.modalPresentationStyle = .overCurrentContext
+           bottomSheetVC.items = subtitles
+           bottomSheetVC.labelText = "Субтитле"
+           bottomSheetVC.bottomSheetType = .subtitle
+           bottomSheetVC.selectedIndex = subtitles.firstIndex(of: selectedSubtitle) ?? 0
+           bottomSheetVC.cellDelegate = self
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+               self.present(bottomSheetVC, animated: false, completion:nil)
+           }
+       }
+
+    
     func showQualityBottomSheet(){
+        let resList = resolutions ?? ["480p": playerConfiguration.url]
+        let array = Array(resList.keys)
+        var listOfQuality = [String]()
+        listOfQuality = array.sorted().reversed()
+        array.sorted().reversed().forEach { quality in
+            if quality == "1080p"{
+                listOfQuality.removeLast()
+                listOfQuality.insert("1080p", at: 1)
+            }
+        }
         let bottomSheetVC = BottomSheetViewController()
         bottomSheetVC.modalPresentationStyle = .overCurrentContext
-        bottomSheetVC.items = sortedResolutions
+        bottomSheetVC.items = listOfQuality
         bottomSheetVC.labelText = qualityLabelText
         bottomSheetVC.cellDelegate = self
         bottomSheetVC.bottomSheetType = .quality
-        bottomSheetVC.selectedIndex = sortedResolutions.firstIndex(of: selectedQualityText) ?? 0
+        bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.present(bottomSheetVC, animated: false, completion:nil)
         }
@@ -576,31 +595,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             premierSteamResponse = success
         }
         return premierSteamResponse
-    }
-    
-    func getChannel(id : String) -> ChannelResponse? {
-        let _url : String = playerConfiguration.baseUrl+"tv/channel/\(id)"
-        var channelResponse: ChannelResponse?
-        let result = Networking.sharedInstance.getChannel(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId,parameters: ["client_ip" : playerConfiguration.ip])
-        switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let success):
-            channelResponse = success
-        }
-        return channelResponse
-    }
-    
-    func getStreamUrl(url : String) -> String? {
-        var channelResponse: String?
-        let result = Networking.sharedInstance.getStreamUrl(url)
-        switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let success):
-            channelResponse = success
-        }
-        return channelResponse
     }
     
     func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
@@ -705,18 +699,7 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
     }
 }
 
-extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, ChannelTappedDelegate {
-    func onChannelTapped(channelIndex: Int) {
-        if self.selectChannelIndex == channelIndex { return }
-        let channel : Channel = self.playerConfiguration.channels[channelIndex];
-        let success : ChannelResponse? = getChannel(id: channel.id ?? "")
-        if success != nil {
-            self.selectChannelIndex = channelIndex
-            self.url = success?.channelStreamIos ?? ""
-            self.resolutions = ["Auto": success?.channelStreamIos ?? ""]
-            self.playerView.changeUrl(url: self.url, title: channel.name ?? "")
-        }
-    }
+extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate , SubtitleDelegate {
     
     func onEpisodeCellTapped(seasonIndex: Int, episodeIndex: Int) {
         var resolutions: [String:String] = [:]
@@ -765,6 +748,10 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
     }
     func qualityBottomSheet() {
         showQualityBottomSheet()
+    }
+    
+    func subtitleBottomSheet() {
+        showSubtitleBottomSheet()
     }
 }
 // 1170

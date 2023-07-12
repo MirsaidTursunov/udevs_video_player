@@ -7,7 +7,7 @@ data class PlayerConfiguration(
     @SerializedName("initialResolution")
     val initialResolution: HashMap<String, String>,
     @SerializedName("resolutions")
-    var resolutions: HashMap<String, String>,
+    val resolutions: HashMap<String, String>,
     @SerializedName("qualityText")
     val qualityText: String,
     @SerializedName("speedText")
@@ -20,10 +20,6 @@ data class PlayerConfiguration(
     val title: String,
     @SerializedName("isSerial")
     val isSerial: Boolean,
-    @SerializedName("episodeButtonText")
-    val episodeButtonText: String,
-    @SerializedName("nextButtonText")
-    val nextButtonText: String,
     @SerializedName("seasons")
     val seasons: List<Season>,
     @SerializedName("isLive")
@@ -42,6 +38,10 @@ data class PlayerConfiguration(
     val seasonIndex: Int,
     @SerializedName("episodeIndex")
     val episodeIndex: Int,
+    @SerializedName("episodeText")
+    val episodeText: String,
+    @SerializedName("seasonText")
+    val seasonText: String,
     @SerializedName("isMegogo")
     val isMegogo: Boolean,
     @SerializedName("isPremier")
@@ -58,16 +58,4 @@ data class PlayerConfiguration(
     val autoText: String,
     @SerializedName("baseUrl")
     val baseUrl: String,
-    @SerializedName("fromCache")
-    val fromCache: Boolean,
-    @SerializedName("seconds")
-    val seconds: String,
-    @SerializedName("second")
-    val second: String,
-    @SerializedName("channels")
-    val channels: List<TvChannel>,
-    @SerializedName("ip")
-    val ip: String,
-    @SerializedName("selectChannelIndex")
-    val selectChannelIndex: Int,
 ) : Serializable

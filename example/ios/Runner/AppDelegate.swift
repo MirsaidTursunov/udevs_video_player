@@ -8,6 +8,23 @@ let kPrefAppVersion = "app_version"
 let kPrefSDKVersion = "sdk_version"
 let kPrefEnableMediaNotifications = "enable_media_notifications"
 
+
+protocol Rotatable: AnyObject {
+  func resetToPortrait()
+}
+
+extension Rotatable where Self: UIViewController {
+    
+    
+     func resetToPortrait() {
+    UIDevice.current.setValue(Int(UIInterfaceOrientation.portrait.rawValue), forKey: "orientation")
+  }
+    
+   func setToLandscape() {
+    UIDevice.current.setValue(Int(UIInterfaceOrientation.landscapeLeft.rawValue), forKey: "orientation")
+  }
+}
+
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
     
@@ -17,6 +34,35 @@ let kPrefEnableMediaNotifications = "enable_media_notifications"
     fileprivate var mediaNotificationsEnabled = false
     fileprivate var firstUserDefaultsSync = false
     fileprivate var useCastContainerViewController = false
+    
+//    override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+//             return .all
+//        }
+    override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard
+          let _ = topViewController(for: window?.rootViewController) as? Rotatable
+          else { return .portrait }
+
+          return .allButUpsideDown
+      }
+    
+    private func topViewController(for rootViewController: UIViewController!) -> UIViewController? {
+        guard let rootVC = rootViewController else { return nil }
+
+        if rootVC is UITabBarController {
+          let rootTabBarVC = rootVC as! UITabBarController
+
+          return topViewController(for: rootTabBarVC.selectedViewController)
+        } else if rootVC is UINavigationController {
+          let rootNavVC = rootVC as! UINavigationController
+
+          return topViewController(for: rootNavVC.visibleViewController)
+        } else if let rootPresentedVC = rootVC.presentedViewController {
+          return topViewController(for: rootPresentedVC)
+        }
+
+        return rootViewController
+      }
     
     override func application(
         _ application: UIApplication,
@@ -173,3 +219,4 @@ extension AppDelegate: GCKUIImagePicker {
     }
   }
 }
+

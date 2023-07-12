@@ -3,42 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:focusable="true"
+    android:layout_margin="5dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_program_date"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/semibold"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:text="Вчера, 31 мая"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/tv_program_item_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:fontFamily="@font/semibold"
-            android:text="14:30"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tv_program_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/semibold"
+        android:text="14:30"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="visible"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/tv_program_item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/semibold"
-            android:text="First scene of channel"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tv_program_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/semibold"
+        android:text="First scene of channel"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:visibility="visible"
+        tools:ignore="HardcodedText" />
 
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="#111B33" />
 </LinearLayout>

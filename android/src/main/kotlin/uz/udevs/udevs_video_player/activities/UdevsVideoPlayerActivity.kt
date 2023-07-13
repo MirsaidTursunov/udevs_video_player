@@ -2,7 +2,6 @@ package uz.udevs.udevs_video_player.activities
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,7 +17,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.Rational
@@ -33,6 +31,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -43,6 +42,7 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.mediarouter.app.MediaRouteButton
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
@@ -60,27 +60,24 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
-import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
-import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
-import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.adapters.*
+import uz.udevs.udevs_video_player.double_tap_playerview.DoubleTapPlayerView
+import uz.udevs.udevs_video_player.double_tap_playerview.youtybe.VideoPlayerOverlay
+import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
-import uz.udevs.udevs_video_player.utils.MyHelper
+import java.util.Locale
 import kotlin.math.abs
-import kotlin.math.log
 
 
+@UnstableApi
 class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener, AudioManager.OnAudioFocusChangeListener {
 
     private var playerView: PlayerView? = null
-    private var player: ExoPlayer? = null
+    private lateinit var player: ExoPlayer
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
     private lateinit var intentFilter: IntentFilter
     private lateinit var playerConfiguration: PlayerConfiguration
@@ -133,11 +130,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var titleText = ""
     private var url: String? = null
     private var sameWithStreamingContent = false
+    private var isTouchLocked = false
     private var mLocation: PlaybackLocation? = null
     private var mPlaybackState: PlaybackState? = null
     private var mSessionManagerListener: SessionManagerListener<CastSession>? = null
     private var mCastSession: CastSession? = null
     private var mCastContext: CastContext? = null
+    private var lockTouch: ImageView? = null
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -238,9 +237,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
                         return true
                     }
+
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                         return true
                     }
+
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
                         return true
                     }
@@ -285,9 +286,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 Log.d(TAG, "onApplicationConnected: $mPlaybackState")
                 mCastSession = castSession
                 mLocation = PlaybackLocation.REMOTE
-                player?.pause()
+                player.pause()
                 performViewsOnConnect()
-                loadRemoteMedia(player?.currentPosition ?: 0)
+                loadRemoteMedia(player.currentPosition ?: 0)
                 registerCallBack()
                 listenToProgress()
             }
@@ -297,8 +298,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 mPlaybackState = PlaybackState.IDLE
                 mLocation = PlaybackLocation.LOCAL
                 performViewsOnDisconnect()
-                player?.seekTo((customSeekBar!!.progress * 1000).toLong())
-                player?.play()
+                player.seekTo((customSeekBar!!.progress * 1000).toLong())
+                player.play()
             }
         }
     }
@@ -312,9 +313,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         customSeekBar?.isEnabled = true
         Log.d(TAG, "performViewsOnConnect: ${(player!!.duration / 1000).toInt()}")
         customSeekBar?.max =
-            if (player?.duration != null) (player!!.duration / 1000).toInt() else 0
+            if (player.duration != null) (player.duration / 1000).toInt() else 0
         customSeekBar?.progress =
-            if (player?.currentPosition != null) (player!!.currentPosition / 1000).toInt() else 0
+            if (player.currentPosition != null) (player!!.currentPosition / 1000).toInt() else 0
         customSeekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
 
@@ -386,7 +387,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             override fun onProgressUpdated(current: Long, max: Long) {
                 Log.d(TAG, "loadRemoteMedia: $max -> $current")
                 customSeekBar?.progress = (current / 1000).toInt()
-                videoPosition?.text = MyHelper().formatDuration(current / 1000)
+//                videoPosition?.text = MyHelper().formatDuration(current / 1000)
                 listener = this
             }
         }, 1500)
@@ -410,13 +411,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     }
 
     override fun onBackPressed() {
-        if (player?.isPlaying == true) {
-            player?.stop()
+        if (player.isPlaying) {
+            player.stop()
         }
         var seconds = 0L
-        if (player?.currentPosition != null) {
-            seconds = player?.currentPosition!! / 1000
-        }
+        seconds = player.currentPosition / 1000
         removeProgressListener()
         unregisterCallBack()
         val intent = Intent()
@@ -428,9 +427,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     override fun onPause() {
         super.onPause()
-        player?.playWhenReady = false
+        player.playWhenReady = false
         if (isInPictureInPictureMode) {
-            player?.playWhenReady = true
+            player.playWhenReady = true
             dismissAllBottomSheets()
         }
         mCastContext!!.sessionManager.removeSessionManagerListener(
@@ -441,7 +440,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     override fun onResume() {
         setAudioFocus()
         if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+            player.playWhenReady = true
         if (brightness != 0.0) setScreenBrightness(brightness.toInt())
         mCastContext!!.sessionManager.addSessionManagerListener(
             mSessionManagerListener!!, CastSession::class.java
@@ -457,7 +456,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     override fun onRestart() {
         super.onRestart()
         if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+            player.playWhenReady = true
     }
 
     override fun onStop() {
@@ -465,7 +464,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (isInPictureInPictureMode) {
             removeProgressListener()
             unregisterCallBack()
-            player?.release()
+            player.release()
             finish()
         }
     }
@@ -480,13 +479,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         playerView?.player = player
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration.showController
-        player?.setMediaSource(hlsMediaSource)
-        player?.seekTo(playerConfiguration.lastPosition * 1000)
-        player?.prepare()
-        player?.addListener(object : Player.Listener {
+        player.setMediaSource(hlsMediaSource)
+        player.seekTo(playerConfiguration.lastPosition * 1000)
+        player.prepare()
+        player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
                 Log.d(TAG, "onPlayerError: ${error.errorCode}")
-                player?.pause()
+                player.pause()
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -511,6 +510,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             playerView?.setShowBuffering(SHOW_BUFFERING_ALWAYS)
                         }
                     }
+
                     Player.STATE_READY -> {
                         if (mLocation == PlaybackLocation.REMOTE && customSeekBar?.visibility == View.GONE) {
                             performViewsOnConnect()
@@ -521,9 +521,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                         }
                     }
+
                     Player.STATE_ENDED -> {
                         playPause?.setImageResource(R.drawable.ic_play)
                     }
+
                     Player.STATE_IDLE -> {
                         mPlaybackState = PlaybackState.IDLE
                     }
@@ -531,7 +533,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
         })
         if (mLocation == PlaybackLocation.LOCAL) {
-            player?.playWhenReady = true
+            player.playWhenReady = true
         } else {
             if (!sameWithStreamingContent) {
                 loadRemoteMedia(playerConfiguration.lastPosition)
@@ -542,8 +544,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     }
 
     private fun rePlayVideo() {
-        player?.prepare()
-        player?.play()
+        player.prepare()
+        player.play()
     }
 
     private var lastClicked1: Long = -1L
@@ -629,190 +631,263 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
     }
 
+    private fun lockAndUnlockTouch() {
+        isTouchLocked = !isTouchLocked
+        if (!isTouchLocked) {
+            exoProgress?.visibility = View.VISIBLE
+            close?.visibility = View.VISIBLE
+            pip?.visibility = View.VISIBLE
+            cast?.visibility = View.VISIBLE
+            more?.visibility = View.VISIBLE
+            rewind?.visibility = View.VISIBLE
+            forward?.visibility = View.VISIBLE
+            playPause?.visibility = View.VISIBLE
+            orientation?.visibility = View.VISIBLE
+            exoPosition?.visibility = View.VISIBLE
+            exoDuration?.visibility = View.VISIBLE
+            zoom?.visibility = View.VISIBLE
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                title1?.visibility = View.VISIBLE
+            } else {
+                title?.visibility = View.VISIBLE
+            }
+            if (playerConfiguration.isLive) {
+                live?.visibility = View.VISIBLE
+                exoPosition?.visibility = View.GONE
+                exoDuration?.visibility = View.GONE
+                exoProgress?.visibility = View.GONE
+                rewind?.visibility = View.GONE
+                forward?.visibility = View.GONE
+                customSeekBar?.visibility = View.VISIBLE
+                tvProgramsButton?.visibility = View.VISIBLE
+                tvProgramsText?.visibility = View.VISIBLE
+            }
+            if (playerConfiguration.seasons.isNotEmpty()) {
+                episodesButton?.visibility = View.VISIBLE
+                episodesText?.visibility = View.VISIBLE
+                nextText?.visibility = View.VISIBLE
+            }
+            lockTouch?.setImageResource(R.drawable.ic_lock_open)
+        } else {
+            exoProgress?.visibility = View.INVISIBLE
+            close?.visibility = View.INVISIBLE
+            pip?.visibility = View.INVISIBLE
+            cast?.visibility = View.INVISIBLE
+            more?.visibility = View.INVISIBLE
+            rewind?.visibility = View.INVISIBLE
+            forward?.visibility = View.INVISIBLE
+            playPause?.visibility = View.INVISIBLE
+            orientation?.visibility = View.INVISIBLE
+            exoPosition?.visibility = View.INVISIBLE
+            exoDuration?.visibility = View.INVISIBLE
+            zoom?.visibility = View.INVISIBLE
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                title1?.visibility = View.INVISIBLE
+            } else {
+                title?.visibility = View.INVISIBLE
+            }
+            if (playerConfiguration.isLive) {
+                live?.visibility = View.INVISIBLE
+                exoPosition?.visibility = View.GONE
+                exoDuration?.visibility = View.GONE
+                exoProgress?.visibility = View.GONE
+                rewind?.visibility = View.GONE
+                forward?.visibility = View.GONE
+                customSeekBar?.visibility = View.INVISIBLE
+                tvProgramsButton?.visibility = View.INVISIBLE
+                tvProgramsText?.visibility = View.INVISIBLE
+            }
+            if (playerConfiguration.seasons.isNotEmpty()) {
+                episodesButton?.visibility = View.INVISIBLE
+                episodesText?.visibility = View.INVISIBLE
+                nextText?.visibility = View.INVISIBLE
+            }
+            lockTouch?.setImageResource(R.drawable.ic_lock)
+        }
+    }
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initializeClickListeners() {
-        customPlayback?.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.pointerCount == 1 && motionEvent.action == MotionEvent.ACTION_UP) {
-                lastClicked1 = if (lastClicked1 == -1L) {
-                    System.currentTimeMillis()
-                } else {
-                    if (isDoubleClicked(lastClicked1)) {
-                        if (motionEvent!!.x < sWidth / 2) {
-                            player?.seekTo(player!!.currentPosition - 10000)
-                        } else {
-                            player?.seekTo(player!!.currentPosition + 10000)
-                        }
-                    } else {
-                        playerView?.hideController()
-                    }
-                    -1L
-                }
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (lastClicked1 != -1L) {
-                        playerView?.hideController()
-                        lastClicked1 = -1L
-                    }
-                }, 300)
-            }
-            return@setOnTouchListener true
-        }
-
-        shareMovieLinkIv?.setOnClickListener() {
-            shareMovieLink()
-        }
-
         close?.setOnClickListener {
-            if (player?.isPlaying == true) {
-                player?.stop()
+            if (!isTouchLocked) {
+                if (player.isPlaying) {
+                    player.stop()
+                }
+                val seconds = player.currentPosition / 1000
+
+                removeProgressListener()
+                unregisterCallBack()
+                val intent = Intent()
+                intent.putExtra("position", seconds)
+                setResult(PLAYER_ACTIVITY_FINISH, intent)
+                finish()
             }
-            var seconds = 0L
-            if (player?.currentPosition != null) {
-                seconds = player?.currentPosition!! / 1000
-            }
-            removeProgressListener()
-            unregisterCallBack()
-            val intent = Intent()
-            intent.putExtra("position", seconds)
-            setResult(PLAYER_ACTIVITY_FINISH, intent)
-            finish()
         }
         pip?.setOnClickListener {
-            if (mLocation == PlaybackLocation.REMOTE) {
-                return@setOnClickListener
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val params =
-                    PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build()
-                enterPictureInPictureMode(params)
-
-            } else {
-                Toast.makeText(this, "This is my Toast message!", Toast.LENGTH_SHORT).show()
+            if (!isTouchLocked) {
+                if (mLocation == PlaybackLocation.REMOTE) {
+                    return@setOnClickListener
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val params =
+                        PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build()
+                    enterPictureInPictureMode(params)
+                } else {
+                    Toast.makeText(this, "This is my Toast message!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         more?.setOnClickListener {
-            showSettingsBottomSheet()
+            if (!isTouchLocked) {
+                showSettingsBottomSheet()
+            }
+        }
+        lockTouch?.setOnClickListener {
+            lockAndUnlockTouch()
         }
         rewind?.setOnClickListener {
-            if (mLocation == PlaybackLocation.LOCAL) {
-                if (player != null) player?.seekTo(player!!.currentPosition - 10000)
-            } else {
-                val remoteMediaClient = mCastSession!!.remoteMediaClient
-                val seekOptions: MediaSeekOptions = MediaSeekOptions
-                    .Builder()
-                    .setPosition((customSeekBar!!.progress * 1000 - 10000).toLong())
-                    .build()
-                remoteMediaClient?.seek(seekOptions)
+            if (!isTouchLocked) {
+                if (mLocation == PlaybackLocation.LOCAL) {
+                    player.seekTo(player.currentPosition - 10000)
+                } else {
+                    val remoteMediaClient = mCastSession!!.remoteMediaClient
+                    val seekOptions: MediaSeekOptions = MediaSeekOptions
+                        .Builder()
+                        .setPosition((customSeekBar!!.progress * 1000 - 10000).toLong())
+                        .build()
+                    remoteMediaClient?.seek(seekOptions)
+                }
             }
         }
         forward?.setOnClickListener {
-            if (mLocation == PlaybackLocation.LOCAL) {
-                if (player != null) player?.seekTo(player!!.currentPosition + 10000)
-            } else {
-                val remoteMediaClient = mCastSession!!.remoteMediaClient
-                val seekOptions: MediaSeekOptions = MediaSeekOptions
-                    .Builder()
-                    .setPosition((customSeekBar!!.progress * 1000 + 10000).toLong())
-                    .build()
-                remoteMediaClient?.seek(seekOptions)
+            if (!isTouchLocked) {
+                if (mLocation == PlaybackLocation.LOCAL) {
+                    player.seekTo(player.currentPosition + 10000)
+                } else {
+                    val remoteMediaClient = mCastSession!!.remoteMediaClient
+                    val seekOptions: MediaSeekOptions = MediaSeekOptions
+                        .Builder()
+                        .setPosition((customSeekBar!!.progress * 1000 + 10000).toLong())
+                        .build()
+                    remoteMediaClient?.seek(seekOptions)
+                }
             }
         }
         playPause?.setOnClickListener {
-            if (mLocation == PlaybackLocation.LOCAL) {
-                if (player?.isPlaying == true) {
-                    player?.pause()
+            if (!isTouchLocked) {
+                if (mLocation == PlaybackLocation.LOCAL) {
+                    if (player.isPlaying) {
+                        player.pause()
+                    } else {
+                        player.play()
+                    }
                 } else {
-                    player?.play()
+                    val remoteMediaClient = mCastSession!!.remoteMediaClient
+                    if (remoteMediaClient?.isPlaying == true) {
+                        remoteMediaClient.pause()
+                    } else {
+                        remoteMediaClient?.play()
+                    }
                 }
-            } else {
-                val remoteMediaClient = mCastSession!!.remoteMediaClient
-                if (remoteMediaClient?.isPlaying == true) {
-                    remoteMediaClient.pause()
-
-                } else {
-                    remoteMediaClient?.play()
-                }
+            }
+        }
+        live?.setOnClickListener {
+            if (!isTouchLocked) {
+                if (playerConfiguration.isLive)
+                    showChannelsBottomSheet()
             }
         }
         episodesButton?.setOnClickListener {
-            if (playerConfiguration.seasons.isNotEmpty())
-                showEpisodesBottomSheet()
+            if (!isTouchLocked) {
+                if (playerConfiguration.seasons.isNotEmpty())
+                    showEpisodesBottomSheet()
+            }
         }
         nextButton?.setOnClickListener {
-            if (playerConfiguration.seasons.isEmpty()) {
-                return@setOnClickListener
-            }
-            if (seasonIndex < playerConfiguration.seasons.size) {
-                if (episodeIndex < playerConfiguration.seasons[seasonIndex].movies.size - 1) {
-                    episodeIndex++
-                } else {
-                    seasonIndex++
+            if (!isTouchLocked) {
+                if (playerConfiguration.seasons.isEmpty()) {
+                    return@setOnClickListener
                 }
-            }
-            if (isLastEpisode()) {
-                nextButton?.visibility = View.GONE
-            } else {
-                nextButton?.visibility = View.VISIBLE
-            }
-            title?.text =
-                "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
-            if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
-                getMegogoStream()
-            } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
-                getPremierStream()
-            } else {
-                url =
-                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                player?.setMediaSource(hlsMediaSource)
-                player?.prepare()
-                if (mLocation == PlaybackLocation.LOCAL) {
-                    player?.playWhenReady
+                if (seasonIndex < playerConfiguration.seasons.size) {
+                    if (episodeIndex < playerConfiguration.seasons[seasonIndex].movies.size - 1) {
+                        episodeIndex++
+                    } else {
+                        seasonIndex++
+                    }
+                }
+                if (isLastEpisode()) {
+                    nextButton?.visibility = View.GONE
                 } else {
-                    loadRemoteMedia(0)
+                    nextButton?.visibility = View.VISIBLE
+                }
+                title?.text =
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
+                    getMegogoStream()
+                } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
+                    getPremierStream()
+                } else {
+                    url =
+                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    if (mLocation == PlaybackLocation.LOCAL) {
+                        player.playWhenReady
+                    } else {
+                        loadRemoteMedia(0)
+                    }
                 }
             }
         }
         tvProgramsButton?.setOnClickListener {
-            if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
+            if (!isTouchLocked) {
+                if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
+            }
         }
         zoom?.setOnClickListener {
-            if (mLocation == PlaybackLocation.REMOTE) {
-                return@setOnClickListener
-            }
-            when (playerView?.resizeMode) {
-                AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> {
-                    zoom?.setImageResource(R.drawable.ic_fit)
-                    playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            if (!isTouchLocked) {
+                if (mLocation == PlaybackLocation.REMOTE) {
+                    return@setOnClickListener
                 }
-                AspectRatioFrameLayout.RESIZE_MODE_FILL -> {
-                    zoom?.setImageResource(R.drawable.ic_crop_fit)
-                    playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                when (playerView.resizeMode) {
+                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> {
+                        zoom?.setImageResource(R.drawable.ic_fit)
+                        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    }
+
+                    AspectRatioFrameLayout.RESIZE_MODE_FILL -> {
+                        zoom?.setImageResource(R.drawable.ic_crop_fit)
+                        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
+
+                    AspectRatioFrameLayout.RESIZE_MODE_FIT -> {
+                        zoom?.setImageResource(R.drawable.ic_stretch)
+                        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                    }
+
+                    AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT -> {}
+                    AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH -> {}
                 }
-                AspectRatioFrameLayout.RESIZE_MODE_FIT -> {
-                    zoom?.setImageResource(R.drawable.ic_stretch)
-                    playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                }
-                AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT -> {}
-                AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH -> {}
             }
         }
         orientation?.setOnClickListener {
-            requestedOrientation =
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                } else {
-                    if (playerConfiguration.isLive) {
-                        ///TODO:
-                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            if (!isTouchLocked) {
+                requestedOrientation =
+                    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    } else {
+                        if (playerConfiguration.isLive) {
+                            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        }
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                     }
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                }
-            it.postDelayed({
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-            }, 3000)
+                it.postDelayed({
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+                }, 3000)
+            }
         }
     }
 
@@ -871,9 +946,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    player.playWhenReady
                 }
             }
 
@@ -907,9 +982,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
+                    player.setMediaSource(hlsMediaSource)
+                    player.prepare()
+                    player.playWhenReady
                 }
             }
 
@@ -945,12 +1020,15 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 BottomSheet.EPISODES -> {
                     backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
                 }
+
                 BottomSheet.SETTINGS -> {
                     backButtonSettingsBottomSheet?.visibility = View.VISIBLE
                 }
+
                 BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonQualitySpeedBottomSheet?.visibility =
                     View.VISIBLE
+
                 BottomSheet.NONE -> {}
             }
         } else {
@@ -967,12 +1045,15 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 BottomSheet.EPISODES -> {
                     backButtonEpisodeBottomSheet?.visibility = View.GONE
                 }
+
                 BottomSheet.SETTINGS -> {
                     backButtonSettingsBottomSheet?.visibility = View.GONE
                 }
+
                 BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonSettingsBottomSheet?.visibility =
                     View.GONE
+
                 BottomSheet.NONE -> {}
             }
         }
@@ -1083,10 +1164,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.prepare()
+                        player.setMediaSource(hlsMediaSource)
+                        player.prepare()
                         if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.playWhenReady
+                            player.playWhenReady
                         } else {
                             loadRemoteMedia(0)
                         }
@@ -1249,20 +1330,20 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     if (fromQuality) {
                         currentQuality = l[position]
                         qualityText?.text = currentQuality
-                        if (player?.isPlaying == true) {
-                            player?.pause()
+                        if (player.isPlaying == true) {
+                            player.pause()
                         }
-                        val currentPosition = player?.currentPosition
+                        val currentPosition = player.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         url =
                             if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.seekTo(currentPosition!!)
+                        player.setMediaSource(hlsMediaSource)
+                        player.seekTo(currentPosition!!)
                         if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.play()
+                            player.play()
                         } else {
                             if (playerConfiguration.isSerial) {
                                 loadRemoteMedia(currentPosition ?: 0)
@@ -1276,7 +1357,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         }
                         currentSpeed = l[position]
                         speedText?.text = currentSpeed
-                        player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
+                        player.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }
                     bottomSheetDialog.dismiss()
                 }
@@ -1301,9 +1382,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         } else {
             if (isDoubleClicked(lastClicked)) {
                 if (event.x < sWidth / 2) {
-                    player?.seekTo(player!!.currentPosition - 10000)
+                    player.seekTo(player!!.currentPosition - 10000)
                 } else {
-                    player?.seekTo(player!!.currentPosition + 10000)
+                    player.seekTo(player!!.currentPosition + 10000)
                 }
             } else {
                 playerView?.showController()
@@ -1378,7 +1459,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_LOSS -> {
-                player?.pause()
+                player.pause()
                 playerView?.hideController()
             }
         }

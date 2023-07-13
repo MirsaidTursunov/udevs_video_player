@@ -14,6 +14,7 @@ import XLActionController
 import NVActivityIndicatorView
 import SnapKit
 import GoogleCast
+import ScreenshotPreventing
 
 /* The player state. */
 enum PlaybackMode: Int {
@@ -66,6 +67,8 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     lazy private var playerView: PlayerView = {
         return PlayerView()
     }()
+    
+    lazy var screenshotPreventView = ScreenshotPreventingView(contentView: playerView)
     
     private var portraitConstraints = Constraints()
     private var landscapeConstraints = Constraints()
@@ -135,6 +138,9 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         playerView.playerConfiguration = playerConfiguration
         view.addSubview(playerView)
         playerView.edgesToSuperview()
+        view.addSubview(screenshotPreventView)
+        screenshotPreventView.edgesToSuperview()
+        screenshotPreventView.preventScreenCapture = false
 
         NotificationCenter.default.addObserver(self, selector: #selector(castDeviceDidChange),
                                                name: NSNotification.Name.gckCastStateDidChange,

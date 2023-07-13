@@ -3,6 +3,7 @@ import AVFAudio
 import AVFoundation
 import GoogleCast
 import Flutter
+import ScreenshotPreventing
 
 let kPrefAppVersion = "app_version"
 let kPrefSDKVersion = "sdk_version"
@@ -50,6 +51,14 @@ let kPrefEnableMediaNotifications = "enable_media_notifications"
         GCKCastContext.sharedInstance().sessionManager.add(self)
         GCKCastContext.sharedInstance().imagePicker = self
         GeneratedPluginRegistrant.register(with: self)
+        if let controller = window?.rootViewController as? FlutterViewController {
+            if let contentView = controller.view {
+                let screenshotPreventingView = ScreenshotPreventingView()
+                screenshotPreventingView.setup(contentView: contentView)
+                screenshotPreventingView.preventScreenCapture = false
+                controller.view = screenshotPreventingView
+            }
+        }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     

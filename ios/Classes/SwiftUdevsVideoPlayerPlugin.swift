@@ -2,7 +2,6 @@ import Flutter
 import AVFoundation
 import AVFAudio
 import UIKit
-import ScreenshotPreventing
 
 public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDelegate {
     
@@ -312,4 +311,3 @@ extension SwiftUdevsVideoPlayerPlugin: AVAssetDownloadDelegate {
         }
     }
 }
-

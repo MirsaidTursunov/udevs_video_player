@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:udevs_video_player/udevs_video_player.dart';
-import 'package:udevs_video_player/udevs_video_player_platform_interface.dart';
-import 'package:udevs_video_player/udevs_video_player_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:udevs_video_player/udevs_video_player.dart';
+import 'package:udevs_video_player/udevs_video_player_method_channel.dart';
+import 'package:udevs_video_player/udevs_video_player_platform_interface.dart';
 
 class MockUdevsVideoPlayerPlatform
     with MockPlatformInterfaceMixin
@@ -23,8 +23,8 @@ void main() {
   });
 
   test('playVideo', () async {
-    UdevsVideoPlayer udevsVideoPlayerPlugin = UdevsVideoPlayer();
-    MockUdevsVideoPlayerPlatform fakePlatform = MockUdevsVideoPlayerPlatform();
+    final UdevsVideoPlayer udevsVideoPlayerPlugin = UdevsVideoPlayer();
+    final MockUdevsVideoPlayerPlatform fakePlatform = MockUdevsVideoPlayerPlatform();
     UdevsVideoPlayerPlatform.instance = fakePlatform;
 
     expect(

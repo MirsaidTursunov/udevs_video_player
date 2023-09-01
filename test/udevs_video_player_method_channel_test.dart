@@ -3,15 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:udevs_video_player/udevs_video_player_method_channel.dart';
 
 void main() {
-  MethodChannelUdevsVideoPlayer platform = MethodChannelUdevsVideoPlayer();
+  final MethodChannelUdevsVideoPlayer platform = MethodChannelUdevsVideoPlayer();
   const MethodChannel channel = MethodChannel('udevs_video_player');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
-    });
+    channel.setMockMethodCallHandler((methodCall) async => '42');
   });
 
   tearDown(() {

@@ -16,40 +16,52 @@ class MethodChannelUdevsVideoPlayer extends UdevsVideoPlayerPlatform {
       StreamController<MediaItemDownload>.broadcast();
 
   @override
-  Future<int?> playVideo({required String playerConfigJsonString}) async {
+  Future<int?> playVideo({
+    required String playerConfigJsonString,
+  }) async {
     final res = await methodChannel.invokeMethod<int?>('playVideo',
         <String, dynamic>{'playerConfigJsonString': playerConfigJsonString});
     return res;
   }
 
   @override
-  Future downloadVideo({required String downloadConfigJsonString}) async {
-    await methodChannel.invokeMethod('downloadVideo', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+  Future downloadVideo({
+    required String downloadConfigJsonString,
+  }) async {
+    await methodChannel.invokeMethod(
+      'downloadVideo',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
   }
 
   @override
-  Future pauseDownload({required String downloadConfigJsonString}) async {
-    await methodChannel.invokeMethod('pauseDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+  Future pauseDownload({
+    required String downloadConfigJsonString,
+  }) async {
+    await methodChannel.invokeMethod(
+      'pauseDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
   }
 
   @override
-  Future resumeDownload({required String downloadConfigJsonString}) async {
-    await methodChannel.invokeMethod('resumeDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+  Future resumeDownload({
+    required String downloadConfigJsonString,
+  }) async {
+    await methodChannel.invokeMethod(
+      'resumeDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
   }
 
   @override
-  Future<bool> isDownloadVideo(
-      {required String downloadConfigJsonString}) async {
+  Future<bool> isDownloadVideo({
+    required String downloadConfigJsonString,
+  }) async {
     final res = await methodChannel.invokeMethod<bool?>(
-        'checkIsDownloadedVideo', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+      'checkIsDownloadedVideo',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
     return res ?? false;
   }
 
@@ -57,70 +69,78 @@ class MethodChannelUdevsVideoPlayer extends UdevsVideoPlayerPlatform {
   Future<int?> getCurrentProgressDownload(
       {required String downloadConfigJsonString}) async {
     final res = await methodChannel.invokeMethod<int>(
-        'getCurrentProgressDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+      'getCurrentProgressDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
     return res;
   }
 
   @override
   Stream<MediaItemDownload> currentProgressDownloadAsStream() {
-    methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'percent') {
-        var json = call.arguments as String;
-        var decode = jsonDecode(json);
-        _streamController.add(
-          MediaItemDownload(
-            url: decode['url'],
-            percent: decode['percent'],
-            state: decode['state'],
-            downloadedBytes: decode['downloadedBytes'],
-          ),
-        );
-      }
-    });
+    methodChannel.setMethodCallHandler(
+      (call) async {
+        if (call.method == 'percent') {
+          final json = call.arguments as String;
+          final decode = jsonDecode(json);
+          _streamController.add(
+            MediaItemDownload(
+              url: decode['url'],
+              percent: decode['percent'],
+              state: decode['state'],
+              downloadedBytes: decode['downloadedBytes'],
+            ),
+          );
+        }
+      },
+    );
     return _streamController.stream;
   }
 
   @override
-  Future<int?> getStateDownload(
-      {required String downloadConfigJsonString}) async {
+  Future<int?> getStateDownload({
+    required String downloadConfigJsonString,
+  }) async {
     final res = await methodChannel.invokeMethod<int>(
-        'getStateDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+      'getStateDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
     return res;
   }
 
   @override
-  Future<int?> getBytesDownloaded(
-      {required String downloadConfigJsonString}) async {
+  Future<int?> getBytesDownloaded({
+    required String downloadConfigJsonString,
+  }) async {
     final res = await methodChannel.invokeMethod<int>(
-        'getBytesDownloaded', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+      'getBytesDownloaded',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
     return res;
   }
 
   @override
-  Future<int?> getContentBytesDownload(
-      {required String downloadConfigJsonString}) async {
+  Future<int?> getContentBytesDownload({
+    required String downloadConfigJsonString,
+  }) async {
     final res = await methodChannel.invokeMethod<int>(
-        'getContentBytesDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+      'getContentBytesDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
     return res;
   }
 
   @override
-  Future removeDownload({required String downloadConfigJsonString}) async {
-    await methodChannel.invokeMethod('removeDownload', <String, dynamic>{
-      'downloadConfigJsonString': downloadConfigJsonString
-    });
+  Future removeDownload({
+    required String downloadConfigJsonString,
+  }) async {
+    await methodChannel.invokeMethod(
+      'removeDownload',
+      <String, dynamic>{'downloadConfigJsonString': downloadConfigJsonString},
+    );
   }
 
   @override
   void dispose() {
-    _streamController.onCancel;
+    _streamController.close();
   }
 }

@@ -1,4 +1,13 @@
 class Movie {
+
+  Movie({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.image,
+    required this.duration,
+    required this.resolutions,
+  });
   String id;
   String title;
   String description;
@@ -7,7 +16,7 @@ class Movie {
   Map<String, String> resolutions;
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
+    final map = <String, dynamic>{};
     map['id'] = id;
     map['title'] = title;
     map['description'] = description;
@@ -18,25 +27,10 @@ class Movie {
   }
 
   @override
-  String toString() {
-    return 'Movie{id: $id, title: $title, description: $description, image: $image, duration: $duration, resolutions: $resolutions}';
-  }
-
-  Movie({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.image,
-    required this.duration,
-    required this.resolutions,
-  });
+  String toString() => 'Movie{id: $id, title: $title, description: $description, image: $image, duration: $duration, resolutions: $resolutions}';
 }
 
 class Channel {
-  final String id;
-  final String name;
-  final String image;
-  final Map<String, String> resolutions;
 
   const Channel({
     required this.id,
@@ -44,9 +38,13 @@ class Channel {
     required this.name,
     required this.resolutions,
   });
+  final String id;
+  final String name;
+  final String image;
+  final Map<String, String> resolutions;
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
+    final map = <String, dynamic>{};
     map['id'] = id;
     map['image'] = image;
     map['name'] = name;
@@ -55,7 +53,5 @@ class Channel {
   }
 
   @override
-  String toString() {
-    return 'Channel{id: $id, image: $image, resolutions: $resolutions, name: $name}';
-  }
+  String toString() => 'Channel{id: $id, image: $image, resolutions: $resolutions, name: $name}';
 }

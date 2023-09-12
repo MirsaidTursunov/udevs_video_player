@@ -37,7 +37,7 @@ class PlayerConfiguration {
   int selectChannelIndex;
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
+    final map = <String, dynamic>{};
     map['initialResolution'] = initialResolution;
     map['resolutions'] = resolutions;
     map['qualityText'] = qualityText;
@@ -72,8 +72,7 @@ class PlayerConfiguration {
   }
 
   @override
-  String toString() {
-    return 'PlayerConfiguration{'
+  String toString() => 'PlayerConfiguration{'
         'initialResolution: $initialResolution, '
         'resolutions: $resolutions, '
         'qualityText: $qualityText, '
@@ -105,7 +104,6 @@ class PlayerConfiguration {
         'ip: $ip'
         'selectChannelIndex: $selectChannelIndex'
         '}';
-  }
 
   PlayerConfiguration({
     required this.initialResolution,

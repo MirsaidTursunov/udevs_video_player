@@ -1,4 +1,11 @@
 class MediaItemDownload {
+
+  MediaItemDownload({
+    required this.url,
+    this.percent = 0,
+    this.state = 0,
+    required this.downloadedBytes,
+  });
   static const int STATE_QUEUED = 0;
   static const int STATE_STOPPED = 1;
   static const int STATE_DOWNLOADING = 2;
@@ -12,21 +19,12 @@ class MediaItemDownload {
   int downloadedBytes;
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
+    final map = <String, dynamic>{};
     map['url'] = url;
     map['percent'] = percent;
     return map;
   }
 
   @override
-  String toString() {
-    return 'MediaItemDownload{url: $url, percent: $percent,  state: $state}';
-  }
-
-  MediaItemDownload({
-    required this.url,
-    this.percent = 0,
-    this.state = 0,
-    required this.downloadedBytes,
-  });
+  String toString() => 'MediaItemDownload{url: $url, percent: $percent,  state: $state}';
 }

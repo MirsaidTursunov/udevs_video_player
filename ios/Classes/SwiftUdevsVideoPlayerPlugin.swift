@@ -129,17 +129,31 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             guard URL(string: playerConfiguration.url) != nil else {
                 return
             }
-            let vc = VideoPlayerViewController()
-            vc.modalPresentationStyle = .fullScreen
-            vc.delegate = self
-            vc.playerConfiguration = playerConfiguration
-            vc.qualityLabelText = playerConfiguration.qualityText
-            vc.speedLabelText = playerConfiguration.speedText
-            vc.resolutions = sortedResolutions
-            vc.selectedQualityText = playerConfiguration.autoText
-            vc.seasons = playerConfiguration.seasons
-            vc.selectChannelIndex  = playerConfiguration.selectChannelIndex
-            SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
+            if playerConfiguration.isDRM {
+                let vc = PlayerViewController()
+                print(playerConfiguration.fpsCertificateUrl)
+                print(playerConfiguration.videoUrl)
+                print(playerConfiguration.licenseToken)
+                print(playerConfiguration.licenseServiceUrl)
+                vc.modalPresentationStyle = .fullScreen
+                vc.fpsCertificateUrl = playerConfiguration.fpsCertificateUrl
+                vc.videoUrl = playerConfiguration.videoUrl
+                vc.licenseToken = playerConfiguration.licenseToken
+                vc.licenseServiceUrl = playerConfiguration.licenseServiceUrl
+                SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
+            } else {
+                let vc = VideoPlayerViewController()
+                vc.modalPresentationStyle = .fullScreen
+                vc.delegate = self
+                vc.playerConfiguration = playerConfiguration
+                vc.qualityLabelText = playerConfiguration.qualityText
+                vc.speedLabelText = playerConfiguration.speedText
+                vc.resolutions = sortedResolutions
+                vc.selectedQualityText = playerConfiguration.autoText
+                vc.seasons = playerConfiguration.seasons
+                vc.selectChannelIndex  = playerConfiguration.selectChannelIndex
+                SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)
+            }
             return
         }
         default: do {

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
-import 'package:udevs_video_player/models/media_item_download.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player_example/second_page.dart';
 
@@ -205,6 +204,61 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  void playVideoDRM() async {
+    try {
+      var s = await _udevsVideoPlayerPlugin.playVideo(
+              playerConfig: PlayerConfiguration(
+            isDRM: true,
+            videoUrl:
+                'https://s3-eu-central-1.amazonaws.com/million-prod/million-movies/aloqa_movie4/hls/manifest.m3u8',
+            fpsCertificateUrl: 'https://vtb.axinom.com/FPScert/fairplay.cer',
+            licenseToken:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoxLCJjb21fa2V5X2lkIjoiNjU3YjVhZDctOTg0My00NWI2LWE3YTctYjA3NTAxM2VlYTZiIiwibWVzc2FnZSI6eyJ0eXBlIjoiZW50aXRsZW1lbnRfbWVzc2FnZSIsInZlcnNpb24iOjIsImxpY2Vuc2UiOnsic3RhcnRfZGF0ZXRpbWUiOiIyMDIzLTA5LTExVDA5OjI3OjI0Ljc1NFoiLCJleHBpcmF0aW9uX2RhdGV0aW1lIjoiMjAyMy0wOS0xM1QwOToyNzoyNC43NTRaIiwiYWxsb3dfcGVyc2lzdGVuY2UiOnRydWV9LCJjb250ZW50X2tleXNfc291cmNlIjp7ImlubGluZSI6W3siaWQiOiJhNjdhNzZmMC0zYzI2LTQ5NjQtYTJkYi0xNDYzMzUwN2EyMTgiLCJ1c2FnZV9wb2xpY3kiOiJQb2xpY3kgQSJ9XX0sImNvbnRlbnRfa2V5X3VzYWdlX3BvbGljaWVzIjpbeyJuYW1lIjoiUG9saWN5IEEiLCJwbGF5cmVhZHkiOnsibWluX2RldmljZV9zZWN1cml0eV9sZXZlbCI6MTUwLCJwbGF5X2VuYWJsZXJzIjpbIjc4NjYyN0Q4LUMyQTYtNDRCRS04Rjg4LTA4QUUyNTVCMDFBNyJdfX1dfSwiYmVnaW5fZGF0ZSI6IjIwMjMtMDktMTFUMDk6Mjc6MjQuNzU0WiIsImV4cGlyYXRpb25fZGF0ZSI6IjIwMjMtMDktMTNUMDk6Mjc6MjQuNzU0WiJ9.fmOvUMXQ1tgQLU-K5Kh5ZJO-jX1IcXO5uwOWrg5G6_o',
+            licenseServiceUrl:
+                'https://a2e69b4a.drm-fairplay-licensing.axprod.net/AcquireLicense',
+            selectChannelIndex: 0,
+            ip: "",
+            baseUrl: "https://api.spec.uzd.udevs.io/v1/",
+            initialResolution: {
+              "240p":
+                  "https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/240p/index.m3u8"
+            },
+            resolutions: {},
+            qualityText: 'Качество',
+            speedText: 'Скорость',
+            lastPosition: 0,
+            title: "S1 E1  \"Женщина-Халк: Адвокат\" ",
+            isSerial: true,
+            episodeButtonText: 'Эпизоды',
+            nextButtonText: 'След.эпизод',
+            seasons: [],
+            isLive: false,
+            tvProgramsText: 'Телеканалы',
+            programsInfoList: [],
+            showController: true,
+            playVideoFromAsset: false,
+            assetPath: '',
+            seasonIndex: 0,
+            episodeIndex: 0,
+            isMegogo: false,
+            isPremier: false,
+            videoId: '',
+            sessionId: '',
+            megogoAccessToken: '',
+            authorization: '',
+            autoText: 'Автонастройка',
+            fromCache: true,
+            channels: [],
+          )) ??
+          'nothing';
+      if (kDebugMode) {
+        print('result: $s');
+      }
+    } on PlatformException {
+      debugPrint('Failed to get platform version.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,6 +271,10 @@ class _MainPageState extends State<MainPage> {
           ElevatedButton(
             onPressed: playVideo,
             child: const Text('Play Video'),
+          ),
+          ElevatedButton(
+            onPressed: playVideoDRM,
+            child: const Text('Play Video DRM'),
           ),
           ElevatedButton(
             onPressed: download1,
@@ -241,7 +299,10 @@ class _MainPageState extends State<MainPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SecondPage()));
+                MaterialPageRoute(
+                  builder: (context) => const SecondPage(),
+                ),
+              );
             },
             child: const Text('Got to next page'),
           ),

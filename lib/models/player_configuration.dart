@@ -22,7 +22,6 @@ class PlayerConfiguration {
     required this.sessionId,
     required this.authorization,
     required this.autoText,
-    required this.baseUrl,
     required this.programsText,
   });
 
@@ -45,7 +44,6 @@ class PlayerConfiguration {
   final String sessionId;
   final String authorization;
   final String autoText;
-  final String baseUrl;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -66,7 +64,6 @@ class PlayerConfiguration {
     map['sessionId'] = sessionId;
     map['authorization'] = authorization;
     map['autoText'] = autoText;
-    map['baseUrl'] = baseUrl;
     map['programsText'] = programsText;
     map['isYoutube'] = isYoutube;
     return map;
@@ -74,5 +71,5 @@ class PlayerConfiguration {
 
   @override
   String toString() =>
-      'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isYoutube: $isYoutube, showController: $showController, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, episodeText: $episodeText, seasonText: $seasonText, videoId: $videoId, sessionId: $sessionId, authorization: $authorization, autoText: $autoText, baseUrl: $baseUrl,programsText: $programsText}';
+      'PlayerConfiguration{initialResolution: $initialResolution, resolutions: $resolutions, qualityText: $qualityText, speedText: $speedText, lastPosition: $lastPosition, title: $title, isSerial: $isSerial, seasons: $seasons, isYoutube: $isYoutube, showController: $showController, seasonIndex: $seasonIndex, episodeIndex: $episodeIndex, episodeText: $episodeText, seasonText: $seasonText, videoId: $videoId, sessionId: $sessionId, authorization: $authorization, autoText: $autoText, programsText: $programsText}';
 }

@@ -24,12 +24,13 @@ void main() {
 
   test('playVideo', () async {
     final UdevsVideoPlayer udevsVideoPlayerPlugin = UdevsVideoPlayer();
-    final MockUdevsVideoPlayerPlatform fakePlatform = MockUdevsVideoPlayerPlatform();
+    final MockUdevsVideoPlayerPlatform fakePlatform =
+        MockUdevsVideoPlayerPlatform();
     UdevsVideoPlayerPlatform.instance = fakePlatform;
 
     expect(
-        await udevsVideoPlayerPlugin.playVideo(
-            playerConfig: PlayerConfiguration(
+      await udevsVideoPlayerPlugin.playVideo(
+        playerConfig: PlayerConfiguration(
           initialResolution: {},
           resolutions: {},
           qualityText: '',
@@ -48,9 +49,10 @@ void main() {
           sessionId: '',
           authorization: '',
           autoText: '',
-          baseUrl: '',
           programsText: 'Programs',
-        )),
-        '42');
+        ),
+      ),
+      '42',
+    );
   });
 }

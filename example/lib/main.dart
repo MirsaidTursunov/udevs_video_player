@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -209,11 +211,14 @@ class _MainPageState extends State<MainPage> {
       var s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
             isDRM: true,
-            videoUrl:
-                'https://s3-eu-central-1.amazonaws.com/million-prod/million-movies/aloqa_movie4/hls/manifest.m3u8',
+            widevineLicenseUrl:
+                'https://a2e69b4a.drm-widevine-licensing.axprod.net/AcquireLicense',
+            videoUrl: Platform.isAndroid
+                ? 'https://s3-eu-central-1.amazonaws.com/million-prod/million-movies/aloqa_movie4/dash/manifest.mpd'
+                : 'https://s3-eu-central-1.amazonaws.com/million-prod/million-movies/aloqa_movie4/hls/manifest.m3u8',
             fpsCertificateUrl: 'https://vtb.axinom.com/FPScert/fairplay.cer',
             licenseToken:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoxLCJjb21fa2V5X2lkIjoiNjU3YjVhZDctOTg0My00NWI2LWE3YTctYjA3NTAxM2VlYTZiIiwibWVzc2FnZSI6eyJ0eXBlIjoiZW50aXRsZW1lbnRfbWVzc2FnZSIsInZlcnNpb24iOjIsImxpY2Vuc2UiOnsic3RhcnRfZGF0ZXRpbWUiOiIyMDIzLTA5LTExVDA5OjI3OjI0Ljc1NFoiLCJleHBpcmF0aW9uX2RhdGV0aW1lIjoiMjAyMy0wOS0xM1QwOToyNzoyNC43NTRaIiwiYWxsb3dfcGVyc2lzdGVuY2UiOnRydWV9LCJjb250ZW50X2tleXNfc291cmNlIjp7ImlubGluZSI6W3siaWQiOiJhNjdhNzZmMC0zYzI2LTQ5NjQtYTJkYi0xNDYzMzUwN2EyMTgiLCJ1c2FnZV9wb2xpY3kiOiJQb2xpY3kgQSJ9XX0sImNvbnRlbnRfa2V5X3VzYWdlX3BvbGljaWVzIjpbeyJuYW1lIjoiUG9saWN5IEEiLCJwbGF5cmVhZHkiOnsibWluX2RldmljZV9zZWN1cml0eV9sZXZlbCI6MTUwLCJwbGF5X2VuYWJsZXJzIjpbIjc4NjYyN0Q4LUMyQTYtNDRCRS04Rjg4LTA4QUUyNTVCMDFBNyJdfX1dfSwiYmVnaW5fZGF0ZSI6IjIwMjMtMDktMTFUMDk6Mjc6MjQuNzU0WiIsImV4cGlyYXRpb25fZGF0ZSI6IjIwMjMtMDktMTNUMDk6Mjc6MjQuNzU0WiJ9.fmOvUMXQ1tgQLU-K5Kh5ZJO-jX1IcXO5uwOWrg5G6_o',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoxLCJjb21fa2V5X2lkIjoiNjU3YjVhZDctOTg0My00NWI2LWE3YTctYjA3NTAxM2VlYTZiIiwibWVzc2FnZSI6eyJ0eXBlIjoiZW50aXRsZW1lbnRfbWVzc2FnZSIsInZlcnNpb24iOjIsImxpY2Vuc2UiOnsic3RhcnRfZGF0ZXRpbWUiOiIyMDIzLTA5LTExVDEwOjQxOjA0LjU4NVoiLCJleHBpcmF0aW9uX2RhdGV0aW1lIjoiMjAyMy0wOS0xM1QxMDo0MTowNC41ODVaIiwiYWxsb3dfcGVyc2lzdGVuY2UiOnRydWV9LCJjb250ZW50X2tleXNfc291cmNlIjp7ImlubGluZSI6W3siaWQiOiJhNjdhNzZmMC0zYzI2LTQ5NjQtYTJkYi0xNDYzMzUwN2EyMTgiLCJ1c2FnZV9wb2xpY3kiOiJQb2xpY3kgQSJ9XX0sImNvbnRlbnRfa2V5X3VzYWdlX3BvbGljaWVzIjpbeyJuYW1lIjoiUG9saWN5IEEiLCJwbGF5cmVhZHkiOnsibWluX2RldmljZV9zZWN1cml0eV9sZXZlbCI6MTUwLCJwbGF5X2VuYWJsZXJzIjpbIjc4NjYyN0Q4LUMyQTYtNDRCRS04Rjg4LTA4QUUyNTVCMDFBNyJdfX1dfSwiYmVnaW5fZGF0ZSI6IjIwMjMtMDktMTFUMTA6NDE6MDQuNTg1WiIsImV4cGlyYXRpb25fZGF0ZSI6IjIwMjMtMDktMTNUMTA6NDE6MDQuNTg1WiJ9.53DUOjP5CMzK4t8sSrTcXxYgqkLH8Wp0AKArkxhgtoo',
             licenseServiceUrl:
                 'https://a2e69b4a.drm-fairplay-licensing.axprod.net/AcquireLicense',
             selectChannelIndex: 0,

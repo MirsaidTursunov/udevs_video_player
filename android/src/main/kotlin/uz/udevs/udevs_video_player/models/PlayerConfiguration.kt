@@ -68,4 +68,12 @@ data class PlayerConfiguration(
     val ip: String,
     @SerializedName("selectChannelIndex")
     val selectChannelIndex: Int,
+    @SerializedName("isDRM")
+    val isDRM: Boolean,
+    @SerializedName("videoUrl")
+    val videoUrl: String,
+    @SerializedName("licenseToken")
+    val licenseToken: String,
+    @SerializedName("widevineLicenseUrl")
+    val widevineLicenseUrl: String,
 ) : Serializable

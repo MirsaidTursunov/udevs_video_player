@@ -74,3 +74,8 @@ android {
         implementation "androidx.media3:media3-datasource-cronet:$media3_version"
     }
 }
+
+dependencies {
+    implementation 'com.android.identity:identity-credential:20230420'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.1.1'
+}

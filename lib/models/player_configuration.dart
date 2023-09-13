@@ -6,6 +6,7 @@ import 'package:udevs_video_player/models/season.dart';
 
 class PlayerConfiguration {
   PlayerConfiguration({
+    this.widevineLicenseUrl = '',
     this.isDRM = false,
     this.fpsCertificateUrl = '',
     this.licenseToken = '',
@@ -77,6 +78,7 @@ class PlayerConfiguration {
   final String licenseToken;
   final String licenseServiceUrl;
   final String videoUrl;
+  final String widevineLicenseUrl;
   final bool isDRM;
 
   Map<String, dynamic> toJson() {
@@ -116,6 +118,7 @@ class PlayerConfiguration {
     map['licenseServiceUrl'] = licenseServiceUrl;
     map['videoUrl'] = videoUrl;
     map['isDRM'] = isDRM;
+    map['widevineLicenseUrl'] = widevineLicenseUrl;
     return map;
   }
 

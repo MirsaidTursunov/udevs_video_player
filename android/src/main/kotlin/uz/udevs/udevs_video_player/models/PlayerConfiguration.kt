@@ -22,16 +22,10 @@ data class PlayerConfiguration(
     val isSerial: Boolean,
     @SerializedName("seasons")
     val seasons: List<Season>,
-    @SerializedName("isLive")
-    val isLive: Boolean,
-    @SerializedName("tvProgramsText")
-    val tvProgramsText: String,
-    @SerializedName("programsInfoList")
-    val programsInfoList: List<ProgramsInfo>,
+    @SerializedName("isYoutube")
+    val isYoutube: Boolean,
     @SerializedName("showController")
     val showController: Boolean,
-    @SerializedName("playVideoFromAsset")
-    val playVideoFromAsset: Boolean,
     @SerializedName("assetPath")
     val assetPath: String,
     @SerializedName("seasonIndex")
@@ -42,16 +36,10 @@ data class PlayerConfiguration(
     val episodeText: String,
     @SerializedName("seasonText")
     val seasonText: String,
-    @SerializedName("isMegogo")
-    val isMegogo: Boolean,
-    @SerializedName("isPremier")
-    val isPremier: Boolean,
     @SerializedName("videoId")
     val videoId: String,
     @SerializedName("sessionId")
     val sessionId: String,
-    @SerializedName("megogoAccessToken")
-    val megogoAccessToken: String,
     @SerializedName("authorization")
     val authorization: String,
     @SerializedName("autoText")

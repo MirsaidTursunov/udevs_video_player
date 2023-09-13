@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="EpisodeTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">17sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/regular</item>
     </style>
+
     <style name="TvProgramTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">17sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/semibold</item>
+    </style>
+
+    <style name="ProgressBarStyle">
+        <item name="colorAccent">@color/white</item>
     </style>
 </resources>

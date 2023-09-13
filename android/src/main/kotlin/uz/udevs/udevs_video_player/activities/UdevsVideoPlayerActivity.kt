@@ -3,7 +3,6 @@ package uz.udevs.udevs_video_player.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -16,12 +15,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
@@ -36,7 +32,6 @@ import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
-import uz.udevs.udevs_video_player.adapters.TvProgramsRvAdapter
 import uz.udevs.udevs_video_player.models.CurrentFocus
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
@@ -54,7 +49,7 @@ import javax.net.ssl.TrustManagerFactory
 
 class UdevsVideoPlayerActivity : Activity() {
 
-    private var playerView: PlayerView? = null
+    private lateinit var playerView: PlayerView
     private var player: ExoPlayer? = null
     private var playerConfiguration: PlayerConfiguration? = null
     private var title: TextView? = null
@@ -63,10 +58,8 @@ class UdevsVideoPlayerActivity : Activity() {
     private var exoProgress: DefaultTimeBar? = null
     private var customSeekBar: SeekBar? = null
     private var timer: LinearLayout? = null
-    private var live: LinearLayout? = null
     private var qualityButton: Button? = null
     private var speedButton: Button? = null
-    private var tvButton: Button? = null
     private var previousButton: ImageButton? = null
     private var nextButton: ImageButton? = null
     private var seasonIndex: Int = 0
@@ -91,11 +84,9 @@ class UdevsVideoPlayerActivity : Activity() {
 
         ///TODO: SSL error
         trustEveryone()
-        if (playerConfiguration?.playVideoFromAsset == true) {
-            playFromAsset()
-        } else {
-            playVideo()
-        }
+
+        playVideo()
+
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -116,6 +107,7 @@ class UdevsVideoPlayerActivity : Activity() {
                 }
                 return true
             }
+
             KeyEvent.KEYCODE_BACK -> {
                 if (player?.isPlaying == true) {
                     player?.stop()
@@ -134,6 +126,7 @@ class UdevsVideoPlayerActivity : Activity() {
         return false
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (player?.isPlaying == true) {
             player?.stop()
@@ -149,56 +142,26 @@ class UdevsVideoPlayerActivity : Activity() {
         super.onBackPressed()
     }
 
-    ///TODO: SSL error
-
-//    private fun trustEveryone() {
-//        try {
-//            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-//            val context: SSLContext = SSLContext.getInstance("TLS")
-//            context.init(
-//                null, arrayOf<X509TrustManager>(@SuppressLint("CustomX509TrustManager")
-//                object : X509TrustManager {
-//                    @SuppressLint("TrustAllX509TrustManager")
-//                    @Throws(CertificateException::class)
-//                    override fun checkClientTrusted(
-//                        chain: Array<X509Certificate?>?,
-//                        authType: String?
-//                    ) {
-//                    }
-//
-//                    @SuppressLint("TrustAllX509TrustManager")
-//                    @Throws(CertificateException::class)
-//                    override fun checkServerTrusted(
-//                        chain: Array<X509Certificate?>?,
-//                        authType: String?
-//                    ) {
-//                    }
-//
-//                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-//                        TODO("Not yet implemented")
-//                    }
-//
-//                }), SecureRandom()
-//            )
-//            HttpsURLConnection.setDefaultSSLSocketFactory(
-//                context.socketFactory
-//            )
-//        } catch (e: Exception) { // should never happen
-//            e.printStackTrace()
-//        }
-//    }
-
-    ///
+    /// TODO: SSL error
     private fun trustEveryone() {
         try {
-            val trustManager = object : X509TrustManager {
-                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+            val trustManager = @SuppressLint("CustomX509TrustManager")
+            object : X509TrustManager {
+                @SuppressLint("TrustAllX509TrustManager")
+                override fun checkClientTrusted(
+                    chain: Array<out X509Certificate>?,
+                    authType: String?
+                ) {
                     // Implement proper client certificate validation if needed
                 }
 
-                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                override fun checkServerTrusted(
+                    chain: Array<out X509Certificate>?,
+                    authType: String?
+                ) {
                     try {
-                        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                        val trustManagerFactory =
+                            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
                         trustManagerFactory.init(null as KeyStore?)
                         val defaultTrustManagers = trustManagerFactory.trustManagers
 
@@ -211,7 +174,6 @@ class UdevsVideoPlayerActivity : Activity() {
                     } catch (e: Exception) {
                         // Handle the validation error, e.g., log an error message or throw an exception
                     }
-
                     throw CertificateException("Failed to validate server certificate")
                 }
 
@@ -245,31 +207,15 @@ class UdevsVideoPlayerActivity : Activity() {
         player?.playWhenReady = true
     }
 
-    private fun playFromAsset() {
-        val uri =
-            Uri.parse("asset:///flutter_assets/${playerConfiguration!!.assetPath}")
-        val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this)
-        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(uri))
-        player = ExoPlayer.Builder(this).build()
-        playerView?.player = player
-        playerView?.keepScreenOn = true
-        playerView?.useController = false
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-        player?.setMediaSource(mediaSource)
-        player?.prepare()
-        player?.playWhenReady = true
-    }
-
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.initialResolution.values.first())))
         player = ExoPlayer.Builder(this).build()
-        playerView?.player = player
-        playerView?.keepScreenOn = true
-        playerView?.useController = playerConfiguration!!.showController
-        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+        playerView.player = player
+        playerView.keepScreenOn = true
+        playerView.useController = playerConfiguration!!.showController
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration!!.lastPosition * 1000)
         player?.prepare()
@@ -289,7 +235,6 @@ class UdevsVideoPlayerActivity : Activity() {
         title?.text = playerConfiguration?.title
 
         timer = findViewById(R.id.timer)
-        live = findViewById(R.id.live)
         playPause = findViewById(R.id.video_play_pause)
         exoProgress = findViewById(R.id.exo_progress)
         exoProgress?.setKeyTimeIncrement(15000)
@@ -299,8 +244,6 @@ class UdevsVideoPlayerActivity : Activity() {
         qualityButton?.text = playerConfiguration!!.qualityText
         speedButton = findViewById(R.id.speed_button)
         speedButton?.text = playerConfiguration!!.speedText
-        tvButton = findViewById(R.id.tv_button)
-        tvButton?.text=playerConfiguration!!.programsText
         previousButton = findViewById(R.id.video_previous)
         nextButton = findViewById(R.id.video_next)
         if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
@@ -316,12 +259,10 @@ class UdevsVideoPlayerActivity : Activity() {
             subtitle?.text =
                 "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
         }
-        if (playerConfiguration?.isLive == true) {
-            live?.visibility = View.VISIBLE
+        if (playerConfiguration?.isYoutube == true) {
             timer?.visibility = View.GONE
             exoProgress?.visibility = View.GONE
             customSeekBar?.visibility = View.VISIBLE
-            tvButton?.visibility = View.VISIBLE
         }
     }
 
@@ -371,14 +312,6 @@ class UdevsVideoPlayerActivity : Activity() {
                 nextButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
-        tvButton?.setOnFocusChangeListener { _, b ->
-            if (b) {
-                currentFocus = CurrentFocus.TV_BTN
-                tvButton?.setBackgroundResource(R.drawable.focus_background)
-            } else {
-                tvButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
-            }
-        }
         qualityButton?.setOnClickListener {
             showQualitySpeedSheet(
                 currentQuality,
@@ -403,9 +336,9 @@ class UdevsVideoPlayerActivity : Activity() {
             }
             subtitle?.text =
                 "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
-            if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
+            if (playerConfiguration!!.isSerial) {
                 getMegogoStream()
-            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
+            } else if (playerConfiguration!!.isSerial) {
                 getPremierStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
@@ -433,9 +366,9 @@ class UdevsVideoPlayerActivity : Activity() {
             }
             subtitle?.text =
                 "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
-            if (playerConfiguration!!.isMegogo && playerConfiguration!!.isSerial) {
+            if (playerConfiguration!!.isSerial) {
                 getMegogoStream()
-            } else if (playerConfiguration!!.isPremier && playerConfiguration!!.isSerial) {
+            } else if (playerConfiguration!!.isSerial) {
                 getPremierStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
@@ -447,9 +380,6 @@ class UdevsVideoPlayerActivity : Activity() {
                 player?.playWhenReady
             }
         }
-        tvButton?.setOnClickListener {
-            showTvProgramsBottomSheet()
-        }
     }
 
     private fun getMegogoStream() {
@@ -457,7 +387,7 @@ class UdevsVideoPlayerActivity : Activity() {
             playerConfiguration!!.authorization,
             playerConfiguration!!.sessionId,
             playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].id,
-            playerConfiguration!!.megogoAccessToken
+            "playerConfiguration!!.megogoAccessToken"
         )?.enqueue(object : Callback<MegogoStreamResponse> {
             override fun onResponse(
                 call: Call<MegogoStreamResponse>,
@@ -615,16 +545,4 @@ class UdevsVideoPlayerActivity : Activity() {
         bottomSheetDialog.show()
     }
 
-    private fun showTvProgramsBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.behavior.isDraggable = false
-        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
-        bottomSheetDialog.setContentView(R.layout.tv_programs_sheet)
-        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.tv_programs_rv)
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rv?.layoutManager = layoutManager
-        rv?.adapter = TvProgramsRvAdapter(playerConfiguration!!.programsInfoList)
-        bottomSheetDialog.show()
-    }
 }

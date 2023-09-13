@@ -15,7 +15,7 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
-    <application android:banner="@drawable/logo_secondary">
+    <application >
         <activity
             android:name=".activities.UdevsVideoPlayerActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"

@@ -70,6 +70,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            baseUrl: 'https://www.youtube.com/watch?v=',
             initialResolution: {
               'Автонастройка':
                   'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8'
@@ -99,7 +100,7 @@ class _MyAppState extends State<MyApp> {
             episodeIndex: 0,
             episodeText: 'Episode',
             seasonText: 'Season',
-            videoId: '5178',
+            videoId: '',
             sessionId: '63410b44c2c2e7a4241b43a9',
             authorization:
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg1MDEzNDMsImlzcyI6InVzZXIiLCJwaWQiOjEzMDcsInJvbGUiOiJjdXN0b21lciIsInN1YiI6IjYyMDQzMmZmLTc3ZWItNDc0Mi05MmFhLTZmOGU4NDcyMDI0ZCJ9.6SvUCBT0gb6tIRy1PL-C7WS7xHpJXc1PCZky6aH6HtA',
@@ -118,6 +119,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
+            baseUrl: 'https://www.youtube.com/watch?v=',
             initialResolution: {
               'Автонастройка':
                   'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8'

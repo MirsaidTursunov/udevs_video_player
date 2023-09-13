@@ -23,6 +23,7 @@ class PlayerConfiguration {
     required this.authorization,
     required this.autoText,
     required this.programsText,
+    required this.baseUrl,
   });
 
   final Map<String, String> initialResolution;
@@ -44,6 +45,7 @@ class PlayerConfiguration {
   final String sessionId;
   final String authorization;
   final String autoText;
+  final String baseUrl;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -66,6 +68,7 @@ class PlayerConfiguration {
     map['autoText'] = autoText;
     map['programsText'] = programsText;
     map['isYoutube'] = isYoutube;
+    map['baseUrl'] = baseUrl;
     return map;
   }
 

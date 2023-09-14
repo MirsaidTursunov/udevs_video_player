@@ -11,7 +11,6 @@ class PlayerConfiguration {
     this.fpsCertificateUrl = '',
     this.licenseToken = '',
     this.licenseServiceUrl = '',
-    this.videoUrl = '',
     required this.initialResolution,
     required this.resolutions,
     required this.qualityText,
@@ -77,7 +76,6 @@ class PlayerConfiguration {
   final String fpsCertificateUrl;
   final String licenseToken;
   final String licenseServiceUrl;
-  final String videoUrl;
   final String widevineLicenseUrl;
   final bool isDRM;
 
@@ -116,7 +114,6 @@ class PlayerConfiguration {
     map['fpsCertificateUrl'] = fpsCertificateUrl;
     map['licenseToken'] = licenseToken;
     map['licenseServiceUrl'] = licenseServiceUrl;
-    map['videoUrl'] = videoUrl;
     map['isDRM'] = isDRM;
     map['widevineLicenseUrl'] = widevineLicenseUrl;
     return map;

@@ -40,14 +40,10 @@ struct PlayerConfiguration{
     var fpsCertificateUrl: String
     var licenseToken: String
     var licenseServiceUrl: String
-    var videoUrl : String
     var isDRM : Bool
     
     init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String, channels: [Channel], ip : String, selectChannelIndex: Int, fpsCertificateUrl: String,
-     licenseToken: String,
-     licenseServiceUrl: String,
-         videoUrl : String,
-     isDRM : Bool) {
+     licenseToken: String, licenseServiceUrl: String, isDRM : Bool) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -78,7 +74,6 @@ struct PlayerConfiguration{
         self.channels = channels
         self.ip = ip
         self.selectChannelIndex = selectChannelIndex
-        self.videoUrl = videoUrl
         self.fpsCertificateUrl = fpsCertificateUrl
         self.licenseToken = licenseToken
         self.licenseServiceUrl = licenseServiceUrl
@@ -138,7 +133,6 @@ struct PlayerConfiguration{
                                    fpsCertificateUrl : map["fpsCertificateUrl"] as! String,
                                    licenseToken : map["licenseToken"] as! String,
                                    licenseServiceUrl : map["licenseServiceUrl"] as! String,
-                                   videoUrl : map["videoUrl"] as! String,
                                    isDRM  : map["isDRM"] as! Bool
         )
     }
@@ -153,7 +147,7 @@ struct Season {
         self.movies = movies
     }
     
-    static func fromMap(map : [String:Any])->Season{
+    static func fromMap(map : [String:Any])-> Season {
         var s: [Movie] = []
         var movies: [Dictionary<String, Any>]?
         movies = map["movies"] as! [Dictionary<String, Any>]?

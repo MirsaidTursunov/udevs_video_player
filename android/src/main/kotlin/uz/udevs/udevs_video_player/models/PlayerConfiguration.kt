@@ -70,8 +70,6 @@ data class PlayerConfiguration(
     val selectChannelIndex: Int,
     @SerializedName("isDRM")
     val isDRM: Boolean,
-    @SerializedName("videoUrl")
-    val videoUrl: String,
     @SerializedName("licenseToken")
     val licenseToken: String,
     @SerializedName("widevineLicenseUrl")

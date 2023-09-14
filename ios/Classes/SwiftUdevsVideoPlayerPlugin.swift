@@ -131,13 +131,9 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             }
             if playerConfiguration.isDRM {
                 let vc = PlayerViewController()
-                print(playerConfiguration.fpsCertificateUrl)
-                print(playerConfiguration.videoUrl)
-                print(playerConfiguration.licenseToken)
-                print(playerConfiguration.licenseServiceUrl)
                 vc.modalPresentationStyle = .fullScreen
                 vc.fpsCertificateUrl = playerConfiguration.fpsCertificateUrl
-                vc.videoUrl = playerConfiguration.videoUrl
+                vc.videoUrl = playerConfiguration.url
                 vc.licenseToken = playerConfiguration.licenseToken
                 vc.licenseServiceUrl = playerConfiguration.licenseServiceUrl
                 SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true,  completion: nil)

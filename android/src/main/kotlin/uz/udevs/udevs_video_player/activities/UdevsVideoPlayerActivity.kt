@@ -71,7 +71,6 @@ import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import java.util.Locale
 import kotlin.math.abs
 
-
 @UnstableApi
 class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListener {
 
@@ -124,7 +123,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
     private val TAG = "TAG1"
     private var currentOrientation: Int = Configuration.ORIENTATION_PORTRAIT
     private var titleText = ""
-    private var url: String? = null
+    private lateinit var url: String
     private var sameWithStreamingContent = false
     private var isTouchLocked = false
 
@@ -547,7 +546,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
         var dashMediaSource: DashMediaSource? = null
         if (playerConfiguration.isDRM) {
             val mediaItem: MediaItem.Builder =
-                MediaItem.Builder().setUri(Uri.parse(playerConfiguration.videoUrl))
+                MediaItem.Builder().setUri(Uri.parse(url))
 
             val requestHeaders: MutableMap<String, String> = java.util.HashMap()
             requestHeaders["X-AxDRM-Message"] = playerConfiguration.licenseToken
@@ -907,6 +906,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                 } else {
                     url =
                         playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                            ?: ""
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
@@ -1260,6 +1260,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                     } else {
                         url =
                             playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                                ?: ""
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
@@ -1467,7 +1468,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                         val currentPosition = player.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         url =
-                            if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
+                            if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                                ?: "" else playerConfiguration.resolutions[currentQuality] ?: ""
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
@@ -1500,37 +1502,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
             currentBottomSheet = BottomSheet.SETTINGS
         }
     }
-
-//    override fun onLongPress(e: MotionEvent) = Unit
-//    override fun onFling(e1: MotionEvent, e2: MotionEvent, p2: Float, p3: Float): Boolean = false
-
-//    override fun onScroll(
-//        e1: MotionEvent,
-//        e2: MotionEvent,
-//        distanceX: Float,
-//        distanceY: Float
-//    ): Boolean {
-//        if (abs(distanceX) < abs(distanceY)) {
-//            if (e1.x < sWidth / 2) {
-//                layoutBrightness?.visibility = View.VISIBLE
-//                layoutVolume?.visibility = View.GONE
-//                val increase = distanceY > 0
-//                val newValue: Double = if (increase) brightness + 0.2 else brightness - 0.2
-//                if (newValue in 0.0..maxBrightness) brightness = newValue
-//                brightnessSeekbar?.progress = brightness.toInt()
-//                setScreenBrightness(brightness.toInt())
-//            } else {
-//                layoutBrightness?.visibility = View.GONE
-//                layoutVolume?.visibility = View.VISIBLE
-//                val increase = distanceY > 0
-//                val newValue = if (increase) volume + 0.2 else volume - 0.2
-//                if (newValue in 0.0..maxVolume) volume = newValue
-//                volumeSeekBar?.progress = volume.toInt()
-//                audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, volume.toInt(), 0)
-//            }
-//        }
-//        return true
-//    }
 
     private fun setScreenBrightness(value: Int) {
         val d = 1.0f / 30

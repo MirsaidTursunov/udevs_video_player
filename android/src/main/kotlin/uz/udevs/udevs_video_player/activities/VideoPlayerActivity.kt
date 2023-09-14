@@ -25,19 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.models.CurrentFocus
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
-import uz.udevs.udevs_video_player.retrofit.Common
-import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
@@ -47,75 +40,72 @@ import javax.net.ssl.X509TrustManager
 import java.security.KeyStore
 import javax.net.ssl.TrustManagerFactory
 
-class UdevsVideoPlayerActivity : Activity() {
+class VideoPlayerActivity : Activity() {
 
     private lateinit var playerView: PlayerView
-    private var player: ExoPlayer? = null
-    private var playerConfiguration: PlayerConfiguration? = null
-    private var title: TextView? = null
-    private var subtitle: TextView? = null
-    private var playPause: ImageView? = null
-    private var exoProgress: DefaultTimeBar? = null
-    private var customSeekBar: SeekBar? = null
-    private var timer: LinearLayout? = null
-    private var qualityButton: Button? = null
-    private var speedButton: Button? = null
-    private var previousButton: ImageButton? = null
-    private var nextButton: ImageButton? = null
+    private lateinit var player: ExoPlayer
+    private lateinit var playerConfiguration: PlayerConfiguration
+    private lateinit var title: TextView
+    private lateinit var subtitle: TextView
+    private lateinit var playPause: ImageView
+    private lateinit var exoProgress: DefaultTimeBar
+    private lateinit var customSeekBar: SeekBar
+    private lateinit var timer: LinearLayout
+    private lateinit var qualityButton: Button
+    private lateinit var speedButton: Button
+    private lateinit var previousButton: ImageButton
+    private lateinit var nextButton: ImageButton
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
     private var currentFocus = CurrentFocus.NONE
-    private var retrofitService: RetrofitService? = null
+//    private var retrofitService: RetrofitService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player_activity)
         actionBar?.hide()
-        playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration?
-        seasonIndex = playerConfiguration!!.seasonIndex
-        episodeIndex = playerConfiguration!!.episodeIndex
-        currentQuality = playerConfiguration?.initialResolution?.keys?.first()!!
+        playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration
+        seasonIndex = playerConfiguration.seasonIndex
+        episodeIndex = playerConfiguration.episodeIndex
+        currentQuality = playerConfiguration.initialResolution.keys.first()
 
         playerView = findViewById(R.id.exo_player_view)
 
         initializeViews()
-        retrofitService = Common.retrofitService(playerConfiguration!!.baseUrl)
+//        retrofitService = Common.retrofitService(playerConfiguration.baseUrl)
         initializeClickListeners()
 
         ///TODO: SSL error
         trustEveryone()
 
         playVideo()
-
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_CENTER -> {
                 if (currentFocus == CurrentFocus.EXO_PROGRESS) {
-                    playPause?.visibility = View.VISIBLE
+                    playPause.visibility = View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed({
-                        playPause?.visibility = View.GONE
+                        playPause.visibility = View.GONE
                     }, 1000)
-                    if (player?.isPlaying == true) {
-                        player?.pause()
-                        playPause?.setImageResource(R.drawable.ic_pause)
+                    if (player.isPlaying) {
+                        player.pause()
+                        playPause.setImageResource(R.drawable.ic_pause)
                     } else {
-                        player?.play()
-                        playPause?.setImageResource(R.drawable.ic_play)
+                        player.play()
+                        playPause.setImageResource(R.drawable.ic_play)
                     }
                 }
                 return true
             }
 
             KeyEvent.KEYCODE_BACK -> {
-                if (player?.isPlaying == true) {
-                    player?.stop()
+                if (player.isPlaying) {
+                    player.stop()
                 }
-                var seconds = 0L
-                if (player?.currentPosition != null) {
-                    seconds = player?.currentPosition!! / 1000
-                }
+                val seconds = player.currentPosition / 1000
+
                 val intent = Intent()
                 intent.putExtra("position", seconds.toString())
                 setResult(PLAYER_ACTIVITY_FINISH, intent)
@@ -128,13 +118,11 @@ class UdevsVideoPlayerActivity : Activity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (player?.isPlaying == true) {
-            player?.stop()
+        if (player.isPlaying) {
+            player.stop()
         }
-        var seconds = 0L
-        if (player?.currentPosition != null) {
-            seconds = player?.currentPosition!! / 1000
-        }
+        val seconds = player.currentPosition / 1000
+
         val intent = Intent()
         intent.putExtra("position", seconds.toString())
         setResult(PLAYER_ACTIVITY_FINISH, intent)
@@ -191,271 +179,267 @@ class UdevsVideoPlayerActivity : Activity() {
         }
     }
 
-
     override fun onPause() {
         super.onPause()
-        player?.playWhenReady = false
+        player.playWhenReady = false
     }
 
     override fun onResume() {
         super.onResume()
-        player?.playWhenReady = true
+        player.playWhenReady = true
     }
 
     override fun onRestart() {
         super.onRestart()
-        player?.playWhenReady = true
+        player.playWhenReady = true
     }
 
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.initialResolution.values.first())))
+            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.initialResolution.values.first())))
         player = ExoPlayer.Builder(this).build()
         playerView.player = player
         playerView.keepScreenOn = true
-        playerView.useController = playerConfiguration!!.showController
+        playerView.useController = playerConfiguration.showController
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-        player?.setMediaSource(hlsMediaSource)
-        player?.seekTo(playerConfiguration!!.lastPosition * 1000)
-        player?.prepare()
-        player?.addListener(
+        player.setMediaSource(hlsMediaSource)
+        player.seekTo(playerConfiguration.lastPosition * 1000)
+        player.prepare()
+        player.addListener(
             object : Player.Listener {
                 override fun onPlayerError(error: PlaybackException) {
                     println(error.errorCode)
                 }
-            })
-        player?.playWhenReady = true
+            },
+        )
+        player.playWhenReady = true
     }
 
     @SuppressLint("SetTextI18n")
     private fun initializeViews() {
         title = findViewById(R.id.video_title)
         subtitle = findViewById(R.id.video_subtitle)
-        title?.text = playerConfiguration?.title
+        title.text = playerConfiguration.title
 
         timer = findViewById(R.id.timer)
         playPause = findViewById(R.id.video_play_pause)
         exoProgress = findViewById(R.id.exo_progress)
-        exoProgress?.setKeyTimeIncrement(15000)
+        exoProgress.setKeyTimeIncrement(15000)
         customSeekBar = findViewById(R.id.progress_bar)
-        customSeekBar?.isEnabled = false
+        customSeekBar.isEnabled = false
         qualityButton = findViewById(R.id.quality_button)
-        qualityButton?.text = playerConfiguration!!.qualityText
+        qualityButton.text = playerConfiguration.qualityText
         speedButton = findViewById(R.id.speed_button)
-        speedButton?.text = playerConfiguration!!.speedText
+        speedButton.text = playerConfiguration.speedText
         previousButton = findViewById(R.id.video_previous)
         nextButton = findViewById(R.id.video_next)
-        if (playerConfiguration?.isSerial == true && !(seasonIndex == playerConfiguration!!.seasons.size - 1 &&
-                    episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1)
+        if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 &&
+                    episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)
         ) {
-            nextButton?.visibility = View.VISIBLE
+            nextButton.visibility = View.VISIBLE
         }
-        if (playerConfiguration?.isSerial == true && (seasonIndex == 0 && episodeIndex != 0 || seasonIndex > 0)) {
-            previousButton?.visibility = View.VISIBLE
+        if (playerConfiguration.isSerial && (seasonIndex == 0 && episodeIndex != 0 || seasonIndex > 0)) {
+            previousButton.visibility = View.VISIBLE
         }
-        if (playerConfiguration?.isSerial == true) {
-            subtitle?.visibility = View.VISIBLE
-            subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
+        if (playerConfiguration.isSerial) {
+            subtitle.visibility = View.VISIBLE
+            subtitle.text =
+                "${seasonIndex + 1} ${playerConfiguration.seasonText}, ${episodeIndex + 1} ${playerConfiguration.episodeText}"
         }
-        if (playerConfiguration?.isYoutube == true) {
-            timer?.visibility = View.GONE
-            exoProgress?.visibility = View.GONE
-            customSeekBar?.visibility = View.VISIBLE
+        if (playerConfiguration.isYoutube) {
+            timer.visibility = View.GONE
+            exoProgress.visibility = View.GONE
+            customSeekBar.visibility = View.VISIBLE
         }
     }
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initializeClickListeners() {
-        playPause?.setOnClickListener {
-            if (player?.isPlaying == true) {
-                player?.pause()
+        playPause.setOnClickListener {
+            if (player.isPlaying) {
+                player.pause()
             } else {
-                player?.play()
+                player.play()
             }
         }
-        exoProgress?.setOnFocusChangeListener { _, b ->
+        exoProgress.setOnFocusChangeListener { _, b ->
             if (b) {
                 currentFocus = CurrentFocus.EXO_PROGRESS
             }
         }
-        qualityButton?.setOnFocusChangeListener { _, b ->
+        qualityButton.setOnFocusChangeListener { _, b ->
             if (b) {
                 currentFocus = CurrentFocus.QUALITY
-                qualityButton?.setBackgroundResource(R.drawable.focus_background)
+                qualityButton.setBackgroundResource(R.drawable.focus_background)
             } else {
-                qualityButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+                qualityButton.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
-        speedButton?.setOnFocusChangeListener { _, b ->
+        speedButton.setOnFocusChangeListener { _, b ->
             if (b) {
                 currentFocus = CurrentFocus.SPEED
-                speedButton?.setBackgroundResource(R.drawable.focus_background)
+                speedButton.setBackgroundResource(R.drawable.focus_background)
             } else {
-                speedButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+                speedButton.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
-        previousButton?.setOnFocusChangeListener { _, b ->
+        previousButton.setOnFocusChangeListener { _, b ->
             if (b) {
                 currentFocus = CurrentFocus.PREVIOUS_BTN
-                previousButton?.setBackgroundResource(R.drawable.focus_background)
+                previousButton.setBackgroundResource(R.drawable.focus_background)
             } else {
-                previousButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+                previousButton.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
-        nextButton?.setOnFocusChangeListener { _, b ->
+        nextButton.setOnFocusChangeListener { _, b ->
             if (b) {
                 currentFocus = CurrentFocus.NEXT_BTN
-                nextButton?.setBackgroundResource(R.drawable.focus_background)
+                nextButton.setBackgroundResource(R.drawable.focus_background)
             } else {
-                nextButton?.setBackgroundColor(Color.parseColor("#00FFFFFF"))
+                nextButton.setBackgroundColor(Color.parseColor("#00FFFFFF"))
             }
         }
-        qualityButton?.setOnClickListener {
+        qualityButton.setOnClickListener {
             showQualitySpeedSheet(
                 currentQuality,
-                playerConfiguration?.resolutions?.keys?.toList() as ArrayList,
+                playerConfiguration.resolutions.keys.toList() as ArrayList,
                 true,
             )
         }
-        speedButton?.setOnClickListener {
+        speedButton.setOnClickListener {
             showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
         }
-        previousButton?.setOnClickListener {
+        previousButton.setOnClickListener {
             if (episodeIndex > 0) {
                 episodeIndex--
             } else {
                 seasonIndex--
-                episodeIndex = playerConfiguration!!.seasons[seasonIndex].movies.size - 1
+                episodeIndex = playerConfiguration.seasons[seasonIndex].movies.size - 1
             }
-            nextButton?.visibility = View.VISIBLE
+            nextButton.visibility = View.VISIBLE
             if (seasonIndex == 0 && episodeIndex == 0
             ) {
-                previousButton?.visibility = View.INVISIBLE
+                previousButton.visibility = View.INVISIBLE
             }
-            subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
-            if (playerConfiguration!!.isSerial) {
+            subtitle.text =
+                "${seasonIndex + 1} ${playerConfiguration.seasonText}, ${episodeIndex + 1} ${playerConfiguration.episodeText}"
+            if (playerConfiguration.isSerial) {
                 getMegogoStream()
-            } else if (playerConfiguration!!.isSerial) {
-                getPremierStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource =
                     HlsMediaSource.Factory(dataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                player?.setMediaSource(hlsMediaSource)
-                player?.prepare()
-                player?.playWhenReady
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                player.setMediaSource(hlsMediaSource)
+                player.prepare()
+                player.playWhenReady
             }
         }
-        nextButton?.setOnClickListener {
-            if (seasonIndex < playerConfiguration!!.seasons.size) {
-                if (episodeIndex < playerConfiguration!!.seasons[seasonIndex].movies.size - 1) {
+        nextButton.setOnClickListener {
+            if (seasonIndex < playerConfiguration.seasons.size) {
+                if (episodeIndex < playerConfiguration.seasons[seasonIndex].movies.size - 1) {
                     episodeIndex++
                 } else {
                     seasonIndex++
                 }
             }
-            previousButton?.visibility = View.VISIBLE
-            if (seasonIndex == playerConfiguration!!.seasons.size - 1 &&
-                episodeIndex == playerConfiguration!!.seasons[seasonIndex].movies.size - 1
+            previousButton.visibility = View.VISIBLE
+            if (seasonIndex == playerConfiguration.seasons.size - 1 &&
+                episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1
             ) {
-                nextButton?.visibility = View.INVISIBLE
+                nextButton.visibility = View.INVISIBLE
             }
-            subtitle?.text =
-                "${seasonIndex + 1} ${playerConfiguration!!.seasonText}, ${episodeIndex + 1} ${playerConfiguration!!.episodeText}"
-            if (playerConfiguration!!.isSerial) {
+            subtitle.text =
+                "${seasonIndex + 1} ${playerConfiguration.seasonText}, ${episodeIndex + 1} ${playerConfiguration.episodeText}"
+            if (playerConfiguration.isSerial) {
                 getMegogoStream()
-            } else if (playerConfiguration!!.isSerial) {
-                getPremierStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource =
                     HlsMediaSource.Factory(dataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                player?.setMediaSource(hlsMediaSource)
-                player?.prepare()
-                player?.playWhenReady
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+                player.setMediaSource(hlsMediaSource)
+                player.prepare()
+                player.playWhenReady
             }
         }
     }
 
     private fun getMegogoStream() {
-        retrofitService?.getMegogoStream(
-            playerConfiguration!!.authorization,
-            playerConfiguration!!.sessionId,
-            playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].id,
-            "playerConfiguration!!.megogoAccessToken"
-        )?.enqueue(object : Callback<MegogoStreamResponse> {
-            override fun onResponse(
-                call: Call<MegogoStreamResponse>,
-                response: Response<MegogoStreamResponse>
-            ) {
-                val body = response.body()
-                if (body != null) {
-                    val map: HashMap<String, String> = hashMapOf()
-                    map[playerConfiguration!!.autoText] = body.data!!.src!!
-                    body.data.bitrates?.forEach {
-                        map["${it!!.bitrate}p"] = it.src!!
-                    }
-                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions =
-                        map
-                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                    val hlsMediaSource: HlsMediaSource =
-                        HlsMediaSource.Factory(dataSourceFactory)
-                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
-                }
-            }
-
-            override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+//        retrofitService?.getMegogoStream(
+//            playerConfiguration.authorization,
+//            playerConfiguration.sessionId,
+//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
+//            "playerConfiguration.megogoAccessToken"
+//        )?.enqueue(object : Callback<MegogoStreamResponse> {
+//            override fun onResponse(
+//                call: Call<MegogoStreamResponse>,
+//                response: Response<MegogoStreamResponse>
+//            ) {
+//                val body = response.body()
+//                if (body != null) {
+//                    val map: HashMap<String, String> = hashMapOf()
+//                    map[playerConfiguration.autoText] = body.data!!.src!!
+//                    body.data.bitrates?.forEach {
+//                        map["${it!!.bitrate}p"] = it.src!!
+//                    }
+//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions =
+//                        map
+//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+//                    val hlsMediaSource: HlsMediaSource =
+//                        HlsMediaSource.Factory(dataSourceFactory)
+//                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+//                    player.setMediaSource(hlsMediaSource)
+//                    player.prepare()
+//                    player.playWhenReady
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
+//                t.printStackTrace()
+//            }
+//        })
     }
 
     private fun getPremierStream() {
-        retrofitService?.getPremierStream(
-            playerConfiguration!!.authorization,
-            playerConfiguration!!.sessionId,
-            playerConfiguration!!.videoId,
-            playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].id,
-        )?.enqueue(object : Callback<PremierStreamResponse> {
-            override fun onResponse(
-                call: Call<PremierStreamResponse>,
-                response: Response<PremierStreamResponse>
-            ) {
-                val body = response.body()
-                println(body.toString())
-                if (body != null) {
-                    val map: HashMap<String, String> = hashMapOf()
-                    body.file_info?.forEach {
-                        if (it!!.quality == "auto") {
-                            map[playerConfiguration!!.autoText] = it.file_name!!
-                        } else {
-                            map[it.quality!!] = it.file_name!!
-                        }
-                    }
-                    playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions =
-                        map
-                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                    val hlsMediaSource: HlsMediaSource =
-                        HlsMediaSource.Factory(dataSourceFactory)
-                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-                    player?.setMediaSource(hlsMediaSource)
-                    player?.prepare()
-                    player?.playWhenReady
-                }
-            }
-
-            override fun onFailure(call: Call<PremierStreamResponse>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+//        retrofitService?.getPremierStream(
+//            playerConfiguration.authorization,
+//            playerConfiguration.sessionId,
+//            playerConfiguration.videoId,
+//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
+//        )?.enqueue(object : Callback<PremierStreamResponse> {
+//            override fun onResponse(
+//                call: Call<PremierStreamResponse>,
+//                response: Response<PremierStreamResponse>
+//            ) {
+//                val body = response.body()
+//                println(body.toString())
+//                if (body != null) {
+//                    val map: HashMap<String, String> = hashMapOf()
+//                    body.file_info?.forEach {
+//                        if (it!!.quality == "auto") {
+//                            map[playerConfiguration.autoText] = it.file_name!!
+//                        } else {
+//                            map[it.quality!!] = it.file_name!!
+//                        }
+//                    }
+//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions =
+//                        map
+//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+//                    val hlsMediaSource: HlsMediaSource =
+//                        HlsMediaSource.Factory(dataSourceFactory)
+//                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
+//                    player.setMediaSource(hlsMediaSource)
+//                    player.prepare()
+//                    player.playWhenReady
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<PremierStreamResponse>, t: Throwable) {
+//                t.printStackTrace()
+//            }
+//        })
     }
 
     private var speeds =
@@ -476,10 +460,10 @@ class UdevsVideoPlayerActivity : Activity() {
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
         if (fromQuality) {
             bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
-                playerConfiguration!!.qualityText
+                playerConfiguration.qualityText
         } else {
             bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
-                playerConfiguration!!.speedText
+                playerConfiguration.speedText
         }
         val recyclerView =
             bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as RecyclerView
@@ -523,19 +507,19 @@ class UdevsVideoPlayerActivity : Activity() {
                     if (fromQuality) {
                         currentQuality = l[position]
                         qualityText?.text = currentQuality
-                        val currentPosition = player?.currentPosition
+                        val currentPosition = player.currentPosition
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration!!.resolutions[currentQuality])))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.seekTo(currentPosition!!)
-                        player?.prepare()
-                        player?.playWhenReady
+                                .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.resolutions[currentQuality])))
+                        player.setMediaSource(hlsMediaSource)
+                        player.seekTo(currentPosition)
+                        player.prepare()
+                        player.playWhenReady
                     } else {
                         currentSpeed = l[position]
                         speedText?.text = currentSpeed
-                        player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
+                        player.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }
                     bottomSheetDialog.dismiss()
                 }

@@ -17,7 +17,7 @@
 
     <application >
         <activity
-            android:name=".activities.UdevsVideoPlayerActivity"
+            android:name=".activities.VideoPlayerActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:theme="@style/Theme.Leanback">

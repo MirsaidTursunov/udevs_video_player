@@ -1,6 +1,6 @@
 name: udevs_video_player
 description: Play video natively and easily
-version: 0.0.2
+version: 1.0.0
 homepage: https://github.com/MobileUdevs/udevs_video_player.git
 
 environment:

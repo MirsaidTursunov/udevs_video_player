@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            baseUrl: 'https://www.youtube.com/watch?v=',
+            baseUrl: 'https://www.youtube.com/',
             initialResolution: {
               'Автонастройка':
                   'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8'
@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
               playerConfig: PlayerConfiguration(
-            baseUrl: 'https://www.youtube.com/watch?v=',
+            baseUrl: 'https://www.youtube.com/',
             initialResolution: {
               'Автонастройка':
                   'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8'

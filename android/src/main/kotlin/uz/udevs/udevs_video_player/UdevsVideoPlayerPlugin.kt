@@ -12,7 +12,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
-import uz.udevs.udevs_video_player.activities.UdevsVideoPlayerActivity
+import uz.udevs.udevs_video_player.activities.VideoPlayerActivity
 import uz.udevs.udevs_video_player.activities.YouTubeVideoPlayerActivity
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 
@@ -47,7 +47,7 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     return
                 } else {
                     val intent =
-                        Intent(activity?.applicationContext, UdevsVideoPlayerActivity::class.java)
+                        Intent(activity?.applicationContext, VideoPlayerActivity::class.java)
                     intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
                     activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
                     resultMethod = result

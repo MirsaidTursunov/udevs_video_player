@@ -19,7 +19,7 @@ A new Flutter plugin project.
   s.dependency 'NVActivityIndicatorView'
   s.dependency 'XLActionController'
   s.dependency 'SVGKit'
-  s.dependency 'ScreenshotPreventing'
+  s.dependency 'ScreenshotPreventing', '~> 1.4.0'
   s.dependency 'google-cast-sdk', '< 5.0', '>=4.7.0'
   s.dependency 'SnapKit', '~> 4.0'
   s.dependency 'SDWebImage', '~> 5.0'

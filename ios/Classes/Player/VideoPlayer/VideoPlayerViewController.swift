@@ -140,7 +140,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         playerView.edgesToSuperview()
         view.addSubview(screenshotPreventView)
         screenshotPreventView.edgesToSuperview()
-        screenshotPreventView.preventScreenCapture = false
+        screenshotPreventView.preventScreenCapture = true
 
         NotificationCenter.default.addObserver(self, selector: #selector(castDeviceDidChange),
                                                name: NSNotification.Name.gckCastStateDidChange,

@@ -2,6 +2,7 @@ package uz.udevs.udevs_video_player
 
 import android.app.Activity
 import android.content.Intent
+import androidx.media3.common.util.UnstableApi
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -20,6 +21,7 @@ const val EXTRA_ARGUMENT = "uz.udevs.udevs_video_player.ARGUMENT"
 const val PLAYER_ACTIVITY = 111
 const val PLAYER_ACTIVITY_FINISH = 222
 
+@UnstableApi
 class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     PluginRegistry.NewIntentListener, PluginRegistry.ActivityResultListener {
     private lateinit var channel: MethodChannel

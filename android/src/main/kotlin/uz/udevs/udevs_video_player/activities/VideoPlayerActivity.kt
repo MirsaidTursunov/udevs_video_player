@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -40,6 +41,7 @@ import javax.net.ssl.X509TrustManager
 import java.security.KeyStore
 import javax.net.ssl.TrustManagerFactory
 
+@UnstableApi
 class VideoPlayerActivity : Activity() {
 
     private lateinit var playerView: PlayerView
@@ -58,7 +60,6 @@ class VideoPlayerActivity : Activity() {
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
     private var currentFocus = CurrentFocus.NONE
-//    private var retrofitService: RetrofitService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +73,9 @@ class VideoPlayerActivity : Activity() {
         playerView = findViewById(R.id.exo_player_view)
 
         initializeViews()
-//        retrofitService = Common.retrofitService(playerConfiguration.baseUrl)
         initializeClickListeners()
 
-        ///TODO: SSL error
+        /// TODO: SSL error
         trustEveryone()
 
         playVideo()
@@ -325,7 +325,7 @@ class VideoPlayerActivity : Activity() {
             subtitle.text =
                 "${seasonIndex + 1} ${playerConfiguration.seasonText}, ${episodeIndex + 1} ${playerConfiguration.episodeText}"
             if (playerConfiguration.isSerial) {
-                getMegogoStream()
+//                getMegogoStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource =
@@ -353,7 +353,7 @@ class VideoPlayerActivity : Activity() {
             subtitle.text =
                 "${seasonIndex + 1} ${playerConfiguration.seasonText}, ${episodeIndex + 1} ${playerConfiguration.episodeText}"
             if (playerConfiguration.isSerial) {
-                getMegogoStream()
+//                getMegogoStream()
             } else {
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource =
@@ -364,82 +364,6 @@ class VideoPlayerActivity : Activity() {
                 player.playWhenReady
             }
         }
-    }
-
-    private fun getMegogoStream() {
-//        retrofitService?.getMegogoStream(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
-//            "playerConfiguration.megogoAccessToken"
-//        )?.enqueue(object : Callback<MegogoStreamResponse> {
-//            override fun onResponse(
-//                call: Call<MegogoStreamResponse>,
-//                response: Response<MegogoStreamResponse>
-//            ) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    map[playerConfiguration.autoText] = body.data!!.src!!
-//                    body.data.bitrates?.forEach {
-//                        map["${it!!.bitrate}p"] = it.src!!
-//                    }
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions =
-//                        map
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource =
-//                        HlsMediaSource.Factory(dataSourceFactory)
-//                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-//                    player.setMediaSource(hlsMediaSource)
-//                    player.prepare()
-//                    player.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
-    }
-
-    private fun getPremierStream() {
-//        retrofitService?.getPremierStream(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            playerConfiguration.videoId,
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
-//        )?.enqueue(object : Callback<PremierStreamResponse> {
-//            override fun onResponse(
-//                call: Call<PremierStreamResponse>,
-//                response: Response<PremierStreamResponse>
-//            ) {
-//                val body = response.body()
-//                println(body.toString())
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    body.file_info?.forEach {
-//                        if (it!!.quality == "auto") {
-//                            map[playerConfiguration.autoText] = it.file_name!!
-//                        } else {
-//                            map[it.quality!!] = it.file_name!!
-//                        }
-//                    }
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions =
-//                        map
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource =
-//                        HlsMediaSource.Factory(dataSourceFactory)
-//                            .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-//                    player.setMediaSource(hlsMediaSource)
-//                    player.prepare()
-//                    player.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<PremierStreamResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
     }
 
     private var speeds =

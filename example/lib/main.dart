@@ -73,11 +73,11 @@ class _MyAppState extends State<MyApp> {
             baseUrl: 'https://www.youtube.com/',
             initialResolution: {
               'Автонастройка':
-                  'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8'
+                  'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8'
             },
             resolutions: {
               'Автонастройка':
-                  'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/master.m3u8',
+                  'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8',
               '720p':
                   'https://cdn.xpertmedia.uz/data/videos/4632c42f040d75c9b45d62ff73af789e/720p/index.m3u8',
               '480p':

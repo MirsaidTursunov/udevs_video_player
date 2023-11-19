@@ -21,7 +21,6 @@ class YouTubeVideoPlayerActivity : Activity(), LifecycleObserver {
     private lateinit var kYouTubePlayer: YouTubePlayer
     private var isPlaying: Boolean = true
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_activity)
@@ -75,5 +74,4 @@ class YouTubeVideoPlayerActivity : Activity(), LifecycleObserver {
         super.onDestroy()
         youTubePlayerView.release()
     }
-
 }

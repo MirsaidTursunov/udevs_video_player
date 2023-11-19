@@ -65,8 +65,10 @@ class TvProgramsRvAdapter(var list: List<ProgramsInfo>) :
             holder.date.visibility = View.GONE
             holder.title.visibility = View.VISIBLE
             holder.time.visibility = View.VISIBLE
-            holder.title.text = list[1].tvPrograms[position - list[0].tvPrograms.size - 2].programTitle
-            holder.time.text = list[1].tvPrograms[position - list[0].tvPrograms.size - 2].scheduledTime
+            holder.title.text =
+                list[1].tvPrograms[position - list[0].tvPrograms.size - 2].programTitle
+            holder.time.text =
+                list[1].tvPrograms[position - list[0].tvPrograms.size - 2].scheduledTime
         }
         if (!hasSetFocus) {
             holder.itemView.requestFocus()

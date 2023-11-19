@@ -15,7 +15,7 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
-    <application >
+    <application>
         <activity
             android:name=".activities.VideoPlayerActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"

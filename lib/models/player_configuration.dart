@@ -31,6 +31,7 @@ class PlayerConfiguration {
     required this.seasonIndex,
     required this.episodeIndex,
     required this.isMegogo,
+    required this.isMoreTv,
     required this.isPremier,
     required this.videoId,
     required this.sessionId,
@@ -66,6 +67,7 @@ class PlayerConfiguration {
   final int episodeIndex;
   final bool isMegogo;
   final bool isPremier;
+  final bool isMoreTv;
   final String videoId;
   final String sessionId;
   final String megogoAccessToken;
@@ -100,6 +102,7 @@ class PlayerConfiguration {
     map['seasonIndex'] = seasonIndex;
     map['episodeIndex'] = episodeIndex;
     map['isMegogo'] = isMegogo;
+    map['isMoreTv'] = isMoreTv;
     map['isPremier'] = isPremier;
     map['videoId'] = videoId;
     map['sessionId'] = sessionId;
@@ -137,6 +140,7 @@ class PlayerConfiguration {
       'seasonIndex: $seasonIndex, '
       'episodeIndex: $episodeIndex, '
       'isMegogo: $isMegogo, '
+      'isMoreTv: $isMoreTv, '
       'isPremier: $isPremier, '
       'videoId: $videoId, '
       'sessionId: $sessionId, '

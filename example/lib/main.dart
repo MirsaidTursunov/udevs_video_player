@@ -165,15 +165,22 @@ class _MainPageState extends State<MainPage> {
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
-                '240p':
-                    'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/240p/index.m3u8'
+                '':
+                    'https://st3.allmovies.uz/map/hls/MjU5NjcwOjEwOTUwODUxOTE6MQ--/master.m3u8?t=l1tVQAre8dsfV0W13A1sLA&e=1702324399'
               },
-              resolutions: {},
+              resolutions: {
+                // 'Auto':
+                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880',
+                // '720p':
+                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880',
+                // '1080p':
+                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880'
+              },
               qualityText: 'Качество',
               speedText: 'Скорость',
               lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              isSerial: true,
+              isSerial: false,
               episodeButtonText: 'Эпизоды',
               nextButtonText: 'След.эпизод',
               seasons: [],
@@ -187,6 +194,7 @@ class _MainPageState extends State<MainPage> {
               episodeIndex: 0,
               isMegogo: false,
               isPremier: false,
+              isMoreTv: true,
               videoId: '',
               sessionId: '',
               megogoAccessToken: '',
@@ -243,6 +251,7 @@ class _MainPageState extends State<MainPage> {
               episodeIndex: 0,
               isMegogo: false,
               isPremier: false,
+              isMoreTv: true,
               videoId: '',
               sessionId: '',
               megogoAccessToken: '',

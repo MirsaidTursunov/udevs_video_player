@@ -1,5 +1,11 @@
 package uz.udevs.udevs_video_player.utils
 
+import android.util.Log
+import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.Tracks
+import androidx.media3.exoplayer.ExoPlayer
+import java.util.ArrayList
+
 class MyHelper {
     fun formatDuration(duration: Long): String {
         var seconds = duration
@@ -27,5 +33,43 @@ class MyHelper {
         else "0$seconds"
 
         return "${if (hoursString == "00") "" else "$hoursString:"}$minutesString:$secondsString"
+    }
+
+    fun getAvailableFormatsFromMoreTv(
+        tracks: List<Tracks.Group>
+    ): ArrayList<String> {
+        val formats: MutableList<String> = mutableListOf()
+        for (trackGroup in tracks) {
+            if (trackGroup.isSupported) {
+                for (i in 0 until trackGroup.length) {
+                    val isSupported = trackGroup.isTrackSupported(i)
+                    val trackFormat = trackGroup.getTrackFormat(i).height.toString() + "p"
+                    if (isSupported && trackFormat != "p" && trackFormat != "-1p" && !formats.contains(
+                            trackFormat
+                        )
+                    ) {
+                        formats.add(trackFormat)
+                    }
+                }
+            }
+        }
+        return formats.reversed().toCollection(ArrayList())
+    }
+
+    fun changeVideoQuality(
+        exoPlayer: ExoPlayer,
+        index: Int,
+        numberOfQualities: Int,
+    ) {
+        exoPlayer.trackSelectionParameters =
+            exoPlayer.trackSelectionParameters
+                .buildUpon()
+                .setOverrideForType(
+                    TrackSelectionOverride(
+                        exoPlayer.currentTracks.groups[0].mediaTrackGroup,
+                        numberOfQualities - index - 1
+                    )
+                )
+                .build()
     }
 }

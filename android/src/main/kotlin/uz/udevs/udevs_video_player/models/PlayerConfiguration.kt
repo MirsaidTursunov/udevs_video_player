@@ -42,6 +42,8 @@ data class PlayerConfiguration(
     val episodeIndex: Int,
     @SerializedName("isMegogo")
     val isMegogo: Boolean,
+    @SerializedName("isMoreTv")
+    val isMoreTv: Boolean,
     @SerializedName("isPremier")
     val isPremier: Boolean,
     @SerializedName("videoId")

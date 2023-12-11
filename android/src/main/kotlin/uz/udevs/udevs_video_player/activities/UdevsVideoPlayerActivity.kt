@@ -495,6 +495,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             else DownloadUtil.getDataSourceFactory(this)
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+
         player = ExoPlayer.Builder(this).build()
         playerView?.player = player
         playerView?.keepScreenOn = true
@@ -1238,6 +1239,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (isSettingsBottomSheetOpened) {
             return
         }
+        if(playerConfiguration.isMoreTv){
+            val qualities= MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
+            if(currentQuality.isEmpty() && playerConfiguration.isMoreTv){
+                currentQuality = qualities[0]
+                qualityText?.text = qualities[0]
+            }
+        }
+
         isSettingsBottomSheetOpened = true
         currentBottomSheet = BottomSheet.SETTINGS
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -1268,14 +1277,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 if (playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.isNotEmpty())
                     showQualitySpeedSheet(
                         currentQuality,
-                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as ArrayList,
+                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as? ArrayList ?: ArrayList(),
                         true,
                     )
             } else {
-                if (playerConfiguration.resolutions.isNotEmpty())
+                if (playerConfiguration.resolutions.isNotEmpty() || playerConfiguration.isMoreTv)
                     showQualitySpeedSheet(
                         currentQuality,
-                        playerConfiguration.resolutions.keys.toList() as ArrayList,
+                        playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
                         true,
                     )
             }
@@ -1298,6 +1307,15 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (isQualitySpeedBottomSheetOpened) {
             return
         }
+        val moreTvQualities =
+            MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
+        var finalList: ArrayList<String> = list
+        Log.i("", "isMoreTv: ${playerConfiguration.isMoreTv}, $moreTvQualities")
+
+        if (playerConfiguration.isMoreTv && fromQuality) {
+            finalList = moreTvQualities
+        }
+
         isQualitySpeedBottomSheetOpened = true;
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -1325,71 +1343,82 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
         //sorting
-        val l = mutableListOf<String>()
+        val formats = mutableListOf<String>()
         if (fromQuality) {
             var auto = ""
-            list.forEach {
+            finalList.forEach {
                 if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-                    l.add(it)
+                    formats.add(it)
                 } else {
                     auto = it
                 }
             }
-            for (i in 0 until l.size) {
-                for (j in i until l.size) {
-                    val first = l[i]
-                    val second = l[j]
+            for (i in 0 until formats.size) {
+                for (j in i until formats.size) {
+                    val first = formats[i]
+                    val second = formats[j]
                     if (first.substring(0, first.length - 1).toInt() < second.substring(
                             0, second.length - 1
                         ).toInt()
                     ) {
-                        val a = l[i]
-                        l[i] = l[j]
-                        l[j] = a
+                        val a = formats[i]
+                        formats[i] = formats[j]
+                        formats[j] = a
                     }
                 }
             }
             if (auto.isNotEmpty()) {
-                l.add(0, auto)
+                formats.add(0, auto)
             }
         } else {
-            l.addAll(list)
+            formats.addAll(finalList)
         }
         val adapter = QualitySpeedAdapter(
             initialValue,
             this,
-            l as ArrayList<String>,
+            formats as ArrayList<String>,
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
-                        currentQuality = l[position]
-                        qualityText?.text = currentQuality
-                        if (player?.isPlaying == true) {
-                            player?.pause()
-                        }
-                        val currentPosition = player?.currentPosition
-                        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                        url =
-                            if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
-                        val hlsMediaSource: HlsMediaSource =
-                            HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.seekTo(currentPosition!!)
-                        if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.play()
+                        if (playerConfiguration.isMoreTv) {
+                            MyHelper().changeVideoQuality(
+                                player!!,
+                                position,
+                                finalList.size
+                            )
+                            currentQuality = finalList[position]
+                            qualityText?.text = currentQuality
                         } else {
-                            if (playerConfiguration.isSerial) {
-                                loadRemoteMedia(currentPosition ?: 0)
+                            currentQuality = formats[position]
+                            qualityText?.text = currentQuality
+                            if (player?.isPlaying == true) {
+                                player?.pause()
+                            }
+                            val currentPosition = player?.currentPosition
+                            val dataSourceFactory: DataSource.Factory =
+                                DefaultHttpDataSource.Factory()
+                            url =
+                                if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
+                            val hlsMediaSource: HlsMediaSource =
+                                HlsMediaSource.Factory(dataSourceFactory)
+                                    .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+                            player?.setMediaSource(hlsMediaSource)
+                            player?.seekTo(currentPosition!!)
+                            if (mLocation == PlaybackLocation.LOCAL) {
+                                player?.play()
                             } else {
-                                loadRemoteMedia(currentPosition ?: 0)
+                                if (playerConfiguration.isSerial) {
+                                    loadRemoteMedia(currentPosition ?: 0)
+                                } else {
+                                    loadRemoteMedia(currentPosition ?: 0)
+                                }
                             }
                         }
                     } else {
                         if (mLocation == PlaybackLocation.REMOTE) {
                             return
                         }
-                        currentSpeed = l[position]
+                        currentSpeed = formats[position]
                         speedText?.text = currentSpeed
                         player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }

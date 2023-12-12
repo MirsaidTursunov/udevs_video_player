@@ -6,6 +6,7 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
+import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 
@@ -18,6 +19,13 @@ interface RetrofitService {
         @Query("video_id") videoId: String,
         @Query("access_token") megogoAccessToken: String,
     ): Call<MegogoStreamResponse>
+
+    @GET("moretv/play/{video-id}")
+    fun getMoreTvStream(
+        @Header("Authorization") authorization: String,
+        @Header("SessionId") sessionId: String,
+        @Path("video-id") videoId: String,
+    ): Call<MoreTvStreamResponse>
 
     @GET("premier/videos/{video-id}/episodes/{episode-id}/stream")
     fun getPremierStream(

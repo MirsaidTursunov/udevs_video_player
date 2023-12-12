@@ -161,12 +161,11 @@ class _MainPageState extends State<MainPage> {
   Future<void> playVideo() async {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
-            playerConfig: const PlayerConfiguration(
+            playerConfig: PlayerConfiguration(
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
-                '':
-                    'https://st3.allmovies.uz/map/hls/MjU5NjcwOjEwOTUwODUxOTE6MQ--/master.m3u8?t=l1tVQAre8dsfV0W13A1sLA&e=1702324399'
+                'moretv': 'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
               },
               resolutions: {
                 // 'Auto':
@@ -180,10 +179,78 @@ class _MainPageState extends State<MainPage> {
               speedText: 'Скорость',
               lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              isSerial: false,
+              isSerial: true,
               episodeButtonText: 'Эпизоды',
               nextButtonText: 'След.эпизод',
-              seasons: [],
+              seasons: [
+                Season(title: 'Сезон 1', movies: [
+                  Movie(
+                    id: 260745.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                  Movie(
+                    id: 260750.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                  Movie(
+                    id: 260752.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                  Movie(
+                    id: 260754.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                  Movie(
+                    id: 260763.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                ]),
+                Season(title: 'Сезон 2', movies: [
+                  Movie(
+                    id: 260812.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                  Movie(
+                    id: 260813.toString(),
+                    title: 'title',
+                    description: 'description  ',
+                    image:
+                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                    duration: 2894,
+                    resolutions: {},
+                  ),
+                ])
+              ],
               isLive: false,
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],

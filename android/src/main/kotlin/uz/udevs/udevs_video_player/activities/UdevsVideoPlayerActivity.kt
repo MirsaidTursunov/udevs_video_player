@@ -793,6 +793,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 getMegogoStream()
             } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
                 getPremierStream()
+            } else if(playerConfiguration.isMoreTv && playerConfiguration.isSerial){
+                getMoreTvStream()
             } else {
                 url =
                     playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
@@ -918,6 +920,35 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
 
             override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun getMoreTvStream() {
+        retrofitService?.getMoreTvStream(
+            playerConfiguration.authorization,
+            playerConfiguration.sessionId,
+            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
+        )?.enqueue(object : Callback<MoreTvStreamResponse> {
+            override fun onResponse(
+                call: Call<MoreTvStreamResponse>, response: Response<MoreTvStreamResponse>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    val map: HashMap<String, String> = hashMapOf()
+                    map["moretv"] = body.data.url
+                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions = map
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions["moretv"])))
+                    player?.setMediaSource(hlsMediaSource)
+                    player?.prepare()
+                    player?.playWhenReady
+                }
+            }
+
+            override fun onFailure(call: Call<MoreTvStreamResponse>, t: Throwable) {
                 t.printStackTrace()
             }
         })
@@ -1159,6 +1190,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         getMegogoStream()
                     } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
                         getPremierStream()
+                    } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
+                        getMoreTvStream()
                     } else {
                         url =
                             playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
@@ -1239,9 +1272,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (isSettingsBottomSheetOpened) {
             return
         }
-        if(playerConfiguration.isMoreTv){
-            val qualities= MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
-            if(currentQuality.isEmpty() && playerConfiguration.isMoreTv){
+        if (playerConfiguration.isMoreTv) {
+            val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
+            if ( currentQuality == "moretv" && playerConfiguration.isMoreTv) {
                 currentQuality = qualities[0]
                 qualityText?.text = qualities[0]
             }
@@ -1274,10 +1307,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
             if (playerConfiguration.isSerial) {
-                if (playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.isNotEmpty())
+                if (playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.isNotEmpty() || playerConfiguration.isMoreTv)
                     showQualitySpeedSheet(
                         currentQuality,
-                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as? ArrayList ?: ArrayList(),
+                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as? ArrayList
+                            ?: ArrayList(),
                         true,
                     )
             } else {
@@ -1307,13 +1341,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (isQualitySpeedBottomSheetOpened) {
             return
         }
-        val moreTvQualities =
-            MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
         var finalList: ArrayList<String> = list
-        Log.i("", "isMoreTv: ${playerConfiguration.isMoreTv}, $moreTvQualities")
 
         if (playerConfiguration.isMoreTv && fromQuality) {
-            finalList = moreTvQualities
+            finalList = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
         }
 
         isQualitySpeedBottomSheetOpened = true;

@@ -137,4 +137,32 @@ struct Networking {
         _ = semaphore.wait(wallTimeout: .distantFuture)
         return result
     }
+    
+    func getMoreTvStream(_ baseUrl:String, token:String, sessionId:String) -> Result<MoreTvResponse, NetworkError> {
+        let url = URL(string: baseUrl)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+    
+        var result: Result<MoreTvResponse, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,_,_ in
+            guard let json = data else{
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do{
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(MoreTvResponse.self, from: Data(json))
+                result = .success(response)
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
 }

@@ -28,6 +28,7 @@ struct PlayerConfiguration{
     var episodeIndex: Int
     var isMegogo: Bool
     var isPremier: Bool
+    var isMoreTv: Bool
     var videoId: String
     var sessionId: String
     var megogoAccessToken: String
@@ -40,7 +41,7 @@ struct PlayerConfiguration{
     var selectTvCategoryIndex: Int
     var tvCategories: [TvCategories]
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories]) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories]) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -61,6 +62,7 @@ struct PlayerConfiguration{
         self.episodeIndex = episodeIndex
         self.isMegogo = isMegogo
         self.isPremier = isPremier
+        self.isMoreTv = isMoreTv
         self.videoId = videoId
         self.sessionId = sessionId
         self.megogoAccessToken = megogoAccessToken
@@ -119,6 +121,7 @@ struct PlayerConfiguration{
                                    episodeIndex: map["episodeIndex"] as! Int,
                                    isMegogo: map["isMegogo"] as! Bool,
                                    isPremier: map["isPremier"] as! Bool,
+                                   isMoreTv: map["isMoreTv"] as! Bool,
                                    videoId: map["videoId"] as! String,
                                    sessionId: map["sessionId"] as! String,
                                    megogoAccessToken: map["megogoAccessToken"] as! String,

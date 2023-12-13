@@ -617,6 +617,19 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         return premierSteamResponse
     }
     
+    func getMoreTvStream(episodeId:String) -> MoreTvResponse?{
+        let _url : String = playerConfiguration.baseUrl+"moretv/play/\(episodeId)"
+        var moreTvStreamResponse: MoreTvResponse?
+        let result = Networking.sharedInstance.getMoreTvStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(let success):
+            moreTvStreamResponse = success
+        }
+        return moreTvStreamResponse
+    }
+    
     func getChannel(id : String) -> ChannelResponse? {
         let _url : String = playerConfiguration.baseUrl+"tv/channel/\(id)"
         var channelResponse: ChannelResponse?
@@ -792,6 +805,19 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
                         resolutions["\(file.quality)"] = file.fileName
                     }
                 })
+                startAt = 0
+                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            }
+        }
+        if playerConfiguration.isMoreTv {
+            var success : MoreTvResponse?
+            success = self.getMoreTvStream(episodeId: episodeId)
+            if success != nil {
+                
+//                resolutions[self.playerConfiguration.autoText] = success?.data.src
+//                success?.data.bitrates.forEach({ bitrate in
+//                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
+//                })
                 startAt = 0
                 self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }

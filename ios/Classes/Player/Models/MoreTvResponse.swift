@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - MoreTvResponse
 struct MoreTvResponse: Codable {
-    let data: DataClass
+    let data: MoreTvDataClass
 }
 
 // MARK: MoreTvResponse convenience initializers and mutators
@@ -31,7 +31,7 @@ extension MoreTvResponse {
     }
 
     func with(
-        data: DataClass? = nil
+        data: MoreTvDataClass? = nil
     ) -> MoreTvResponse {
         return MoreTvResponse(
             data: data ?? self.data
@@ -47,8 +47,8 @@ extension MoreTvResponse {
     }
 }
 
-// MARK: - DataClass
-struct DataClass: Codable {
+// MARK: - MoreTvDataClass
+struct MoreTvDataClass: Codable {
     let ad_tag_url: String
     let audio: String
     let duration: Int
@@ -70,11 +70,11 @@ struct DataClass: Codable {
     }
 }
 
-// MARK: DataClass convenience initializers and mutators
+// MARK: MoreTvDataClass convenience initializers and mutators
 
-extension DataClass {
+extension MoreTvDataClass {
     init(data: Data) throws {
-        self = try newJSONDecoder().decode(DataClass.self, from: data)
+        self = try newJSONDecoder().decode(MoreTvDataClass.self, from: data)
     }
 
     init(_ json: String, using encoding: String.Encoding = .utf8) throws {
@@ -94,11 +94,11 @@ extension DataClass {
         duration: Int? = nil,
         expire: Int? = nil,
         id: Int? = nil,
-        mime_type: String = nil,
+        mime_type: String? = nil,
         quality: String? = nil,
         url: String? = nil
-    ) -> DataClass {
-        return DataClass(
+    ) -> MoreTvDataClass {
+        return MoreTvDataClass(
             ad_tag_url: ad_tag_url ?? self.ad_tag_url,
             audio: audio ?? self.audio,
             duration: duration ?? self.duration,

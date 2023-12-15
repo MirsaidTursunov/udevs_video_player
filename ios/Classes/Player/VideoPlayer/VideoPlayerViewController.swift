@@ -553,25 +553,27 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
 
     
     func showQualityBottomSheet(){
-        let resList = resolutions ?? ["480p": playerConfiguration.url]
-        let array = Array(resList.keys)
-        var listOfQuality = [String]()
-        listOfQuality = array.sorted().reversed()
-        array.sorted().reversed().forEach { quality in
-            if quality == "1080p"{
-                listOfQuality.removeLast()
-                listOfQuality.insert("1080p", at: 1)
+       if (!playerConfiguration.isMoreTv) {
+            let resList = resolutions ?? ["480p": playerConfiguration.url]
+            let array = Array(resList.keys)
+            var listOfQuality = [String]()
+            listOfQuality = array.sorted().reversed()
+            array.sorted().reversed().forEach { quality in
+                if quality == "1080p"{
+                    listOfQuality.removeLast()
+                    listOfQuality.insert("1080p", at: 1)
+                }
             }
-        }
-        let bottomSheetVC = BottomSheetViewController()
-        bottomSheetVC.modalPresentationStyle = .overCurrentContext
-        bottomSheetVC.items = listOfQuality
-        bottomSheetVC.labelText = qualityLabelText
-        bottomSheetVC.cellDelegate = self
-        bottomSheetVC.bottomSheetType = .quality
-        bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            self.present(bottomSheetVC, animated: false, completion:nil)
+            let bottomSheetVC = BottomSheetViewController()
+            bottomSheetVC.modalPresentationStyle = .overCurrentContext
+            bottomSheetVC.items = listOfQuality
+            bottomSheetVC.labelText = qualityLabelText
+            bottomSheetVC.cellDelegate = self
+            bottomSheetVC.bottomSheetType = .quality
+            bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.present(bottomSheetVC, animated: false, completion:nil)
+            }
         }
     }
     
@@ -621,6 +623,8 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         let _url : String = playerConfiguration.baseUrl+"moretv/play/\(episodeId)"
         var moreTvStreamResponse: MoreTvResponse?
         let result = Networking.sharedInstance.getMoreTvStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
+        print("_url11111")
+        print(result)
         switch result {
         case .failure(let error):
             print(error)
@@ -814,7 +818,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
             success = self.getMoreTvStream(episodeId: episodeId)
             if success != nil {
                 
-//                resolutions[self.playerConfiguration.autoText] = success?.data.src
+                resolutions[self.playerConfiguration.autoText] = success?.data.url
 //                success?.data.bitrates.forEach({ bitrate in
 //                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
 //                })

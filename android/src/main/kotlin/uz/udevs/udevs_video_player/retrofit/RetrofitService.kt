@@ -41,4 +41,16 @@ interface RetrofitService {
         @Path("id") id: String,
         @Query("client_ip") clientIp: String,
     ): Call<TvChannelResponse>
+
+
+    @GET("ping-online-users")
+    fun sentOnlineUserInfo(
+        @Header("Authorization") authorization: String,
+        @Header("SessionId") sessionId: String,
+        @Query("profile_id") profileId: String,
+        @Query("movie_id") movieId: String,
+        @Query("movie_title") movieTitle: String,
+    ): Call<Any>
+
+
 }

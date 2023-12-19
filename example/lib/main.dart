@@ -162,10 +162,12 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
+              profileId: 'ed023f82-a498-4d69-a5f8-a07f17a026ef',
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: 'https://test.api.spec.uzdigital.tv/v1/',
               initialResolution: {
-                'moretv': 'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
+                'moretv':
+                    'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
               },
               resolutions: {
                 // 'Auto':
@@ -262,10 +264,10 @@ class _MainPageState extends State<MainPage> {
               isMegogo: false,
               isPremier: false,
               isMoreTv: true,
-              videoId: '',
-              sessionId: '',
+              videoId: 'aaa',
+              sessionId: '6257e7ccbcf8533b59d77fd1',
               megogoAccessToken: '',
-              authorization: '',
+              authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTUyOTQwNDYsImlzcyI6InVzZXIiLCJwaWQiOjE4MDAxMCwicm9sZSI6ImN1c3RvbWVyIiwic3ViIjoiNmU1NzA1YjgtMjE5Yy00MmQ1LWI4YjMtZThhYTRjMDU1OWQ2In0.i4qqe1gqTsGsXcNlm6qxxKwt1cT3qvoX0Py2Br1ezTc',
               autoText: 'Автонастройка',
               fromCache: true,
               selectChannelIndex: 0,
@@ -286,8 +288,9 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: const PlayerConfiguration(
+              profileId: 'ed023f82-a498-4d69-a5f8-a07f17a026ef',
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: 'https://test.api.spec.uzdigital.tv/v1/',
               initialResolution: {
                 'Автонастройка':
                     'https://st1.uzdigital.tv/Setanta1HD/video.m3u8?token=316ee910a8ba3e654e262f580299fc93f0367a3b-41666c6b50654d5a7a62747149497458-1695113748-1695102948&remote=94.232.24.122',
@@ -319,10 +322,10 @@ class _MainPageState extends State<MainPage> {
               isMegogo: false,
               isPremier: false,
               isMoreTv: true,
-              videoId: '',
-              sessionId: '',
+              videoId: 'aaa',
+              sessionId: '6257e7ccbcf8533b59d77fd1',
               megogoAccessToken: '',
-              authorization: '',
+              authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTUyOTQwNDYsImlzcyI6InVzZXIiLCJwaWQiOjE4MDAxMCwicm9sZSI6ImN1c3RvbWVyIiwic3ViIjoiNmU1NzA1YjgtMjE5Yy00MmQ1LWI4YjMtZThhYTRjMDU1OWQ2In0.i4qqe1gqTsGsXcNlm6qxxKwt1cT3qvoX0Py2Br1ezTc',
               autoText: 'Автонастройка',
               fromCache: true,
               selectChannelIndex: 0,

@@ -70,4 +70,6 @@ data class PlayerConfiguration(
     val selectTvCategoryIndex: Int,
     @SerializedName("movieShareLink")
     val movieShareLink: String,
+    @SerializedName("profileId")
+    val profileId: String,
 ) : Serializable

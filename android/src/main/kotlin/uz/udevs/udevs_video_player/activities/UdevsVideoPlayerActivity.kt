@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -55,8 +54,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -79,6 +76,7 @@ import uz.udevs.udevs_video_player.utils.MyHelper
 import kotlin.math.abs
 import uz.udevs.udevs_video_player.adapters.*
 import uz.udevs.udevs_video_player.models.*
+
 @UnstableApi
 class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
     ScaleGestureDetector.OnScaleGestureListener, AudioManager.OnAudioFocusChangeListener {
@@ -154,15 +152,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         PLAYING, PAUSED, BUFFERING, IDLE
     }
 
-
-    private suspend fun sentOnlineUserStream() {
-        while (true) {
-            delay(5000)
-            sentOnlineUserData()
-        }
-    }
-
-
     @SuppressLint("AppCompatMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,10 +164,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
         // IntentFilter yaratish
         intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-
-
-        //sentOnlineUser every 5 sec
-        lifecycleScope.launch { sentOnlineUserStream() }
 
         // NetworkChangeReceiver yaratish
         networkChangeReceiver = object : NetworkChangeReceiver() {
@@ -808,7 +793,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 getMegogoStream()
             } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
                 getPremierStream()
-            } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
+            } else if(playerConfiguration.isMoreTv && playerConfiguration.isSerial){
                 getMoreTvStream()
             } else {
                 url =
@@ -906,29 +891,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
         }
     }
-
-
-    private fun sentOnlineUserData() {
-        retrofitService?.sentOnlineUserInfo(
-            playerConfiguration.authorization,
-            playerConfiguration.sessionId,
-            playerConfiguration.profileId,
-            playerConfiguration.videoId,
-            playerConfiguration.title,
-        )?.enqueue(object : Callback<Any> {
-            override fun onResponse(
-                call: Call<Any>, response: Response<Any>
-            ) {
-                response.body()
-                Log.i("","success send ONLINE USER ${response.body()}")
-            }
-
-            override fun onFailure(call: Call<Any>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
-    }
-
 
     private fun getMegogoStream() {
         retrofitService?.getMegogoStream(
@@ -1312,7 +1274,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         if (playerConfiguration.isMoreTv) {
             val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
-            if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
+            if ( currentQuality == "moretv" && playerConfiguration.isMoreTv) {
                 currentQuality = qualities[0]
                 qualityText?.text = qualities[0]
             }

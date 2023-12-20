@@ -45,7 +45,6 @@ class PlayerConfiguration {
     required this.selectChannelIndex,
     this.selectTvCategoryIndex = 0,
     required this.tvCategories,
-    required this.profileId,
   });
 
   final Map<String, String> initialResolution;
@@ -81,7 +80,6 @@ class PlayerConfiguration {
   final String ip;
   final int selectChannelIndex;
   final int selectTvCategoryIndex;
-  final String profileId;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -118,7 +116,6 @@ class PlayerConfiguration {
     map['selectChannelIndex'] = selectChannelIndex;
     map['selectTvCategoryIndex'] = selectTvCategoryIndex;
     map['tvCategories'] = tvCategories.map((v) => v.toJson()).toList();
-    map['profileId'] = profileId;
     return map;
   }
 
@@ -156,6 +153,5 @@ class PlayerConfiguration {
       'channels: $tvCategories, '
       'ip: $ip'
       'selectChannelIndex: $selectChannelIndex'
-      'profileId: $profileId'
       '}';
 }

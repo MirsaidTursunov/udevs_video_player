@@ -7,6 +7,19 @@ import androidx.media3.exoplayer.ExoPlayer
 import java.util.ArrayList
 
 class MyHelper {
+
+    fun isVideoLink(link: String): Boolean {
+        // Define a regular expression for common video file extensions
+        val videoFileExtensions = listOf("mp4", "avi", "mkv", "mov", "wmv", "flv", "webm")
+
+        // Extract the file extension from the link
+        val fileExtension = link.substringAfterLast('.', "")
+
+        // Check if the file extension is in the list of video file extensions
+        return videoFileExtensions.contains(fileExtension.toLowerCase())
+    }
+
+
     fun formatDuration(duration: Long): String {
         var seconds = duration
         val hours: Int = (seconds / 3600).toInt()

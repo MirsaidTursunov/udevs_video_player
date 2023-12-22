@@ -18,6 +18,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 import uz.udevs.udevs_video_player.models.VideoViewModel
+import uz.udevs.udevs_video_player.utils.MyHelper
 
 class VideoPlayerView internal constructor(
     context: Context,
@@ -54,13 +55,15 @@ class VideoPlayerView internal constructor(
     private fun setUrl(methodCall: MethodCall, result: MethodChannel.Result) {
         val args = VideoViewModel(methodCall.arguments as Map<*, *>)
         val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(playerView.context)
+        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(args.getUrl()))
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(args.getUrl()))
         playerView.player = player
         playerView.keepScreenOn = true
         playerView.useController = false
         playerView.resizeMode = args.getResizeMode()
-        player.setMediaSource(hlsMediaSource)
+        player.setMediaSource(if (MyHelper().isVideoLink(args.getUrl())) mediaSource else hlsMediaSource)
         player.prepare()
         player.playWhenReady = true
         result.success(null)

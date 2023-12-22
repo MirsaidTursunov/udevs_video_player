@@ -17,14 +17,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   // load default assets
   void _onMapViewCreated(VideoPlayerViewController controller) {
-    controller.setAssets(
-      assets: 'assets/splash.mp4',
-      resizeMode: ResizeMode.fill,
-    );
-    // controller.setUrl(
-    //   url:
-    //       'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/240p/index.m3u8',
+    // controller.setAssets(
+    //   assets: 'assets/splash.mp4',
+    //   resizeMode: ResizeMode.fill,
     // );
+    controller.setUrl(
+      url:
+          'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4',
+    );
   }
 }
 

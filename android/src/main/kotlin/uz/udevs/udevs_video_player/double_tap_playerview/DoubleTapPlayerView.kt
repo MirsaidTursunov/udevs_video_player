@@ -231,11 +231,11 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
         }
 
         override fun onLongPress(e: MotionEvent) = Unit
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, p2: Float, p3: Float): Boolean =
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent, p2: Float, p3: Float): Boolean =
             false
 
         override fun onScroll(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
             distanceY: Float

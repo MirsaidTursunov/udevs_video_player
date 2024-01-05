@@ -482,7 +482,7 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
     }
 
     override fun onScroll(
-        e1: MotionEvent,
+        e1: MotionEvent?,
         e2: MotionEvent,
         distanceX: Float,
         distanceY: Float
@@ -497,7 +497,7 @@ class VideoPlayerOverlay(context: Context, private val attrs: AttributeSet?) :
 
         fun onScaleEnd(scaleFactor: Float) {}
         fun onScroll(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
             distanceY: Float

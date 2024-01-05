@@ -272,11 +272,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusC
                 }
 
                 override fun onScroll(
-                    e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float
+                    e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
                 ): Boolean {
                     if (!isTouchLocked) {
+                        if(e1 == null) return false
                         if (abs(distanceX) < abs(distanceY)) {
-                            if (e1.x < sWidth / 2) {
+                            if (e1.x< sWidth / 2) {
                                 layoutBrightness?.visibility = View.VISIBLE
                                 layoutVolume?.visibility = View.GONE
                                 val increase = distanceY > 0

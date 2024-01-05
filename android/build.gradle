@@ -2,14 +2,14 @@ group 'uz.udevs.udevs_video_player'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.media3_version = '1.1.1'
+    ext.media3_version = '1.2.0'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:8.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
     }
 }
@@ -26,7 +26,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdkVersion 33
+    namespace 'uz.udevs.udevs_video_player'
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -58,24 +59,24 @@ android {
 
         def multidex_version = "2.0.1"
         implementation "androidx.multidex:multidex:$multidex_version"
-        implementation 'com.google.android.material:material:1.9.0'
-        implementation 'com.google.code.gson:gson:2.9.1'
-        implementation 'com.github.bumptech.glide:glide:4.14.2'
+        implementation 'com.google.android.material:material:1.11.0'
+        implementation 'com.google.code.gson:gson:2.10'
+        implementation 'com.github.bumptech.glide:glide:4.15.1'
         // retrofit
         implementation 'com.squareup.retrofit2:retrofit:2.9.0'
         implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
         implementation 'androidx.appcompat:appcompat:1.6.1'
-        implementation 'androidx.mediarouter:mediarouter:1.4.0'
-        implementation 'com.google.android.gms:play-services-cast-framework:21.3.0'
+        implementation 'androidx.mediarouter:mediarouter:1.6.0'
+        implementation 'com.google.android.gms:play-services-cast-framework:21.4.0'
 
-        implementation 'org.checkerframework:checker-qual:3.13.0'
+        implementation 'org.checkerframework:checker-qual:3.33.0'
         implementation 'com.google.android.gms:play-services-cronet:18.0.1'
         implementation "androidx.media3:media3-datasource-cronet:$media3_version"
     }
 }
 
 dependencies {
-    implementation 'com.android.identity:identity-credential:20230420'
-    implementation 'androidx.media3:media3-exoplayer-dash:1.1.1'
+    implementation 'com.android.identity:identity-credential:20231002'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.2.0'
 }

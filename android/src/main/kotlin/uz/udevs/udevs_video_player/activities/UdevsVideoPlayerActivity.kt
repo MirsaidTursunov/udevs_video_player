@@ -1071,7 +1071,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
-            playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {
                     backButtonEpisodeBottomSheet?.visibility = View.GONE

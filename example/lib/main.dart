@@ -165,7 +165,8 @@ class _MainPageState extends State<MainPage> {
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
-                'moretv': 'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
+                'moretv':
+                    'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
               },
               resolutions: {
                 // 'Auto':
@@ -290,15 +291,13 @@ class _MainPageState extends State<MainPage> {
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':
-                    'https://st1.uzdigital.tv/Setanta1HD/video.m3u8?token=316ee910a8ba3e654e262f580299fc93f0367a3b-41666c6b50654d5a7a62747149497458-1695113748-1695102948&remote=94.232.24.122',
-                '1080p':
-                    'http://st1.uzdigital.tv/Setanta1HD/tracks-v1a1a2/mono.m3u8?remote=94.232.24.122&token=316ee910a8ba3e654e262f580299fc93f0367a3b-41666c6b50654d5a7a62747149497458-1695113748-1695102948&remote=94.232.24.122',
-                '576p':
-                    'http://st1.uzdigital.tv/Setanta1HD/tracks-v2a1a2/mono.m3u8?remote=94.232.24.122&token=316ee910a8ba3e654e262f580299fc93f0367a3b-41666c6b50654d5a7a62747149497458-1695113748-1695102948&remote=94.232.24.122'
+                    'https://st1.uzdigital.tv/Setanta2HD/video.m3u8?token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122'
               },
               resolutions: {
                 'Автонастройка':
-                    'https://st1.uzdigital.tv/Setanta1HD/video.m3u8?token=316ee910a8ba3e654e262f580299fc93f0367a3b-41666c6b50654d5a7a62747149497458-1695113748-1695102948&remote=94.232.24.122'
+                    'https://st1.uzdigital.tv/Setanta2HD/video.m3u8?token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122, 1080p: http://st1.uzdigital.tv/Setanta2HD/tracks-v1a1a2/mono.m3u8?remote=94.232.24.122&token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122',
+                '576p':
+                    'http://st1.uzdigital.tv/Setanta2HD/tracks-v2a1a2/mono.m3u8?remote=94.232.24.122&token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122',
               },
               qualityText: 'Качество',
               speedText: 'Скорость',

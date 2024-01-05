@@ -1031,7 +1031,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
             if (playerConfiguration.isLive) {
-                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
@@ -1071,7 +1071,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
-            playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {
                 BottomSheet.EPISODES -> {
                     backButtonEpisodeBottomSheet?.visibility = View.GONE

@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
             baseUrl: 'https://www.youtube.com/',
             initialResolution: {
               'Автонастройка':
-                  'https://cdn.uzd.udevs.io/uzdigital/videos/772a7a12977cd08a10b6f6843ae80563/master.m3u8'
+                  'https://minio.uzdc.uz/xpertmedia/videos/7ba10db1ab7529f11a3119f8b575126a/master.m3u8'
             },
             resolutions: {
               'Автонастройка':

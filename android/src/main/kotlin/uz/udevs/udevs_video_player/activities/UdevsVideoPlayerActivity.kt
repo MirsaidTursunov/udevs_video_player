@@ -15,7 +15,6 @@ import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -62,22 +61,14 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
-import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
-import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
-import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
-import uz.udevs.udevs_video_player.models.TvChannelResponse
+import uz.udevs.udevs_video_player.adapters.*
+import uz.udevs.udevs_video_player.models.*
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import kotlin.math.abs
-import uz.udevs.udevs_video_player.adapters.*
-import uz.udevs.udevs_video_player.models.*
 
 @UnstableApi
 class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -420,6 +411,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        handler?.removeCallbacksAndMessages(null)
+        handler = null
+
         if (player?.isPlaying == true) {
             player?.stop()
         }
@@ -491,7 +485,49 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
     }
 
+    private var mainLooper: Looper? = null
+    private var handler: Handler? = null
+
+
+    private fun croneJob(){
+        if(mainLooper==null && handler == null) {
+            mainLooper  = Looper.getMainLooper()
+            handler = Handler(mainLooper!!)
+            handler?.post(object : Runnable {
+                override fun run() {
+                    Log.i("", "onCroneJob called")
+                    if (playerConfiguration.isSerial && !isLastEpisode()) {
+                        val current = player?.currentPosition ?: 0
+                        val max = player?.contentDuration ?: 0
+                        val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
+                        if (current > max - showPlayNextTime) {
+                            nextButton?.visibility = View.VISIBLE
+                            Log.i("", "listening0012 changed to :VISIBLE $current  $max")
+                        } else {
+                            nextButton?.visibility = View.GONE
+                            Log.i("", "listening0012 changed to :GONE")
+                        }
+                    }
+
+                    handler?.postDelayed(this, 3000)
+                }
+            })
+        }
+//        val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
+//
+//        // Schedule the task to run every 10 seconds
+//        val initialDelay = 0L // Start immediately
+//        val period = 2L // Repeat every 10 seconds
+//
+//        val task = Runnable {
+
+//        }
+//        scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS)
+    }
+
+
     private fun playVideo() {
+
         val dataSourceFactory: DataSource.Factory =
             if (!playerConfiguration.fromCache) DefaultHttpDataSource.Factory()
             else DownloadUtil.getDataSourceFactory(this)
@@ -505,6 +541,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.setMediaSource(hlsMediaSource)
         player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
+
+
         player?.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
                 Log.d(tag, "onPlayerError: ${error.errorCode}")
@@ -547,6 +585,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
                     Player.STATE_ENDED -> {
                         playPause?.setImageResource(R.drawable.ic_play)
+                        if (isLastEpisode())
+                            onBackPressed()
                     }
 
                     Player.STATE_IDLE -> {
@@ -563,8 +603,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
             registerCallBack()
             listenToProgress()
-
         }
+        croneJob()
     }
 
     private fun rePlayVideo() {
@@ -623,14 +663,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         nextButton = findViewById(R.id.button_next)
         nextText = findViewById(R.id.text_next)
 
-        if (playerConfiguration.seasons.isNotEmpty())
-            if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 && episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)) {
-                nextButton?.visibility = View.VISIBLE
-                nextText?.text = playerConfiguration.nextButtonText
-            } else {
-                nextButton?.visibility = View.GONE
-                nextText?.visibility = View.GONE
-            }
+//        if (playerConfiguration.seasons.isNotEmpty())
+//            if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 && episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)) {
+//                nextButton?.visibility = View.VISIBLE
+//                nextText?.text = playerConfiguration.nextButtonText
+//            } else {
+//                nextButton?.visibility = View.GONE
+//                nextText?.visibility = View.GONE
+//            }
         tvProgramsButton = findViewById(R.id.button_tv_programs)
         if (playerConfiguration.isLive) {
             tvProgramsButton?.visibility = View.VISIBLE
@@ -1047,13 +1087,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             title?.visibility = View.VISIBLE
             title1?.text = ""
             title1?.visibility = View.GONE
-            if (playerConfiguration.isSerial)
-                if (isLastEpisode())
-                    nextButton?.visibility = View.GONE
-                else
-                    nextButton?.visibility = View.VISIBLE
-            else
-                nextButton?.visibility = View.GONE
+//            if (playerConfiguration.isSerial)
+//                if (isLastEpisode())
+//                    nextButton?.visibility = View.GONE
+//                else
+//                    nextButton?.visibility = View.VISIBLE
+//            else
+//                nextButton?.visibility = View.GONE
             zoom?.visibility = View.VISIBLE
             orientation?.setImageResource(R.drawable.ic_portrait)
             when (currentBottomSheet) {
@@ -1078,13 +1118,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             title1?.visibility = View.VISIBLE
             title?.text = ""
             title?.visibility = View.INVISIBLE
-            if (playerConfiguration.isSerial)
-                if (isLastEpisode())
-                    nextButton?.visibility = View.GONE
-                else
-                    nextButton?.visibility = View.VISIBLE
-            else
-                nextButton?.visibility = View.GONE
+//            if (playerConfiguration.isSerial)
+//                if (isLastEpisode())
+//                    nextButton?.visibility = View.GONE
+//                else
+//                    nextButton?.visibility = View.VISIBLE
+//            else
+//                nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -1132,7 +1172,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private fun showTvProgramsBottomSheet() {
         currentBottomSheet = BottomSheet.TV_PROGRAMS
         val bottomSheetDialog = BottomSheetDialog(this)
-        listOfAllOpenedBottomSheets.add(bottomSheetDialog);
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
@@ -1299,7 +1339,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         isSettingsBottomSheetOpened = true
         currentBottomSheet = BottomSheet.SETTINGS
         val bottomSheetDialog = BottomSheetDialog(this)
-        listOfAllOpenedBottomSheets.add(bottomSheetDialog);
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.settings_bottom_sheet)
         backButtonSettingsBottomSheet = bottomSheetDialog.findViewById(R.id.settings_sheet_back)
@@ -1345,7 +1385,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
-            isSettingsBottomSheetOpened = false;
+            isSettingsBottomSheetOpened = false
             currentBottomSheet = BottomSheet.NONE
         }
     }
@@ -1363,10 +1403,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             finalList = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
         }
 
-        isQualitySpeedBottomSheetOpened = true;
+        isQualitySpeedBottomSheetOpened = true
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
         val bottomSheetDialog = BottomSheetDialog(this)
-        listOfAllOpenedBottomSheets.add(bottomSheetDialog);
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
         bottomSheetDialog.behavior.isDraggable = false
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)

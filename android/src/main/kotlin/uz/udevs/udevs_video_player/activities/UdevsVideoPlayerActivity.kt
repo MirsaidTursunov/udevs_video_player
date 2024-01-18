@@ -15,6 +15,7 @@ import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -26,6 +27,7 @@ import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -103,7 +105,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var live: LinearLayout? = null
     private var episodesButton: LinearLayout? = null
     private var episodesText: TextView? = null
-    private var nextButton: LinearLayout? = null
+    private var nextButton: CardView? = null
     private var nextText: TextView? = null
     private var tvProgramsButton: ImageView? = null
     private var tvChannels: ImageView? = null
@@ -561,6 +563,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
             registerCallBack()
             listenToProgress()
+
         }
     }
 
@@ -622,7 +625,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
         if (playerConfiguration.seasons.isNotEmpty())
             if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 && episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)) {
+                nextButton?.visibility = View.VISIBLE
                 nextText?.text = playerConfiguration.nextButtonText
+            } else {
+                nextButton?.visibility = View.GONE
+                nextText?.visibility = View.GONE
             }
         tvProgramsButton = findViewById(R.id.button_tv_programs)
         if (playerConfiguration.isLive) {
@@ -787,13 +794,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             } else {
                 nextButton?.visibility = View.VISIBLE
             }
+
             title?.text =
                 "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
             if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
                 getPremierStream()
-            } else if(playerConfiguration.isMoreTv && playerConfiguration.isSerial){
+            } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
                 getMoreTvStream()
             } else {
                 url =
@@ -810,9 +818,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 }
             }
         }
+
         tvProgramsButton?.setOnClickListener {
             if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
         }
+
         zoom?.setOnClickListener {
             if (mLocation == PlaybackLocation.REMOTE) {
                 return@setOnClickListener
@@ -842,9 +852,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
-                    if (playerConfiguration.isLive) {
-                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    }
+//                    if (playerConfiguration.isLive) {
+//                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//                    }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
             it.postDelayed({
@@ -1030,18 +1040,18 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         currentOrientation = newConfig.orientation
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
-            if (playerConfiguration.isLive) {
-                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            }
+//            if (playerConfiguration.isLive) {
+//                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//            }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
             title1?.text = ""
             title1?.visibility = View.GONE
             if (playerConfiguration.isSerial)
                 if (isLastEpisode())
-                    nextButton?.visibility = View.VISIBLE
-                else
                     nextButton?.visibility = View.GONE
+                else
+                    nextButton?.visibility = View.VISIBLE
             else
                 nextButton?.visibility = View.GONE
             zoom?.visibility = View.VISIBLE
@@ -1068,7 +1078,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             title1?.visibility = View.VISIBLE
             title?.text = ""
             title?.visibility = View.INVISIBLE
-            nextButton?.visibility = View.GONE
+            if (playerConfiguration.isSerial)
+                if (isLastEpisode())
+                    nextButton?.visibility = View.GONE
+                else
+                    nextButton?.visibility = View.VISIBLE
+            else
+                nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -1274,7 +1290,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         if (playerConfiguration.isMoreTv) {
             val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
-            if ( currentQuality == "moretv" && playerConfiguration.isMoreTv) {
+            if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
                 currentQuality = qualities[0]
                 qualityText?.text = qualities[0]
             }

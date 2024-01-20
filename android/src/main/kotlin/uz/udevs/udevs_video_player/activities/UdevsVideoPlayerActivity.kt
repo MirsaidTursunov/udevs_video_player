@@ -21,6 +21,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.Rational
+import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -32,7 +33,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
-import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -507,13 +507,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             // Handle visibility change here
             if (visibility == View.VISIBLE) {
                 Log.i(tag,"PlayerView: VISIBLE")
-                params?.height = 150
-                nextButtonHeight?.layoutParams = params
+                params?.height = dpToPx(100)
             } else {
                 Log.i(tag,"PlayerView: Invisible")
-                params?.height = 70
-                nextButtonHeight?.layoutParams = params
+                params?.height = dpToPx(50)
             }
+            nextButtonHeight?.layoutParams = params
         }
 
 
@@ -521,21 +520,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
 
         player?.addListener(object : Player.Listener {
-            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
-                super.onPlaybackParametersChanged(playbackParameters)
-            }
-
-
             override fun onEvents(
                 player: Player, events: Player.Events
             ) {
                 if (playerConfiguration.isSerial && !isLastEpisode()) {
-//                    val params = nextButtonHeight!!.layoutParams
-//                    params.height =
-//                        if (playerView?.showT == View.)
-//                            150
-//                        else 50
-//                    nextButtonHeight?.layoutParams = params
                     val current = player.currentPosition
                     val max = player.contentDuration
                     val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
@@ -546,8 +534,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         nextButton?.visibility = View.GONE
                         Log.i("", "nextButton changed: Gone")
                     }
-
-
                 }
             }
 
@@ -668,7 +654,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         nextButton = findViewById(R.id.button_next)
         nextButtonHeight = findViewById(R.id.button_next_height)
-        nextButtonHeight?.layoutParams?.height = 150
+        nextButtonHeight?.layoutParams?.height = dpToPx(100)
         nextText = findViewById(R.id.text_next)
 
 //        if (playerConfiguration.seasons.isNotEmpty())
@@ -1078,6 +1064,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 t.printStackTrace()
             }
         })
+    }
+
+    fun dpToPx(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

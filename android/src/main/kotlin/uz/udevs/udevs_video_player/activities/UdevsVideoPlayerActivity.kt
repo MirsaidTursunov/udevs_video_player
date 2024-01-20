@@ -578,8 +578,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
                     Player.STATE_ENDED -> {
                         playPause?.setImageResource(R.drawable.ic_play)
-                        if (isLastEpisode())
+                        if(playerConfiguration.isSerial) {
+                            if (isLastEpisode())
+                                onBackPressed()
+                        }else if (!playerConfiguration.isLive){
                             onBackPressed()
+                        }
                     }
 
                     Player.STATE_IDLE -> {

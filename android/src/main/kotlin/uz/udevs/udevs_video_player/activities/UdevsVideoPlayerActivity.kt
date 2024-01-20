@@ -32,6 +32,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -40,6 +41,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.DefaultTimeBar
+import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
@@ -96,6 +98,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var live: LinearLayout? = null
     private var episodesButton: LinearLayout? = null
     private var episodesText: TextView? = null
+    private var nextButtonHeight: CardView? = null
     private var nextButton: CardView? = null
     private var nextText: TextView? = null
     private var tvProgramsButton: ImageView? = null
@@ -411,9 +414,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        handler?.removeCallbacksAndMessages(null)
-        handler = null
-
         if (player?.isPlaying == true) {
             player?.stop()
         }
@@ -484,47 +484,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             finish()
         }
     }
-
-    private var mainLooper: Looper? = null
-    private var handler: Handler? = null
-
-
-    private fun croneJob(){
-        if(mainLooper==null && handler == null) {
-            mainLooper  = Looper.getMainLooper()
-            handler = Handler(mainLooper!!)
-            handler?.post(object : Runnable {
-                override fun run() {
-                    Log.i("", "onCroneJob called")
-                    if (playerConfiguration.isSerial && !isLastEpisode()) {
-                        val current = player?.currentPosition ?: 0
-                        val max = player?.contentDuration ?: 0
-                        val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
-                        if (current > max - showPlayNextTime) {
-                            nextButton?.visibility = View.VISIBLE
-                            Log.i("", "listening0012 changed to :VISIBLE $current  $max")
-                        } else {
-                            nextButton?.visibility = View.GONE
-                            Log.i("", "listening0012 changed to :GONE")
-                        }
-                    }
-
-                    handler?.postDelayed(this, 3000)
-                }
-            })
-        }
-//        val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
-//
-//        // Schedule the task to run every 10 seconds
-//        val initialDelay = 0L // Start immediately
-//        val period = 2L // Repeat every 10 seconds
-//
-//        val task = Runnable {
-
-//        }
-//        scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS)
-    }
-
+    private var lastClicked1: Long = -1L
 
     private fun playVideo() {
 
@@ -542,8 +502,55 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
 
+        playerView?.findViewById<PlayerControlView>(R.id.exo_controller)?.addVisibilityListener { visibility ->
+            val params = nextButtonHeight?.layoutParams
+            // Handle visibility change here
+            if (visibility == View.VISIBLE) {
+                Log.i(tag,"PlayerView: VISIBLE")
+                params?.height = 150
+                nextButtonHeight?.layoutParams = params
+            } else {
+                Log.i(tag,"PlayerView: Invisible")
+                params?.height = 70
+                nextButtonHeight?.layoutParams = params
+            }
+        }
+
+
+
+
 
         player?.addListener(object : Player.Listener {
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+                super.onPlaybackParametersChanged(playbackParameters)
+            }
+
+
+            override fun onEvents(
+                player: Player, events: Player.Events
+            ) {
+                if (playerConfiguration.isSerial && !isLastEpisode()) {
+//                    val params = nextButtonHeight!!.layoutParams
+//                    params.height =
+//                        if (playerView?.showT == View.)
+//                            150
+//                        else 50
+//                    nextButtonHeight?.layoutParams = params
+                    val current = player.currentPosition
+                    val max = player.contentDuration
+                    val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
+                    if (current > max - showPlayNextTime) {
+                        nextButton?.visibility = View.VISIBLE
+                        Log.i("", "nextButton changed: $current -> $max")
+                    } else {
+                        nextButton?.visibility = View.GONE
+                        Log.i("", "nextButton changed: Gone")
+                    }
+
+
+                }
+            }
+
             override fun onPlayerError(error: PlaybackException) {
                 Log.d(tag, "onPlayerError: ${error.errorCode}")
                 player?.pause()
@@ -604,7 +611,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             registerCallBack()
             listenToProgress()
         }
-        croneJob()
     }
 
     private fun rePlayVideo() {
@@ -612,7 +618,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.play()
     }
 
-    private var lastClicked1: Long = -1L
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeViews() {
@@ -661,6 +667,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             episodesText?.text = playerConfiguration.episodeButtonText
         }
         nextButton = findViewById(R.id.button_next)
+        nextButtonHeight = findViewById(R.id.button_next_height)
+        nextButtonHeight?.layoutParams?.height = 150
         nextText = findViewById(R.id.text_next)
 
 //        if (playerConfiguration.seasons.isNotEmpty())
@@ -818,6 +826,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             if (playerConfiguration.seasons.isNotEmpty())
                 showEpisodesBottomSheet()
         }
+
         nextButton?.setOnClickListener {
             if (playerConfiguration.seasons.isEmpty()) {
                 return@setOnClickListener
@@ -828,11 +837,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 } else {
                     seasonIndex++
                 }
-            }
-            if (isLastEpisode()) {
-                nextButton?.visibility = View.GONE
-            } else {
-                nextButton?.visibility = View.VISIBLE
             }
 
             title?.text =
@@ -857,6 +861,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
+            nextButton?.visibility = View.GONE
         }
 
         tvProgramsButton?.setOnClickListener {

@@ -484,6 +484,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             finish()
         }
     }
+
     private var lastClicked1: Long = -1L
 
     private fun playVideo() {
@@ -502,18 +503,17 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
 
-        playerView?.findViewById<PlayerControlView>(R.id.exo_controller)?.addVisibilityListener { visibility ->
-            val params = nextButtonHeight?.layoutParams
-            // Handle visibility change here
-            if (visibility == View.VISIBLE) {
-                params?.height = dpToPx(100)
-            } else {
-                params?.height = dpToPx(50)
+        playerView?.findViewById<PlayerControlView>(R.id.exo_controller)
+            ?.addVisibilityListener { visibility ->
+                val params = nextButtonHeight?.layoutParams
+                // Handle visibility change here
+                if (visibility == View.VISIBLE) {
+                    params?.height = dpToPx(100)
+                } else {
+                    params?.height = dpToPx(50)
+                }
+                nextButtonHeight?.layoutParams = params
             }
-            nextButtonHeight?.layoutParams = params
-        }
-
-
 
 
 
@@ -530,6 +530,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     } else {
                         nextButton?.visibility = View.GONE
                     }
+                } else if (nextButton?.visibility == View.VISIBLE) {
+                    nextButton?.visibility = View.GONE
                 }
             }
 
@@ -574,10 +576,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
                     Player.STATE_ENDED -> {
                         playPause?.setImageResource(R.drawable.ic_play)
-                        if(playerConfiguration.isSerial) {
-                            if (isLastEpisode())
+                        if (playerConfiguration.isSerial) {
+                            if (isLastEpisode()) {
                                 onBackPressed()
-                        }else if (!playerConfiguration.isLive){
+                            } else {
+                                nextButton?.performClick()
+                            }
+                        } else if (!playerConfiguration.isLive) {
                             onBackPressed()
                         }
                     }
@@ -603,7 +608,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.prepare()
         player?.play()
     }
-
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -814,7 +818,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
 
         nextButton?.setOnClickListener {
-            if (playerConfiguration.seasons.isEmpty()) {
+            if (playerConfiguration.seasons.isEmpty() || isLastEpisode()) {
                 return@setOnClickListener
             }
             if (seasonIndex < playerConfiguration.seasons.size) {
@@ -864,29 +868,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
-//            title?.text =
-//                "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
-//            title?.visibility = View.VISIBLE
-//            if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
-//                getMegogoStream()
-//            } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
-//                getPremierStream()
-//            } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
-//                getMoreTvStream()
-//            } else {
-//                url =
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-//                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-//                    .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-//                player?.setMediaSource(hlsMediaSource)
-//                player?.prepare()
-//                if (mLocation == PlaybackLocation.LOCAL) {
-//                    player?.playWhenReady
-//                } else {
-//                    loadRemoteMedia(0)
-//                }
-//            }
 //            nextButton?.visibility = View.GONE
         }
 

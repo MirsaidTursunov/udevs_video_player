@@ -506,10 +506,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             val params = nextButtonHeight?.layoutParams
             // Handle visibility change here
             if (visibility == View.VISIBLE) {
-                Log.i(tag,"PlayerView: VISIBLE")
                 params?.height = dpToPx(100)
             } else {
-                Log.i(tag,"PlayerView: Invisible")
                 params?.height = dpToPx(50)
             }
             nextButtonHeight?.layoutParams = params
@@ -529,10 +527,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
                     if (current > max - showPlayNextTime) {
                         nextButton?.visibility = View.VISIBLE
-                        Log.i("", "nextButton changed: $current -> $max")
                     } else {
                         nextButton?.visibility = View.GONE
-                        Log.i("", "nextButton changed: Gone")
                     }
                 }
             }
@@ -826,11 +822,26 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     episodeIndex++
                 } else {
                     seasonIndex++
+                    episodeIndex = 0
                 }
             }
 
-            title?.text =
-                "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                titleText =
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                title?.text = titleText
+                title1?.text = title?.text
+                title1?.visibility = View.VISIBLE
+                title?.text = ""
+                title?.visibility = View.INVISIBLE
+            } else {
+                titleText =
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                title?.text = titleText
+                title?.visibility = View.VISIBLE
+                title1?.text = ""
+                title1?.visibility = View.GONE
+            }
             if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
                 getMegogoStream()
             } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
@@ -840,9 +851,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             } else {
                 url =
                     playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+                val dataSourceFactory: DataSource.Factory =
+                    DefaultHttpDataSource.Factory()
+                val hlsMediaSource: HlsMediaSource =
+                    HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
                 player?.setMediaSource(hlsMediaSource)
                 player?.prepare()
                 if (mLocation == PlaybackLocation.LOCAL) {
@@ -851,7 +864,30 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
-            nextButton?.visibility = View.GONE
+//            title?.text =
+//                "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+//            title?.visibility = View.VISIBLE
+//            if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
+//                getMegogoStream()
+//            } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
+//                getPremierStream()
+//            } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
+//                getMoreTvStream()
+//            } else {
+//                url =
+//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+//                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+//                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+//                    .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+//                player?.setMediaSource(hlsMediaSource)
+//                player?.prepare()
+//                if (mLocation == PlaybackLocation.LOCAL) {
+//                    player?.playWhenReady
+//                } else {
+//                    loadRemoteMedia(0)
+//                }
+//            }
+//            nextButton?.visibility = View.GONE
         }
 
         tvProgramsButton?.setOnClickListener {

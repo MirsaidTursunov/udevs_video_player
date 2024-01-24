@@ -659,6 +659,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         nextButtonHeight = findViewById(R.id.button_next_height)
         nextButtonHeight?.layoutParams?.height = dpToPx(100)
         nextText = findViewById(R.id.text_next)
+        nextText?.text = playerConfiguration.nextButtonText
+
 
 //        if (playerConfiguration.seasons.isNotEmpty())
 //            if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 && episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)) {

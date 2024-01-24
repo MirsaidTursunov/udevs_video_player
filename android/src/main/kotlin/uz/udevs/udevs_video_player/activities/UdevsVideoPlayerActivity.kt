@@ -1002,10 +1002,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 override fun onResponse(
                     call: Call<Any>, response: Response<Any>
                 ) {
-
+                    Log.i("SEND ANALYTICS", "response: ${response.body()}")
                 }
 
                 override fun onFailure(call: Call<Any>, t: Throwable) {
+                    Log.i("SEND ANALYTICS", "error: $t")
                     t.printStackTrace()
                 }
             }

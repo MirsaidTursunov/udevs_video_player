@@ -21,7 +21,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.Rational
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -139,6 +138,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var mCastContext: CastContext? = null
     private var channelIndex: Int = 0
     private var tvCategoryIndex: Int = 0
+    private var isPipMode: Boolean = false
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -520,7 +520,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             override fun onEvents(
                 player: Player, events: Player.Events
             ) {
-                if (playerConfiguration.isSerial && !isLastEpisode()) {
+                if (playerConfiguration.isSerial && !isLastEpisode() && !isPipMode) {
                     val current = player.currentPosition
                     val max = player.contentDuration
                     val showPlayNextTime = if (max < 18000) 10000L else (max * 0.05).toLong()
@@ -574,7 +574,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     }
 
                     Player.STATE_ENDED -> {
-                        playPause?.setImageResource(R.drawable.ic_play)
+                        if (!isPipMode) playPause?.setImageResource(R.drawable.ic_play)
                         if (playerConfiguration.isSerial) {
                             if (isLastEpisode()) {
                                 onBackPressed()
@@ -867,6 +867,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
+            if (isPipMode)
+                playerView?.hideController()
 //            nextButton?.visibility = View.GONE
         }
 
@@ -938,15 +940,19 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         startActivity(chooser)
     }
 
+
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean, newConfig: Configuration
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
             if (isInPictureInPictureMode) {
+                isPipMode = true
                 playerView?.hideController()
+                nextButton?.visibility = View.GONE
                 playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             } else {
+                isPipMode = false
                 playerView?.showController()
                 playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
@@ -1553,13 +1559,17 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     player?.seekTo(player!!.currentPosition + 10000)
                 }
             } else {
-                playerView?.showController()
+                if (!isPipMode) {
+                    playerView?.showController()
+                }
             }
             -1L
         }
         Handler(Looper.getMainLooper()).postDelayed({
             if (lastClicked != -1L) {
-                playerView?.showController()
+                if (!isPipMode) {
+                    playerView?.showController()
+                }
                 lastClicked = -1L
             }
         }, 300)

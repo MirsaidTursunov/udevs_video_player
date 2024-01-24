@@ -56,6 +56,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -139,6 +143,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var channelIndex: Int = 0
     private var tvCategoryIndex: Int = 0
     private var isPipMode: Boolean = false
+    private var sendingAnalytics: Job? = null
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -413,6 +418,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        sendingAnalytics?.cancel()
         if (player?.isPlaying == true) {
             player?.stop()
         }
@@ -486,6 +492,16 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     private var lastClicked1: Long = -1L
 
+
+    private fun startSendingAnalytics() {
+        sendingAnalytics = GlobalScope.launch {
+            while (true) {
+                sendAnalytics()
+                delay(10000)
+            }
+        }
+    }
+
     private fun playVideo() {
 
         val dataSourceFactory: DataSource.Factory =
@@ -513,6 +529,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 }
                 nextButtonHeight?.layoutParams = params
             }
+
+        startSendingAnalytics()
 
 
 
@@ -961,6 +979,39 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
     }
 
+    private fun sendAnalytics() {
+        val request = AnalyticsRequest(
+            genre = "",
+            movie_key = playerConfiguration.videoId,
+            profile_id = playerConfiguration.profileId,
+            season_key = if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].title else null,
+            episode_key = if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id else null,
+            title = titleText,
+            user_id = playerConfiguration.userId,
+            video_platform = if (playerConfiguration.isMegogo) "MEGOGO"
+            else if (playerConfiguration.isPremier) "PREMIER"
+            else if (playerConfiguration.isMoreTv) "MORETV" else "UZD+"
+        )
+        Log.i("SEND ANALYTICS", "request: $request")
+        retrofitService?.sendAnalytics(
+            playerConfiguration.authorization,
+            playerConfiguration.sessionId,
+            body = request,
+        )?.enqueue(
+            object : Callback<Any> {
+                override fun onResponse(
+                    call: Call<Any>, response: Response<Any>
+                ) {
+
+                }
+
+                override fun onFailure(call: Call<Any>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            }
+        )
+    }
+
     private fun getMegogoStream() {
         retrofitService?.getMegogoStream(
             playerConfiguration.authorization,
@@ -1094,7 +1145,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         })
     }
 
-    fun dpToPx(dp: Int): Int {
+    private fun dpToPx(dp: Int): Int {
         val scale = resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
     }

@@ -1,10 +1,13 @@
 package uz.udevs.udevs_video_player.retrofit
 
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
@@ -19,6 +22,13 @@ interface RetrofitService {
         @Query("video_id") videoId: String,
         @Query("access_token") megogoAccessToken: String,
     ): Call<MegogoStreamResponse>
+
+    @POST("analytics")
+    fun sendAnalytics(
+        @Header("Authorization") authorization: String,
+        @Header("SessionId") sessionId: String,
+        @Body body: AnalyticsRequest,
+    ): Call<Any>
 
     @GET("moretv/play/{video-id}")
     fun getMoreTvStream(

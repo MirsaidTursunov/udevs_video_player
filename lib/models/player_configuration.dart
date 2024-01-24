@@ -11,41 +11,42 @@ export 'tv_categories.dart';
 export 'tv_channel.dart';
 
 class PlayerConfiguration {
-  const PlayerConfiguration({
-    required this.initialResolution,
-    required this.resolutions,
-    required this.qualityText,
-    required this.speedText,
-    required this.lastPosition,
-    required this.title,
-    required this.isSerial,
-    required this.episodeButtonText,
-    required this.nextButtonText,
-    required this.seasons,
-    required this.isLive,
-    required this.tvProgramsText,
-    required this.programsInfoList,
-    required this.showController,
-    required this.playVideoFromAsset,
-    required this.assetPath,
-    required this.seasonIndex,
-    required this.episodeIndex,
-    required this.isMegogo,
-    required this.isMoreTv,
-    required this.isPremier,
-    required this.videoId,
-    required this.sessionId,
-    required this.megogoAccessToken,
-    required this.authorization,
-    required this.autoText,
-    required this.baseUrl,
-    required this.fromCache,
-    required this.movieShareLink,
-    required this.ip,
-    required this.selectChannelIndex,
-    this.selectTvCategoryIndex = 0,
-    required this.tvCategories,
-  });
+  const PlayerConfiguration(
+      {required this.initialResolution,
+      required this.resolutions,
+      required this.qualityText,
+      required this.speedText,
+      required this.lastPosition,
+      required this.title,
+      required this.isSerial,
+      required this.episodeButtonText,
+      required this.nextButtonText,
+      required this.seasons,
+      required this.isLive,
+      required this.tvProgramsText,
+      required this.programsInfoList,
+      required this.showController,
+      required this.playVideoFromAsset,
+      required this.assetPath,
+      required this.seasonIndex,
+      required this.episodeIndex,
+      required this.isMegogo,
+      required this.isMoreTv,
+      required this.isPremier,
+      required this.videoId,
+      required this.sessionId,
+      required this.megogoAccessToken,
+      required this.authorization,
+      required this.autoText,
+      required this.baseUrl,
+      required this.fromCache,
+      required this.movieShareLink,
+      required this.ip,
+      required this.selectChannelIndex,
+      this.selectTvCategoryIndex = 0,
+      required this.tvCategories,
+      required this.userId,
+      required this.profileId});
 
   final Map<String, String> initialResolution;
   final Map<String, String> resolutions;
@@ -80,6 +81,9 @@ class PlayerConfiguration {
   final String ip;
   final int selectChannelIndex;
   final int selectTvCategoryIndex;
+  final String userId;
+
+  final String profileId;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -115,6 +119,8 @@ class PlayerConfiguration {
     map['ip'] = ip;
     map['selectChannelIndex'] = selectChannelIndex;
     map['selectTvCategoryIndex'] = selectTvCategoryIndex;
+    map['profileId'] = profileId;
+    map['userId'] = userId;
     map['tvCategories'] = tvCategories.map((v) => v.toJson()).toList();
     return map;
   }
@@ -153,5 +159,7 @@ class PlayerConfiguration {
       'channels: $tvCategories, '
       'ip: $ip'
       'selectChannelIndex: $selectChannelIndex'
+      'userId: $userId'
+      'profileId: $profileId'
       '}';
 }

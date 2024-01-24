@@ -272,6 +272,8 @@ class _MainPageState extends State<MainPage> {
               selectChannelIndex: 0,
               ip: '',
               tvCategories: [],
+              userId: '',
+              profileId: '',
             ),
           ) ??
           'nothing';
@@ -348,6 +350,8 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
               ],
+              userId: '',
+              profileId: '',
             ),
           ) ??
           'nothing';

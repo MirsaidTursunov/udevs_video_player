@@ -494,12 +494,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
 
     private fun startSendingAnalytics() {
-        sendingAnalytics = GlobalScope.launch {
-            while (true) {
-                sendAnalytics()
-                delay(10000)
+        if (!playerConfiguration.isLive)
+            sendingAnalytics = GlobalScope.launch {
+                while (true) {
+                    sendAnalytics()
+                    delay(10000)
+                }
             }
-        }
     }
 
     private fun playVideo() {
@@ -984,8 +985,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             genre = "",
             movie_key = playerConfiguration.videoId,
             profile_id = playerConfiguration.profileId,
-            season_key = if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].title else null,
-            episode_key = if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id else null,
+            season_key = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
+            episode_key = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
             title = titleText,
             user_id = playerConfiguration.userId,
             video_platform = if (playerConfiguration.isMegogo) "MEGOGO"

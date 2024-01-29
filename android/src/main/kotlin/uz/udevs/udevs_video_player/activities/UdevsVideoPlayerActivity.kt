@@ -56,6 +56,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -493,14 +494,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var lastClicked1: Long = -1L
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun startSendingAnalytics() {
-        if (!playerConfiguration.isLive)
-            sendingAnalytics = GlobalScope.launch {
-                while (true) {
-                    sendAnalytics()
-                    delay(10000)
-                }
+        sendingAnalytics = GlobalScope.launch {
+            while (true) {
+                sendAnalytics()
+                delay(10000)
             }
+        }
     }
 
     private fun playVideo() {
@@ -926,9 +927,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
-//                    if (playerConfiguration.isLive) {
-//                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//                    }
+                    if (playerConfiguration.isLive) {
+                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
             it.postDelayed({
@@ -1157,9 +1158,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         currentOrientation = newConfig.orientation
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
-//            if (playerConfiguration.isLive) {
-//                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-//            }
+            if (playerConfiguration.isLive) {
+                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
             title1?.text = ""

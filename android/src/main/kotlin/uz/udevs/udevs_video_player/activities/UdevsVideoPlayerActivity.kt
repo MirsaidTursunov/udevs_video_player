@@ -496,12 +496,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startSendingAnalytics() {
-        sendingAnalytics = GlobalScope.launch {
-            while (true) {
-                sendAnalytics()
-                delay(10000)
-            }
-        }
+//        sendingAnalytics = GlobalScope.launch {
+//            while (true) {
+//                sendAnalytics()
+//                delay(10000)
+//            }
+//        }
     }
 
     private fun playVideo() {

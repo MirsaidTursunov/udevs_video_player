@@ -1152,6 +1152,7 @@ class PlayerView: UIView {
         } else {
             delegate?.sliderValueChanged(value: sender.value)
         }
+//        if sender.value ==
     }
     
     /// MARK: - Time logic
@@ -1173,6 +1174,14 @@ class PlayerView: UIView {
                 self?.timeSlider.value = Float(currentItem.currentTime().seconds)
                 self?.currentTimeLabel.text = VGPlayerUtils.getTimeString(from: currentItem.currentTime())
                 self?.streamPosition = CMTimeGetSeconds(time)
+                
+                if (Int(currentItem.currentTime().seconds) == Int(currentItem.duration.seconds))&&((self?.playerConfiguration?.isSerial) == false){
+                    print("currentItem.currentTime().seconds>>>>")
+                    print(currentItem.currentTime().seconds)
+                    self?.purgeMediaPlayer()
+                    self?.removeMediaPlayerObservers()
+                    self?.delegate?.close(duration: self?.player.currentTime().seconds ?? Double(currentItem.duration.seconds))
+                }
             })
         } else {
             self.timeSlider.value = 1

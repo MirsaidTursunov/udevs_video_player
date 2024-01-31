@@ -15,6 +15,7 @@
  */
 package uz.udevs.udevs_video_player.services;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.media3.common.util.UnstableApi;
@@ -56,6 +57,7 @@ public final class DownloadUtil {
     private static @MonotonicNonNull File downloadDirectory;
     private static @MonotonicNonNull Cache downloadCache;
     private static @MonotonicNonNull DownloadManager downloadManager;
+    @SuppressLint("StaticFieldLeak")
     private static @MonotonicNonNull DownloadTracker downloadTracker;
     private static @MonotonicNonNull DownloadNotificationHelper downloadNotificationHelper;
 

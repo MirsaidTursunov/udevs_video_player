@@ -496,12 +496,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startSendingAnalytics() {
-//        sendingAnalytics = GlobalScope.launch {
-//            while (true) {
-//                sendAnalytics()
-//                delay(10000)
-//            }
-//        }
+        if (!playerConfiguration.isLive)
+            sendingAnalytics = GlobalScope.launch {
+                while (true) {
+                    sendAnalytics()
+                    delay(10000)
+                }
+            }
     }
 
     private fun playVideo() {
@@ -749,7 +750,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             return@setOnTouchListener true
         }
 
-        shareMovieLinkIv?.setOnClickListener() {
+        shareMovieLinkIv?.setOnClickListener {
             shareMovieLink()
         }
 

@@ -1,4 +1,4 @@
-package uz.udevs.udevs_video_player.services
+ package uz.udevs.udevs_video_player.services
 
 import android.content.Context
 import android.net.Uri

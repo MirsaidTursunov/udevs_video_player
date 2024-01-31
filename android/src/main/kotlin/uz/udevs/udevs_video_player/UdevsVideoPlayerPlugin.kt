@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.offline.Download
@@ -35,7 +36,7 @@ import kotlin.math.roundToInt
 const val EXTRA_ARGUMENT = "uz.udevs.udevs_video_player.ARGUMENT"
 const val PLAYER_ACTIVITY = 111
 const val PLAYER_ACTIVITY_FINISH = 222
-
+@UnstableApi
 class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     PluginRegistry.NewIntentListener, PluginRegistry.ActivityResultListener,
     DownloadTracker.Listener {

@@ -14,7 +14,6 @@ import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 
 interface RetrofitService {
-
     @GET("megogo/stream")
     fun getMegogoStream(
         @Header("Authorization") authorization: String,

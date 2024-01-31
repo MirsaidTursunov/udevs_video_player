@@ -15,8 +15,10 @@
  */
 package uz.udevs.udevs_video_player.services;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.database.DatabaseProvider;
 import androidx.media3.database.StandaloneDatabaseProvider;
 import androidx.media3.datasource.DataSource;
@@ -43,11 +45,11 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.concurrent.Executors;
 
+@UnstableApi
 public final class DownloadUtil {
 
     public static final String DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel";
     private static final boolean USE_CRONET_FOR_NETWORKING = true;
-    private static final String TAG = "DemoUtil";
     private static final String DOWNLOAD_CONTENT_DIRECTORY = "downloads";
     private static DataSource.@MonotonicNonNull Factory dataSourceFactory;
     private static DataSource.@MonotonicNonNull Factory httpDataSourceFactory;
@@ -55,6 +57,7 @@ public final class DownloadUtil {
     private static @MonotonicNonNull File downloadDirectory;
     private static @MonotonicNonNull Cache downloadCache;
     private static @MonotonicNonNull DownloadManager downloadManager;
+    @SuppressLint("StaticFieldLeak")
     private static @MonotonicNonNull DownloadTracker downloadTracker;
     private static @MonotonicNonNull DownloadNotificationHelper downloadNotificationHelper;
 

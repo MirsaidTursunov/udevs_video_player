@@ -13,7 +13,6 @@ import androidx.viewpager2.widget.ViewPager2
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.models.Season
 
-
 class EpisodePagerAdapter(
     var viewPager: ViewPager2,
     var context: Context,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.RenderersFactory
@@ -13,7 +14,7 @@ import java.io.IOException
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.math.roundToInt
 
-
+@UnstableApi
 class DownloadTracker(
     context: Context,
     dataSourceFactory: DataSource.Factory,
@@ -24,7 +25,7 @@ class DownloadTracker(
         fun onDownloadsChanged(download: Download)
     }
 
-    private val TAG = "DownloadTracker"
+    private val tag = "DownloadTracker"
 
     private var context: Context
     private var dataSourceFactory: DataSource.Factory? = null
@@ -134,7 +135,7 @@ class DownloadTracker(
                 }
             }
         } catch (e: IOException) {
-            Log.w(TAG, "Failed to query downloads", e)
+            Log.w(tag, "Failed to query downloads", e)
         }
     }
 

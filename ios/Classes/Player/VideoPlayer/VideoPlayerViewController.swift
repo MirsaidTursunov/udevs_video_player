@@ -450,6 +450,10 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         self.present(episodeVC, animated: true, completion: nil)
     }
     
+    func nextEpisodesButtonPressed(){
+        onEpisodeCellTapped(seasonIndex: selectedSeason, episodeIndex: selectSesonNum+1)
+    }
+    
     func settingsPressed() {
         let vc = SettingVC()
         vc.modalPresentationStyle = .custom
@@ -784,6 +788,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
         var resolutions: [String:String] = [:]
         var startAt :Int64?
         let episodeId : String = seasons[seasonIndex].movies[episodeIndex].id ?? ""
+        playerView.setEpisodeAndSeasonIndex(seasonIndex: seasonIndex, episodeIndex: episodeIndex)
         if playerConfiguration.isMegogo {
             let parameters : [String:String] = ["video_id":episodeId,"access_token":self.playerConfiguration.megogoAccessToken]
             var success : MegogoStreamResponse?

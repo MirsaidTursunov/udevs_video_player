@@ -192,3 +192,15 @@ extension String {
         return (self as NSString).floatValue
     }
 }
+
+extension UIButton{
+    func applyGradient() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [Colors.gradient1, Colors.gradient2]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        gradientLayer.cornerRadius = 8
+        gradientLayer.frame = bounds
+        layer.insertSublayer(gradientLayer, at: 0)
+    }
+}

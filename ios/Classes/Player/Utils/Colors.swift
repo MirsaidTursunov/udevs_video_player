@@ -22,4 +22,6 @@ class Colors {
     static let primary73 = UIColor(red: 2/255, green: 12/255, blue: 36/255, alpha: 0.73)
     static let channelsBackground = UIColor(red: 16/255, green: 14/255, blue: 25/255, alpha: 0.4)
     static let blue = UIColor(red:80, green: 134, blue: 236)
+    static let gradient1 = UIColor(red: 0.99, green: 0.27, blue: 0.42, alpha: 1.00)
+    static let gradient2 = UIColor(red: 0.25, green: 0.37, blue: 0.98, alpha: 1.00)
 }

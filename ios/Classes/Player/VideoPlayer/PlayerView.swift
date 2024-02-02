@@ -224,6 +224,9 @@ class PlayerView: UIView {
         button.setTitle("", for: .normal)
         button.layer.zPosition = 3
         button.isHidden = true
+        button.layer.cornerRadius = 8
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 14)
+        button.backgroundColor = Colors.gradient1
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
         button.setTitleColor(.white, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
@@ -342,6 +345,7 @@ class PlayerView: UIView {
         configureVolume()
         episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
         nextEpisodButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
+        nextEpisodButton.applyGradient()
         showsBtn.setTitle("", for: .normal)
         if playerConfiguration.isLive {
             episodesButton.isHidden = true
@@ -748,7 +752,7 @@ class PlayerView: UIView {
             make.left.equalToSuperview().offset(-42)
         }
         ///
-        nextEpisodButton.height(28)
+        nextEpisodButton.height(40)
         nextEpisodButton.bottomToTop(of: landscapeButton, offset: -8)
         nextEpisodButton.snp.makeConstraints { make in
               make.right.equalTo(landscapeButton).offset(-16)

@@ -26,8 +26,7 @@ let kPrefEnableMediaNotifications = "enable_media_notifications"
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
-              
+        UNUserNotificationCenter.current().delegate = self
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(AVAudioSession.Category.playback)

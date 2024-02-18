@@ -406,15 +406,7 @@ class PlayerView: UIView {
                 playerLayer.frame.size.width = videoView.bounds.height * videoAspectRatio
             }
         }
-        if (playerConfiguration.isLive){
-            if (UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight){
-                playerLayer.videoGravity = .resize
-            } else {
-                playerLayer.videoGravity = .resizeAspect
-            }
-        } else {
-            playerLayer.videoGravity = .resizeAspect
-        }
+        playerLayer.videoGravity = .resizeAspect
         videoView.layer.addSublayer(playerLayer)
         layer.insertSublayer(playerLayer, above: videoView.layer)
         if !playerConfiguration.isLive {
@@ -634,13 +626,9 @@ class PlayerView: UIView {
         if gesture.state == .changed {
             let scale = gesture.scale
             if scale < 0.9 {
-                if playerConfiguration.isLive {
-                    self.playerLayer.videoGravity = .resize
-                } else {
-                    self.playerLayer.videoGravity = .resizeAspect
-                }
+                self.playerLayer.videoGravity = .resizeAspect
             } else {
-//                self.playerLayer.videoGravity = .resizeAspectFill
+                self.playerLayer.videoGravity = .resizeAspectFill
             }
             resetTimer()
         }

@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import uz.udevs.udevs_video_player.R
 
-
 class QualitySpeedAdapter(
     private val currentValue: String,
     private val context: Context,

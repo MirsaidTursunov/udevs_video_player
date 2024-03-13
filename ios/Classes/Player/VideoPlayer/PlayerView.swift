@@ -16,6 +16,7 @@ protocol PlayerViewDelegate: NSObjectProtocol {
     func close(duration: Double)
     func settingsPressed()
     func episodesButtonPressed()
+    func nextEpisodesButtonPressed()
     func channelsButtonPressed()
     func showPressed()
     func changeOrientation()
@@ -67,6 +68,11 @@ class PlayerView: UIView {
     // If there is a pending request to start playback.
     var pendingPlay: Bool = false
     var seeking: Bool = false
+    var isLastEpisod: Bool = false
+    ///
+    var seasonIndex: Int = 0
+    var episodeIndex: Int = 0
+
     
     private var videoView: UIView = {
         let view = UIView()
@@ -212,6 +218,22 @@ class PlayerView: UIView {
         return button
     }()
     
+    private var nextEpisodButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Svg.play.uiImage, for: .normal)
+        button.setTitle("", for: .normal)
+        button.layer.zPosition = 3
+        button.isHidden = true
+        button.layer.cornerRadius = 8
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 14)
+        button.backgroundColor = Colors.gradient1
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
+        button.setTitleColor(.white, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(nextEpisodesButtonPressed(_:)), for: .touchUpInside)
+        return button
+    }()
+    
     private var episodesButton: UIButton = {
         let button = UIButton()
         button.setImage(Svg.serial.uiImage, for: .normal)
@@ -322,6 +344,8 @@ class PlayerView: UIView {
     private func uiSetup(){
         configureVolume()
         episodesButton.setTitle(" "+playerConfiguration.episodeButtonText, for: .normal)
+        nextEpisodButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
+        nextEpisodButton.applyGradient()
         showsBtn.setTitle("", for: .normal)
         if playerConfiguration.isLive {
             episodesButton.isHidden = true
@@ -485,6 +509,10 @@ class PlayerView: UIView {
     
     @objc func episodesButtonPressed(_ sender: UIButton){
         delegate?.episodesButtonPressed()
+    }
+    
+    @objc func nextEpisodesButtonPressed(_ sender: UIButton){
+        delegate?.nextEpisodesButtonPressed()
     }
     
     @objc func channelsButtonPressed(_ sender: UIButton){
@@ -670,6 +698,7 @@ class PlayerView: UIView {
         addSubview(videoView)
         addSubview(overlayView)
         addSubview(brightnessSlider)
+        addSubview(nextEpisodButton)
         overlayView.addSubview(topView)
         overlayView.addSubview(playButton)
         overlayView.addSubview(skipForwardButton)
@@ -719,9 +748,14 @@ class PlayerView: UIView {
         brightnessSlider.centerY(to: overlayView)
         brightnessSlider.width(120)
         brightnessSlider.height(12)
-        
         brightnessSlider.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(-42)
+        }
+        ///
+        nextEpisodButton.height(40)
+        nextEpisodButton.bottomToTop(of: landscapeButton, offset: -8)
+        nextEpisodButton.snp.makeConstraints { make in
+              make.right.equalTo(landscapeButton).offset(-16)
         }
         ///
         playButton.centerX(to: overlayView)
@@ -1152,6 +1186,7 @@ class PlayerView: UIView {
         } else {
             delegate?.sliderValueChanged(value: sender.value)
         }
+//        if sender.value ==
     }
     
     /// MARK: - Time logic
@@ -1173,10 +1208,45 @@ class PlayerView: UIView {
                 self?.timeSlider.value = Float(currentItem.currentTime().seconds)
                 self?.currentTimeLabel.text = VGPlayerUtils.getTimeString(from: currentItem.currentTime())
                 self?.streamPosition = CMTimeGetSeconds(time)
+                
+                if let configuration = self?.playerConfiguration {
+                    let isSerial = configuration.isSerial
+                    let isLastEpisod = self?.isLastEpisod ?? false
+                    let currentTime = Int(currentItem.currentTime().seconds)
+                    let totalTime = Int(currentItem.duration.seconds)
+
+                    if isSerial {
+                        if totalTime >= 180 {
+                            self?.nextEpisodButton.isHidden = isLastEpisod || (currentTime < Int(0.95 * Double(totalTime)))
+                        } else {
+                            self?.nextEpisodButton.isHidden = isLastEpisod || (currentTime < totalTime - 10)
+                        }
+
+                        if (totalTime - currentTime <= 1)&&(!isLastEpisod) {
+                            self?.delegate?.nextEpisodesButtonPressed()
+                        } else if (totalTime - currentTime <= 4)&&isLastEpisod{
+                            self?.closeVideoPlayer()
+                        }
+                    } else if currentTime == totalTime && !isSerial {
+                        self?.closeVideoPlayer()
+                    }
+                }
             })
         } else {
             self.timeSlider.value = 1
         }
+    }
+    
+    func setEpisodeAndSeasonIndex(seasonIndex: Int, episodeIndex: Int) {
+        self.seasonIndex = seasonIndex
+        self.episodeIndex = episodeIndex
+        self.isLastEpisod = playerConfiguration.seasons[seasonIndex].movies.count-1==episodeIndex
+       }
+    
+    func closeVideoPlayer() {
+        purgeMediaPlayer();
+        removeMediaPlayerObservers();
+        delegate?.close(duration: player.currentTime().seconds)
     }
     
     func removeMediaPlayerObservers() {

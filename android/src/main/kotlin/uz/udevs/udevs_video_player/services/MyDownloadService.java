@@ -23,6 +23,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media3.common.util.NotificationUtil;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.common.util.Util;
 import androidx.media3.exoplayer.offline.Download;
 import androidx.media3.exoplayer.offline.DownloadManager;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import uz.udevs.udevs_video_player.R;
 
+@UnstableApi
 public class MyDownloadService extends DownloadService {
 
     private static final int JOB_ID = 1;

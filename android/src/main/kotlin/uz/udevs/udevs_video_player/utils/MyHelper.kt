@@ -1,6 +1,5 @@
 package uz.udevs.udevs_video_player.utils
 
-import android.util.Log
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.exoplayer.ExoPlayer
@@ -16,7 +15,7 @@ class MyHelper {
         val fileExtension = link.substringAfterLast('.', "")
 
         // Check if the file extension is in the list of video file extensions
-        return videoFileExtensions.contains(fileExtension.toLowerCase())
+        return videoFileExtensions.contains(fileExtension.lowercase())
     }
 
 

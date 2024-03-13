@@ -750,7 +750,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             return@setOnTouchListener true
         }
 
-        shareMovieLinkIv?.setOnClickListener() {
+        shareMovieLinkIv?.setOnClickListener {
             shareMovieLink()
         }
 

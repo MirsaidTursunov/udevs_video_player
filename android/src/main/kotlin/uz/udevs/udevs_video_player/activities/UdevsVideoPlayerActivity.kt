@@ -989,7 +989,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             profile_id = playerConfiguration.profileId,
             season_key = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
             episode_key = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
-            title = titleText,
+            title = playerConfiguration.title,
             user_id = playerConfiguration.userId,
             video_platform = if (playerConfiguration.isMegogo) "MEGOGO"
             else if (playerConfiguration.isPremier) "PREMIER"

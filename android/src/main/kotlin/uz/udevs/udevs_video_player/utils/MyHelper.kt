@@ -87,6 +87,13 @@ class MyHelper {
 
     fun removeSeasonEpisode(text: String): String {
         val regex = Regex("""\bS\d+ E\d+\b""")
-        return regex.replace(text, "").replace("\"","").trim()
+        return regex.replace(text, "").replace("\"", "").trim()
     }
+
+
+}
+
+fun String.removeSeasonEpisode(): String {
+    val regex = Regex("""\bS\d+ E\d+\b""")
+    return regex.replace(this, "").replace("\"", "").trim()
 }

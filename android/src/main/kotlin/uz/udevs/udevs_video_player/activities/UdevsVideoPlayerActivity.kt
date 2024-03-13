@@ -74,6 +74,7 @@ import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
+import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import kotlin.math.abs
 
 @UnstableApi
@@ -854,7 +855,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
             if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 titleText =
-                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
                 title?.text = titleText
                 title1?.text = title?.text
                 title1?.visibility = View.VISIBLE
@@ -862,7 +863,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 title?.visibility = View.INVISIBLE
             } else {
                 titleText =
-                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
                 title?.text = titleText
                 title?.visibility = View.VISIBLE
                 title1?.text = ""
@@ -989,7 +990,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             profile_id = playerConfiguration.profileId,
             season_key = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
             episode_key = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
-            title = MyHelper().removeSeasonEpisode(playerConfiguration.title),
+            title = playerConfiguration.title.removeSeasonEpisode(),
             user_id = playerConfiguration.userId,
             video_platform = if (playerConfiguration.isMegogo) "MEGOGO"
             else if (playerConfiguration.isPremier) "PREMIER"
@@ -1307,7 +1308,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     episodeIndex = epIndex
                     if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                         titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
+                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
                         title?.text = titleText
                         title1?.text = title?.text
                         title1?.visibility = View.VISIBLE
@@ -1315,7 +1316,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         title?.visibility = View.INVISIBLE
                     } else {
                         titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
+                            "S${seasonIndex + 1} E${episodeIndex + 1} " +playerConfiguration.title.removeSeasonEpisode()
                         title?.text = titleText
                         title?.visibility = View.VISIBLE
                         title1?.text = ""

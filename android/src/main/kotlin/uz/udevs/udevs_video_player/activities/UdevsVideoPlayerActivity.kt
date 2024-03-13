@@ -854,7 +854,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
             if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 titleText =
-                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
                 title?.text = titleText
                 title1?.text = title?.text
                 title1?.visibility = View.VISIBLE
@@ -862,7 +862,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 title?.visibility = View.INVISIBLE
             } else {
                 titleText =
-                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                    "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
                 title?.text = titleText
                 title?.visibility = View.VISIBLE
                 title1?.text = ""
@@ -1307,7 +1307,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     episodeIndex = epIndex
                     if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
                         titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
                         title?.text = titleText
                         title1?.text = title?.text
                         title1?.visibility = View.VISIBLE
@@ -1315,7 +1315,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         title?.visibility = View.INVISIBLE
                     } else {
                         titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.seasons[seasonIndex].movies[episodeIndex].title
+                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title
                         title?.text = titleText
                         title?.visibility = View.VISIBLE
                         title1?.text = ""

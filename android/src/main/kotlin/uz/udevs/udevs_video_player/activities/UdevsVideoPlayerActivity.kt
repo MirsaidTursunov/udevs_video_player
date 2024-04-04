@@ -757,6 +757,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
 
         close?.setOnClickListener {
+            sendingAnalytics?.cancel()
             if (player?.isPlaying == true) {
                 player?.stop()
             }

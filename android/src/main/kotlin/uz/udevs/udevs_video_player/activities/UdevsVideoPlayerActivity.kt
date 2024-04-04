@@ -478,6 +478,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     }
 
     override fun onStop() {
+        sendingAnalytics?.cancel()
         super.onStop()
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 isInPictureInPictureMode

@@ -75,6 +75,7 @@ import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
+import uz.udevs.udevs_video_player.utils.toHttps
 import kotlin.math.abs
 
 @UnstableApi
@@ -1318,7 +1319,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         title?.visibility = View.INVISIBLE
                     } else {
                         titleText =
-                            "S${seasonIndex + 1} E${episodeIndex + 1} " +playerConfiguration.title.removeSeasonEpisode()
+                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
                         title?.text = titleText
                         title?.visibility = View.VISIBLE
                         title1?.text = ""
@@ -1567,7 +1568,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             val dataSourceFactory: DataSource.Factory =
                                 DefaultHttpDataSource.Factory()
                             url =
-                                if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality] else playerConfiguration.resolutions[currentQuality]
+                                (if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                                else playerConfiguration.resolutions[currentQuality])?.toHttps()
                             val hlsMediaSource: HlsMediaSource =
                                 HlsMediaSource.Factory(dataSourceFactory)
                                     .createMediaSource(MediaItem.fromUri(Uri.parse(url)))

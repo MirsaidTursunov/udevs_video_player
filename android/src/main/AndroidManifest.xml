@@ -12,7 +12,8 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
-    <application>
+    <application
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".activities.UdevsVideoPlayerActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize|uiMode|layoutDirection"

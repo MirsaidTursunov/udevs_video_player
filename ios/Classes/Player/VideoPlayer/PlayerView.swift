@@ -129,7 +129,7 @@ class PlayerView: UIView {
         return liveView
     }()
     
-    private var landscapeButton: IconButton = {
+    private lazy var landscapeButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.portrait.uiImage, for: .normal)
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
@@ -143,7 +143,7 @@ class PlayerView: UIView {
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         return label
     }()
-    
+
     private var durationTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "00:00"
@@ -151,7 +151,7 @@ class PlayerView: UIView {
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         return label
     }()
-    
+
     private var seperatorLabel: UILabel = {
         let label = UILabel()
         label.text = " / "
@@ -159,66 +159,66 @@ class PlayerView: UIView {
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         return label
     }()
-    
-    private var timeSlider: UISlider = {
+
+    private lazy var timeSlider: UISlider = {
         let slider = UISlider()
         slider.tintColor = Colors.mainColor
         slider.maximumTrackTintColor = .lightGray
         slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         return slider
     }()
-    
-    private var exitButton: IconButton = {
+
+    private lazy var exitButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.exit.uiImage, for: .normal)
         button.addTarget(self, action: #selector(exitButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var pipButton: IconButton = {
+
+    private lazy var pipButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.pip.uiImage, for: .normal)
         button.addTarget(self, action: #selector(togglePictureInPictureMode(_ :)), for: .touchUpInside)
         return button
     }()
-    
-    private var settingsButton: IconButton = {
+
+    private lazy var settingsButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.more.uiImage, for: .normal)
         button.addTarget(self, action: #selector(settingPressed(_ :)), for: .touchUpInside)
         return button
     }()
-    
-    private var shareButton: IconButton = {
+
+    private lazy var shareButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.share.uiImage, for: .normal)
         button.addTarget(self, action: #selector(share(_ :)), for: .touchUpInside)
         button.isHidden = true
         return button
     }()
-    
-    private var playButton: IconButton = {
+
+    private lazy var playButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.play.uiImage, for: .normal)
         button.addTarget(self, action: #selector(playButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var skipForwardButton: IconButton = {
+
+    private lazy var skipForwardButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.forward.uiImage, for: .normal)
         button.addTarget(self, action: #selector(skipForwardButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var skipBackwardButton: IconButton = {
+
+    private lazy var skipBackwardButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.replay.uiImage, for: .normal)
         button.addTarget(self, action: #selector(skipBackButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var nextEpisodButton: UIButton = {
+
+    private lazy var nextEpisodButton: UIButton = {
         let button = UIButton()
         button.setImage(Svg.play.uiImage, for: .normal)
         button.setTitle("", for: .normal)
@@ -233,8 +233,8 @@ class PlayerView: UIView {
         button.addTarget(self, action: #selector(nextEpisodesButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var episodesButton: UIButton = {
+
+    private lazy var episodesButton: UIButton = {
         let button = UIButton()
         button.setImage(Svg.serial.uiImage, for: .normal)
         button.setTitle("", for: .normal)
@@ -245,8 +245,8 @@ class PlayerView: UIView {
         button.addTarget(self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var channelsButton: UIButton = {
+
+    private lazy var channelsButton: UIButton = {
         let button = UIButton()
         button.setImage(Svg.channels.uiImage, for: .normal)
         button.setTitle("", for: .normal)
@@ -256,8 +256,8 @@ class PlayerView: UIView {
         button.addTarget(self, action: #selector(channelsButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-    
-    private var showsBtn: UIButton = {
+
+    private lazy var showsBtn: UIButton = {
         let button = UIButton()
         button.setImage(Svg.programmes.uiImage, for: .normal)
         button.setTitle("", for: .normal)

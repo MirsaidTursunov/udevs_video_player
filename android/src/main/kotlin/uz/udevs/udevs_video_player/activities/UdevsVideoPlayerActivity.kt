@@ -21,9 +21,20 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.Rational
-import android.view.*
-import android.widget.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.view.View
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -50,7 +61,10 @@ import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaSeekOptions
-import com.google.android.gms.cast.framework.*
+import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -67,8 +81,17 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.EXTRA_ARGUMENT
 import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.adapters.*
-import uz.udevs.udevs_video_player.models.*
+import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
+import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
+import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
+import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
+import uz.udevs.udevs_video_player.models.AnalyticsRequest
+import uz.udevs.udevs_video_player.models.BottomSheet
+import uz.udevs.udevs_video_player.models.MegogoStreamResponse
+import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
+import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
@@ -76,6 +99,8 @@ import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
+import java.util.Timer
+import kotlin.concurrent.timerTask
 import kotlin.math.abs
 
 @UnstableApi
@@ -422,9 +447,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         sendingAnalytics?.cancel()
-        if (player?.isPlaying == true) {
-            player?.stop()
-        }
+        closeToRequestAuth?.cancel()
         var seconds = 0L
         if (player?.currentPosition != null) {
             seconds = player?.currentPosition!! / 1000
@@ -480,6 +503,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     override fun onStop() {
         sendingAnalytics?.cancel()
+        closeToRequestAuth?.cancel()
         super.onStop()
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 isInPictureInPictureMode
@@ -508,6 +532,24 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
     }
 
+    private var closeToRequestAuth: Timer? = null
+
+    private fun wait3MinsAndClose() {
+        if (playerConfiguration.isLive && playerConfiguration.authorization.isEmpty()) {
+            closeToRequestAuth = Timer()
+            closeToRequestAuth?.schedule(timerTask {
+                Log.i("wait3mins", "should request auto = true")
+                removeProgressListener()
+                unregisterCallBack()
+                val intent = Intent()
+                intent.putExtra("position", -401);
+                setResult(PLAYER_ACTIVITY_FINISH, intent)
+                finish()
+            }, 15000)
+        }
+    }
+
+
     private fun playVideo() {
 
         val dataSourceFactory: DataSource.Factory =
@@ -524,7 +566,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
 
-        playerView?.findViewById<PlayerControlView>(R.id.exo_controller)
+        playerView?.findViewById<PlayerControlView>(androidx.media3.ui.R.id.exo_play)
             ?.addVisibilityListener { visibility ->
                 val params = nextButtonHeight?.layoutParams
                 // Handle visibility change here
@@ -537,7 +579,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
 
         startSendingAnalytics()
-
+        wait3MinsAndClose()
 
 
         player?.addListener(object : Player.Listener {
@@ -758,6 +800,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
 
         close?.setOnClickListener {
+            closeToRequestAuth?.cancel()
             sendingAnalytics?.cancel()
             if (player?.isPlaying == true) {
                 player?.stop()

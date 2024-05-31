@@ -542,7 +542,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 removeProgressListener()
                 unregisterCallBack()
                 val intent = Intent()
-                intent.putExtra("position", -401);
+                intent.putExtra("position", -1L)
                 setResult(PLAYER_ACTIVITY_FINISH, intent)
                 finish()
             }, 15000)

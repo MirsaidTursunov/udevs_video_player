@@ -191,7 +191,7 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
 
     private func wait3MinsAndClose(playerConfiguration: PlayerConfiguration) {
         if playerConfiguration.isLive && playerConfiguration.authorization.isEmpty {
-            closeToRequestAuthTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(handleCloseToRequestAuth), userInfo: nil, repeats: false)
+            closeToRequestAuthTimer = Timer.scheduledTimer(timeInterval: 180, target: self, selector: #selector(handleCloseToRequestAuth), userInfo: nil, repeats: false)
         }
     }
 

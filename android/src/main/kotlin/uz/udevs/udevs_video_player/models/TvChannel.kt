@@ -11,5 +11,9 @@ data class TvChannel(
     @SerializedName("name")
     val name: String,
     @SerializedName("resolutions")
-    var resolutions: HashMap<String, String>
+    var resolutions: HashMap<String, String>,
+    @SerializedName("paymentType")
+    var paymentType: String,
+    @SerializedName("hasAccess")
+    var hasAccess: Boolean,
 ) : Serializable

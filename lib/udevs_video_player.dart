@@ -5,6 +5,7 @@ import 'package:udevs_video_player/models/download_configuration.dart';
 import 'package:udevs_video_player/models/media_item_download.dart';
 import 'package:udevs_video_player/models/player_configuration.dart';
 
+import 'models/live_player_configuration.dart';
 import 'udevs_video_player_platform_interface.dart';
 
 export 'package:udevs_video_player/models/download_configuration.dart';
@@ -26,6 +27,13 @@ class UdevsVideoPlayer {
     final String jsonStringConfig = jsonEncode(playerConfig.toJson());
     return UdevsVideoPlayerPlatform.instance.playVideo(
       playerConfigJsonString: jsonStringConfig,
+    );
+  }
+
+  Future<int?> playLiveVideo({required LivePlayerConfiguration playerConfig}) {
+    final String jsonStringConfig = jsonEncode(playerConfig.toJson());
+    return UdevsVideoPlayerPlatform.instance.playLiveVideo(
+      livePlayerConfigJsonString: jsonStringConfig,
     );
   }
 

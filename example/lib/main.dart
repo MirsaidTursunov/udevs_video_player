@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:udevs_video_player/models/live_player_configuration.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player_example/second_page.dart';
 import 'package:udevs_video_player_example/video_view_page.dart';
@@ -285,11 +286,11 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  Future<void> playVideoTV() async {
+  Future<void> playLiveVideo() async {
     try {
-      final s = await _udevsVideoPlayerPlugin.playVideo(
-            playerConfig: const PlayerConfiguration(
-              movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
+      final s = await _udevsVideoPlayerPlugin.playLiveVideo(
+            playerConfig: const LivePlayerConfiguration(
+              // movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':
@@ -303,29 +304,29 @@ class _MainPageState extends State<MainPage> {
               },
               qualityText: 'Качество',
               speedText: 'Скорость',
-              lastPosition: 0,
+              // lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              isSerial: true,
-              episodeButtonText: 'Эпизоды',
-              nextButtonText: 'След.эпизод',
-              seasons: [],
-              isLive: true,
+              // isSerial: true,
+              // episodeButtonText: 'Эпизоды',
+              // nextButtonText: 'След.эпизод',
+              // seasons: [],
+              // isLive: true,
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],
               showController: true,
-              playVideoFromAsset: false,
-              assetPath: '',
-              seasonIndex: 0,
-              episodeIndex: 0,
-              isMegogo: false,
-              isPremier: false,
-              isMoreTv: true,
-              videoId: '',
-              sessionId: '',
-              megogoAccessToken: '',
+              // playVideoFromAsset: false,
+              // assetPath: '',
+              // seasonIndex: 0,
+              // episodeIndex: 0,
+              // isMegogo: false,
+              // isPremier: false,
+              // isMoreTv: true,
+              // videoId: '',
+              // sessionId: '',
+              // megogoAccessToken: '',
               authorization: '',
               autoText: 'Автонастройка',
-              fromCache: true,
+              // fromCache: true,
               selectChannelIndex: 0,
               ip: '',
               tvCategories: [
@@ -350,8 +351,8 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
               ],
-              userId: '',
-              profileId: '',
+              // userId: '',
+              // profileId: '',
             ),
           ) ??
           'nothing';
@@ -375,7 +376,7 @@ class _MainPageState extends State<MainPage> {
               child: const Text('Play Video'),
             ),
             ElevatedButton(
-              onPressed: playVideoTV,
+              onPressed: playLiveVideo,
               child: const Text('Play Video Tv'),
             ),
             ElevatedButton(

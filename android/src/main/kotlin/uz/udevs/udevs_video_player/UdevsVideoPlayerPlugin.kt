@@ -24,8 +24,10 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
+import uz.udevs.udevs_video_player.activities.UdevsLiveVideoPlayerActivity
 import uz.udevs.udevs_video_player.activities.UdevsVideoPlayerActivity
 import uz.udevs.udevs_video_player.models.DownloadConfiguration
+import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.MediaItemDownload
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 import uz.udevs.udevs_video_player.services.DownloadTracker
@@ -86,6 +88,18 @@ class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 val intent =
                     Intent(activity?.applicationContext, UdevsVideoPlayerActivity::class.java)
                 intent.putExtra(EXTRA_ARGUMENT, playerConfiguration)
+                activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
+                resultMethod = result
+            }
+        } else if (call.method == "playLiveVideo") {
+            if (call.hasArgument("livePlayerConfigJsonString")) {
+                val playerConfigJsonString = call.argument("livePlayerConfigJsonString") as String?
+                val gson = Gson()
+                val livePlayerConfiguration =
+                    gson.fromJson(playerConfigJsonString, LivePlayerConfiguration::class.java)
+                val intent =
+                    Intent(activity?.applicationContext, UdevsLiveVideoPlayerActivity::class.java)
+                intent.putExtra(EXTRA_ARGUMENT, livePlayerConfiguration)
                 activity?.startActivityForResult(intent, PLAYER_ACTIVITY)
                 resultMethod = result
             }

@@ -537,8 +537,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory =
-            if (!playerConfiguration.fromCache) DefaultHttpDataSource.Factory()
-            else DownloadUtil.getDataSourceFactory(this)
+//            if (!playerConfiguration.fromCache)
+                DefaultHttpDataSource.Factory()
+//            else DownloadUtil.getDataSourceFactory(this)
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
 

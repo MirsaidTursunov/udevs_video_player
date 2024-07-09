@@ -340,6 +340,8 @@ class _MainPageState extends State<MainPage> {
                       image:
                           'https://cdn.uzd.udevs.io/uzdigital/images/1738fe23-f629-4a69-ae16-617cf61fcf9d.png',
                       resolutions: {},
+                      paymentType: 'free',
+                      hasAccess: true,
                     ),
                     TvChannel(
                       name: 'Setanta Sports 2',
@@ -347,6 +349,8 @@ class _MainPageState extends State<MainPage> {
                       image:
                           'https://cdn.uzd.udevs.io/uzdigital/images/1738fe23-f629-4a69-ae16-617cf61fcf9d.png',
                       resolutions: {},
+                      paymentType: 'svod',
+                      hasAccess: true,
                     ),
                   ],
                 ),

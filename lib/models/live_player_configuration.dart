@@ -1,3 +1,4 @@
+import 'package:udevs_video_player/models/advertisement_response.dart';
 import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/tv_categories.dart';
 
@@ -38,12 +39,14 @@ class LivePlayerConfiguration {
     required this.tvCategories,
     // required this.userId,
     // required this.profileId,
+    this.advertisement,
   });
 
   final Map<String, String> initialResolution;
   final Map<String, String> resolutions;
   final String qualityText;
   final String speedText;
+  final AdvertisementResponse? advertisement;
 
   // final int lastPosition;
   final String title;
@@ -91,6 +94,7 @@ class LivePlayerConfiguration {
     map['speedText'] = speedText;
     // map['lastPosition'] = lastPosition;
     map['title'] = title;
+    map['advertisement'] = advertisement?.toJson();
     // map['isSerial'] = isSerial;
     // map['episodeButtonText'] = episodeButtonText;
     // map['nextButtonText'] = nextButtonText;
@@ -159,5 +163,6 @@ class LivePlayerConfiguration {
       'selectChannelIndex: $selectChannelIndex'
       // 'userId: $userId'
       // 'profileId: $profileId'
+      'advertisement: $advertisement'
       '}';
 }

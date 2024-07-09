@@ -36,6 +36,7 @@ import kotlin.math.roundToInt
 const val EXTRA_ARGUMENT = "uz.udevs.udevs_video_player.ARGUMENT"
 const val PLAYER_ACTIVITY = 111
 const val PLAYER_ACTIVITY_FINISH = 222
+
 @UnstableApi
 class UdevsVideoPlayerPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     PluginRegistry.NewIntentListener, PluginRegistry.ActivityResultListener,

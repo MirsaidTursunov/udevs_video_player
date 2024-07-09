@@ -1049,85 +1049,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         }
     }
 
-//    private var backButtonEpisodeBottomSheet: ImageView? = null
-//    private fun showEpisodesBottomSheet() {
-//        currentBottomSheet = BottomSheet.EPISODES
-//        val bottomSheetDialog = BottomSheetDialog(this)
-//        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
-//        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//        bottomSheetDialog.setContentView(R.layout.episodes)
-//        backButtonEpisodeBottomSheet = bottomSheetDialog.findViewById(R.id.episode_sheet_back)
-//        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            backButtonEpisodeBottomSheet?.visibility = View.GONE
-//        } else {
-//            backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
-//        }
-//        backButtonEpisodeBottomSheet?.setOnClickListener {
-//            bottomSheetDialog.dismiss()
-//        }
-//        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.episodes_sheet_title)
-//        titleBottomSheet?.text = title?.text
-//        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.episode_tabs)
-//        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.episode_view_pager)
-//        viewPager?.adapter = EpisodePagerAdapter(viewPager!!, this,
-//            playerConfiguration.seasons,
-//            seasonIndex,
-//            episodeIndex,
-//            object : EpisodePagerAdapter.OnClickListener {
-//                @SuppressLint("SetTextI18n")
-//                override fun onClick(epIndex: Int, seasIndex: Int) {
-//                    seasonIndex = seasIndex
-//                    episodeIndex = epIndex
-//                    if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-//                        titleText =
-//                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
-//                        title?.text = titleText
-//                        title1?.text = title?.text
-//                        title1?.visibility = View.VISIBLE
-//                        title?.text = ""
-//                        title?.visibility = View.INVISIBLE
-//                    } else {
-//                        titleText =
-//                            "S${seasonIndex + 1} E${episodeIndex + 1} " + playerConfiguration.title.removeSeasonEpisode()
-//                        title?.text = titleText
-//                        title?.visibility = View.VISIBLE
-//                        title1?.text = ""
-//                        title1?.visibility = View.GONE
-//                    }
-//                    if (playerConfiguration.isMegogo && playerConfiguration.isSerial) {
-//                        getMegogoStream()
-//                    } else if (playerConfiguration.isPremier && playerConfiguration.isSerial) {
-//                        getPremierStream()
-//                    } else if (playerConfiguration.isMoreTv && playerConfiguration.isSerial) {
-//                        getMoreTvStream()
-//                    } else {
-//                        url =
-//                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-//                        val dataSourceFactory: DataSource.Factory =
-//                            DefaultHttpDataSource.Factory()
-//                        val hlsMediaSource: HlsMediaSource =
-//                            HlsMediaSource.Factory(dataSourceFactory)
-//                                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-//                        player?.setMediaSource(hlsMediaSource)
-//                        player?.prepare()
-//                        if (mLocation == PlaybackLocation.LOCAL) {
-//                            player?.playWhenReady
-//                        } else {
-//                            loadRemoteMedia(0)
-//                        }
-//                    }
-//                    bottomSheetDialog.dismiss()
-//                }
-//            })
-//        TabLayoutMediator(tabLayout!!, viewPager) { tab, position ->
-//            tab.text = playerConfiguration.seasons[position].title
-//        }.attach()
-//        bottomSheetDialog.show()
-//        bottomSheetDialog.setOnDismissListener {
-//            currentBottomSheet = BottomSheet.NONE
-//        }
-//    }
-
     private fun showChannelsBottomSheet() {
         currentBottomSheet = BottomSheet.CHANNELS
         val bottomSheetDialog = BottomSheetDialog(this, R.style.ChannelsBottomSheetDialog)
@@ -1142,7 +1063,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             this, playerConfiguration.tvCategories,
             object : TvCategoryPagerAdapter.OnClickListener {
                 override fun onClick(tvCIndex: Int, cIndex: Int) {
-                    getSingleTvChannel(tvCIndex, cIndex)
+                    if (playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess)
+                        getSingleTvChannel(tvCIndex, cIndex)
                     bottomSheetDialog.dismiss()
                 }
             },

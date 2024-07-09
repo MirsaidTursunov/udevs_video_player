@@ -505,18 +505,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private var lastClicked1: Long = -1L
 
-
-//    @OptIn(DelicateCoroutinesApi::class)
-//    private fun startSendingAnalytics() {
-//        if (!playerConfiguration.isLive)
-//            sendingAnalytics = GlobalScope.launch {
-//                while (true) {
-//                    sendAnalytics()
-//                    delay(10000)
-//                }
-//            }
-//    }
-
     private var closeToRequestAuth: Timer? = null
 
     private fun wait3MinsAndClose() {
@@ -563,7 +551,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 //                nextButtonHeight?.layoutParams = params
             }
 
-//        startSendingAnalytics()
         wait3MinsAndClose()
 
 
@@ -646,7 +633,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeViews() {
-//        shareMovieLinkIv = findViewById(R.id.iv_share_movie)
+        shareMovieLinkIv = findViewById(R.id.iv_share_movie)
         playerView = findViewById(R.id.exo_player_view)
         customPlayback = findViewById(R.id.custom_playback)
         layoutBrightness = findViewById(R.id.layout_brightness)
@@ -680,43 +667,20 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         videoPosition = findViewById(R.id.video_position)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)
-//        if (playerConfiguration.isLive) {
-//        shareMovieLinkIv?.visibility = View.GONE
+        shareMovieLinkIv?.visibility = View.GONE
         live?.visibility = View.VISIBLE
-//        }
-//        episodesButton = findViewById(R.id.button_episodes)
-//        episodesText = findViewById(R.id.text_episodes)
-//        if (playerConfiguration.seasons.isNotEmpty()) {
-//            episodesButton?.visibility = View.VISIBLE
-//            episodesText?.text = playerConfiguration.episodeButtonText
-//        }
-//        nextButtonHeight = findViewById(R.id.button_next_height)
-//        nextButtonHeight?.layoutParams?.height = dpToPx(100)
-
-//        if (playerConfiguration.seasons.isNotEmpty())
-//            if (playerConfiguration.isSerial && !(seasonIndex == playerConfiguration.seasons.size - 1 && episodeIndex == playerConfiguration.seasons[seasonIndex].movies.size - 1)) {
-//                nextButton?.visibility = View.VISIBLE
-//                nextText?.text = playerConfiguration.nextButtonText
-//            } else {
-//                nextButton?.visibility = View.GONE
-//                nextText?.visibility = View.GONE
-//            }
         tvProgramsButton = findViewById(R.id.button_tv_programs)
-//        if (playerConfiguration.isLive) {
         tvProgramsButton?.visibility = View.VISIBLE
         tvChannels?.visibility = View.VISIBLE
-//        }
         zoom = findViewById(R.id.zoom)
         orientation = findViewById(R.id.orientation)
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
-//        if (playerConfiguration.isLive) {
         exoProgress?.visibility = View.GONE
         rewind?.visibility = View.GONE
         forward?.visibility = View.GONE
         customSeekBar?.visibility = View.VISIBLE
-//        }
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
                 scaleGestureDetector?.onTouchEvent(motionEvent)
@@ -759,11 +723,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             }
             return@setOnTouchListener true
         }
-
-//        shareMovieLinkIv?.setOnClickListener {
-//            shareMovieLink()
-//        }
-
         close?.setOnClickListener {
             closeToRequestAuth?.cancel()
 //            sendingAnalytics?.cancel()
@@ -842,62 +801,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 }
             }
         }
-
         tvChannels?.setOnClickListener {
             showChannelsBottomSheet()
         }
-//        episodesButton?.setOnClickListener {
-//            if (playerConfiguration.seasons.isNotEmpty())
-//                showEpisodesBottomSheet()
-//        }
-
-//        nextButton?.setOnClickListener {
-//            if (playerConfiguration.seasons.isEmpty() || isLastEpisode()) {
-//                return@setOnClickListener
-//            }
-//            if (seasonIndex < playerConfiguration.seasons.size) {
-//                if (episodeIndex < playerConfiguration.seasons[seasonIndex].movies.size - 1) {
-//                    episodeIndex++
-//                } else {
-//                    seasonIndex++
-//                    episodeIndex = 0
-//                }
-//            }
-
-        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            titleText = playerConfiguration.title.removeSeasonEpisode()
-            title?.text = titleText
-            title1?.text = title?.text
-            title1?.visibility = View.VISIBLE
-            title?.text = ""
-            title?.visibility = View.INVISIBLE
-        } else {
-            titleText =
-                playerConfiguration.title.removeSeasonEpisode()
-            title?.text = titleText
-            title?.visibility = View.VISIBLE
-            title1?.text = ""
-            title1?.visibility = View.GONE
-        }
-
-        url = ""
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
-        val dataSourceFactory: DataSource.Factory =
-            DefaultHttpDataSource.Factory()
-        val hlsMediaSource: HlsMediaSource =
-            HlsMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-        player?.setMediaSource(hlsMediaSource)
-        player?.prepare()
-        if (mLocation == PlaybackLocation.LOCAL) {
-            player?.playWhenReady
-        } else {
-            loadRemoteMedia(0)
-        }
-
-        if (isPipMode)
-            playerView?.hideController()
-
 
         tvProgramsButton?.setOnClickListener {
             if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
@@ -976,7 +882,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             if (isInPictureInPictureMode) {
                 isPipMode = true
                 playerView?.hideController()
-//                nextButton?.visibility = View.GONE
                 playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             } else {
                 isPipMode = false
@@ -985,138 +890,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             }
         }
     }
-
-//    private fun sendAnalytics() {
-//        val request = AnalyticsRequest(
-//            genre = "",
-//            movie_key = playerConfiguration.videoId,
-//            profile_id = playerConfiguration.profileId,
-//            season_key = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
-//            episode_key = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
-//            title = playerConfiguration.title.removeSeasonEpisode(),
-//            user_id = playerConfiguration.userId,
-//            video_platform = if (playerConfiguration.isMegogo) "MEGOGO"
-//            else if (playerConfiguration.isPremier) "PREMIER"
-//            else if (playerConfiguration.isMoreTv) "MORETV" else "UZD+"
-//        )
-//        Log.i("SEND ANALYTICS", "request: $request")
-//        retrofitService?.sendAnalytics(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            body = request,
-//        )?.enqueue(
-//            object : Callback<Any> {
-//                override fun onResponse(
-//                    call: Call<Any>, response: Response<Any>
-//                ) {
-//                    Log.i("SEND ANALYTICS", "response: ${response.body()}")
-//                }
-//
-//                override fun onFailure(call: Call<Any>, t: Throwable) {
-//                    Log.i("SEND ANALYTICS", "error: $t")
-//                    t.printStackTrace()
-//                }
-//            }
-//        )
-//    }
-
-//    private fun getMegogoStream() {
-//        retrofitService?.getMegogoStream(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
-//            playerConfiguration.megogoAccessToken
-//        )?.enqueue(object : Callback<MegogoStreamResponse> {
-//            override fun onResponse(
-//                call: Call<MegogoStreamResponse>, response: Response<MegogoStreamResponse>
-//            ) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    map[playerConfiguration.autoText] = body.data!!.src!!
-//                    body.data.bitrates?.forEach {
-//                        map["${it!!.bitrate}p"] = it.src!!
-//                    }
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions = map
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-//                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-//                    player?.setMediaSource(hlsMediaSource)
-//                    player?.prepare()
-//                    player?.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<MegogoStreamResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
-//    }
-//
-//    private fun getMoreTvStream() {
-//        retrofitService?.getMoreTvStream(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
-//        )?.enqueue(object : Callback<MoreTvStreamResponse> {
-//            override fun onResponse(
-//                call: Call<MoreTvStreamResponse>, response: Response<MoreTvStreamResponse>
-//            ) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    map["moretv"] = body.data.url
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions = map
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-//                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions["moretv"])))
-//                    player?.setMediaSource(hlsMediaSource)
-//                    player?.prepare()
-//                    player?.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<MoreTvStreamResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
-//    }
-//
-//    private fun getPremierStream() {
-//        retrofitService?.getPremierStream(
-//            playerConfiguration.authorization,
-//            playerConfiguration.sessionId,
-//            playerConfiguration.videoId,
-//            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id,
-//        )?.enqueue(object : Callback<PremierStreamResponse> {
-//            override fun onResponse(
-//                call: Call<PremierStreamResponse>, response: Response<PremierStreamResponse>
-//            ) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    body.file_info?.forEach {
-//                        if (it!!.quality == "auto") {
-//                            map[playerConfiguration.autoText] = it.file_name!!
-//                        } else {
-//                            map[it.quality!!] = it.file_name!!
-//                        }
-//                    }
-//                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions = map
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-//                        .createMediaSource(MediaItem.fromUri(Uri.parse(playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality])))
-//                    player?.setMediaSource(hlsMediaSource)
-//                    player?.prepare()
-//                    player?.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<PremierStreamResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
-//    }
 
     private fun getSingleTvChannel(tvCIndex: Int, cIndex: Int) {
         tvCategoryIndex = tvCIndex

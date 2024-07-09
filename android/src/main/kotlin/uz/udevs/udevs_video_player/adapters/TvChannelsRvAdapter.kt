@@ -19,9 +19,11 @@ class TvChannelsRvAdapter(
 
     inner class Vh(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val image: ImageView
+        val lock: ImageView
 
         init {
             image = itemView.findViewById(R.id.channel_image)
+            lock = itemView.findViewById(R.id.lock_image)
         }
     }
 
@@ -32,6 +34,11 @@ class TvChannelsRvAdapter(
     }
 
     override fun onBindViewHolder(holder: Vh, position: Int) {
+        if (list[position].hasAccess) {
+            holder.lock.visibility = View.GONE
+        } else {
+            holder.lock.visibility = View.VISIBLE
+        }
         Glide.with(context)
             .load(list[position].image)
             .placeholder(R.drawable.logo_secondary)

@@ -21,6 +21,14 @@
             android:layout_gravity="center"
             android:contentDescription="@string/app_id"
             android:src="@drawable/logo_secondary" />
+
+        <ImageView
+            android:id="@+id/lock_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_id"
+            android:src="@drawable/ic_lock" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

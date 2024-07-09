@@ -83,10 +83,8 @@ import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
-import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
-import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -105,7 +103,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private var pip: ImageView? = null
     private var cast: MediaRouteButton? = null
 
-    //    private var shareMovieLinkIv: ImageView? = null
+    private var shareMovieLinkIv: ImageView? = null
     private var more: ImageView? = null
     private var title: TextView? = null
     private var title1: TextView? = null
@@ -661,9 +659,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         playPause = findViewById(R.id.video_play_pause)
         progressbar = findViewById(R.id.video_progress_bar)
         timer = findViewById(R.id.timer)
-//        if (playerConfiguration.isLive) {
         timer?.visibility = View.GONE
-//        }
         videoPosition = findViewById(R.id.video_position)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)

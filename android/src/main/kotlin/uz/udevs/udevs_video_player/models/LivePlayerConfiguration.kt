@@ -17,7 +17,7 @@ data class LivePlayerConfiguration(
     @SerializedName("title")
     val title: String,
     @SerializedName("advertisement")
-    val advertisement: TvAdvertisement?,
+    val advertisement: AdvertisementResponse?,
 //    @SerializedName("isSerial")
 //    val isSerial: Boolean,
 //    @SerializedName("episodeButtonText")

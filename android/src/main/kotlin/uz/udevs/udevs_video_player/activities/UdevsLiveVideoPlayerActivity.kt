@@ -530,7 +530,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 intent.putExtra("position", -1L)
                 setResult(PLAYER_ACTIVITY_FINISH, intent)
                 finish()
-            }, 15000)
+            }, 180000)
         }
     }
 
@@ -538,7 +538,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory =
 //            if (!playerConfiguration.fromCache)
-                DefaultHttpDataSource.Factory()
+            DefaultHttpDataSource.Factory()
 //            else DownloadUtil.getDataSourceFactory(this)
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))

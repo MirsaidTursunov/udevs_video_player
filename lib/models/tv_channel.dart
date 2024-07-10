@@ -22,7 +22,7 @@ class TvChannel {
     map['name'] = name;
     map['resolutions'] = resolutions;
     map['paymentType'] = paymentType;
-    map['hacAccess'] = hasAccess;
+    map['hasAccess'] = hasAccess;
     return map;
   }
 }

@@ -1063,6 +1063,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             this, playerConfiguration.tvCategories,
             object : TvCategoryPagerAdapter.OnClickListener {
                 override fun onClick(tvCIndex: Int, cIndex: Int) {
+                    Log.i("hasAccess","hasAccess : ${playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess}")
                     if (playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess)
                         getSingleTvChannel(tvCIndex, cIndex)
                     bottomSheetDialog.dismiss()

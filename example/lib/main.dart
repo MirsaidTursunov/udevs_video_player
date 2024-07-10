@@ -294,13 +294,13 @@ class _MainPageState extends State<MainPage> {
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':
-                    'https://st1.uzdigital.tv/Setanta2HD/video.m3u8?token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122'
+                    'https://st1.uzdigital.tv/Uzb24/video.m3u8?token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46'
               },
               resolutions: {
                 'Автонастройка':
-                    'https://st1.uzdigital.tv/Setanta2HD/video.m3u8?token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122, 1080p: http://st1.uzdigital.tv/Setanta2HD/tracks-v1a1a2/mono.m3u8?remote=94.232.24.122&token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122',
-                '576p':
-                    'http://st1.uzdigital.tv/Setanta2HD/tracks-v2a1a2/mono.m3u8?remote=94.232.24.122&token=9072c3e6edc711801c39b31f597cbc3cd4b18dae-77464b7a79797270637457655667714d-1704465688-1704454888&remote=94.232.24.122',
+                    'https://st1.uzdigital.tv/Uzb24/video.m3u8?token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46',
+                '1080p':
+                    'http://st1.uzdigital.tv/Uzb24/tracks-v1a1a2/mono.m3u8?remote=178.218.201.46&token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46'
               },
               qualityText: 'Качество',
               speedText: 'Скорость',
@@ -341,7 +341,7 @@ class _MainPageState extends State<MainPage> {
                           'https://cdn.uzd.udevs.io/uzdigital/images/1738fe23-f629-4a69-ae16-617cf61fcf9d.png',
                       resolutions: {},
                       paymentType: 'svod',
-                      hasAccess: false,
+                      hasAccess: true,
                     ),
                     TvChannel(
                       name: 'Setanta Sports 2',

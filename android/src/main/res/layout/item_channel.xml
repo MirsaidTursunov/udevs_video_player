@@ -25,11 +25,11 @@
         <ImageView
             android:id="@+id/lock_image"
             android:padding="24dp"
+            android:background="@color/black"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:contentDescription="@string/app_id"
-            android:background="@color/channels_background"
             android:src="@drawable/ic_lock" />
     </androidx.cardview.widget.CardView>
 

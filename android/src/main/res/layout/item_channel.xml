@@ -24,7 +24,7 @@
 
         <ImageView
             android:id="@+id/lock_image"
-            android:padding="12dp"
+            android:padding="24dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

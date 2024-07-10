@@ -104,7 +104,7 @@ class AdvertisementPage(
             if (advertisement.video.isNullOrEmpty()) AsyncImage(
                 modifier = Modifier
                     .clickable {
-                        uriHandler.openUri(advertisement.link)
+                        uriHandler.openUri(advertisement.link?:"")
                     }
                     .fillMaxSize()
                     .align(Alignment.Center),

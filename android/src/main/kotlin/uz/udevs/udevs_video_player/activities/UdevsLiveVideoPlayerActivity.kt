@@ -35,8 +35,10 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -78,6 +80,7 @@ import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
+import uz.udevs.udevs_video_player.models.AdvertisementResponse
 import uz.udevs.udevs_video_player.models.BottomSheet
 import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.TvChannelResponse
@@ -89,6 +92,7 @@ import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
+import uz.udevs.udevs_video_player.activities.AdvertisementPage
 
 @UnstableApi
 class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -102,6 +106,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private var close: ImageView? = null
     private var pip: ImageView? = null
     private var cast: MediaRouteButton? = null
+    private var advertisement: AdvertisementResponse? = null
 
     private var shareMovieLinkIv: ImageView? = null
     private var more: ImageView? = null
@@ -167,9 +172,25 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         PLAYING, PAUSED, BUFFERING, IDLE
     }
 
+    private fun startAdvertisement(advertisement: AdvertisementResponse?) {
+        if (advertisement == null) return
+        player?.pause()
+        setContent {
+            MaterialTheme {
+                AdvertisementPage(advertisement = advertisement, onClick = {
+                    setContentView(R.layout.player_activity)
+                    initializeViews()
+                    initializeClickListeners()
+                    playVideo()
+                })
+            }
+        }
+    }
+
     @SuppressLint("AppCompatMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as LivePlayerConfiguration
         setContentView(R.layout.player_activity)
         actionBar?.hide()
         val window = window
@@ -193,7 +214,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
         // BroadcastReceiver ni faollashtirish
         registerReceiver(networkChangeReceiver, intentFilter)
-        playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as LivePlayerConfiguration
         channelIndex = playerConfiguration.selectChannelIndex
         tvCategoryIndex = playerConfiguration.selectTvCategoryIndex
         currentQuality =
@@ -241,6 +261,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         maxVolume += 1.0
         volumeSeekBar?.progress = volume.toInt()
         playVideo()
+        startAdvertisement(playerConfiguration.advertisement)
     }
 
     fun isNetworkAvailable(context: Context?): Boolean {
@@ -1063,7 +1084,10 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             this, playerConfiguration.tvCategories,
             object : TvCategoryPagerAdapter.OnClickListener {
                 override fun onClick(tvCIndex: Int, cIndex: Int) {
-                    Log.i("hasAccess","hasAccess : ${playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess}")
+                    Log.i(
+                        "hasAccess",
+                        "hasAccess : ${playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess}"
+                    )
                     if (playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess)
                         getSingleTvChannel(tvCIndex, cIndex)
                     bottomSheetDialog.dismiss()

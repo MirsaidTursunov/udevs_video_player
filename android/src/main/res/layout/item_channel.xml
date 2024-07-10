@@ -29,6 +29,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:contentDescription="@string/app_id"
+            android:background="@color/channels_background"
             android:src="@drawable/ic_lock" />
     </androidx.cardview.widget.CardView>
 

@@ -291,6 +291,7 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playLiveVideo(
             playerConfig: LivePlayerConfiguration(
+              skipText: 'Skip Ad',
               advertisement: AdvertisementResponse(
                 id: 'f07d0dab-8466-45b5-8b10-74e264af8e8e',
                 bannerImage: BannerImage(

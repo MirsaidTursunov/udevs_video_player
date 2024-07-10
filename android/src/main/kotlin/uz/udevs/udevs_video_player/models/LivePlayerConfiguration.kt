@@ -76,4 +76,6 @@ data class LivePlayerConfiguration(
 //    val userId: String,
 //    @SerializedName("profileId")
 //    val profileId: String
+    @SerializedName("skipText")
+    val skipText: String,
 ) : Serializable

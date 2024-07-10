@@ -40,6 +40,7 @@ class LivePlayerConfiguration {
     // required this.userId,
     // required this.profileId,
     this.advertisement,
+    required this.skipText,
   });
 
   final Map<String, String> initialResolution;
@@ -81,6 +82,7 @@ class LivePlayerConfiguration {
   final String ip;
   final int selectChannelIndex;
   final int selectTvCategoryIndex;
+  final String skipText;
 
   // final String userId;
 
@@ -124,6 +126,7 @@ class LivePlayerConfiguration {
     // map['profileId'] = profileId;
     // map['userId'] = userId;
     map['tvCategories'] = tvCategories.map((v) => v.toJson()).toList();
+    map['skipText'] = skipText;
     return map;
   }
 
@@ -164,5 +167,6 @@ class LivePlayerConfiguration {
       // 'userId: $userId'
       // 'profileId: $profileId'
       'advertisement: $advertisement'
+      'skipText: $skipText'
       '}';
 }

@@ -92,7 +92,7 @@ import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
-import uz.udevs.udevs_video_player.activities.AdvertisementPage
+import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
 
 @UnstableApi
 class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -106,7 +106,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private var close: ImageView? = null
     private var pip: ImageView? = null
     private var cast: MediaRouteButton? = null
-    private var advertisement: AdvertisementResponse? = null
 
     private var shareMovieLinkIv: ImageView? = null
     private var more: ImageView? = null
@@ -177,12 +176,16 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         player?.pause()
         setContent {
             MaterialTheme {
-                AdvertisementPage(advertisement = advertisement, onClick = {
-                    setContentView(R.layout.player_activity)
-                    initializeViews()
-                    initializeClickListeners()
-                    playVideo()
-                })
+                AdvertisementPage(
+                    advertisement = advertisement,
+                    skipText = playerConfiguration.skipText,
+                    onFinish = {
+                        setContentView(R.layout.player_activity)
+                        initializeViews()
+                        initializeClickListeners()
+                        playVideo()
+                    },
+                ).Content()
             }
         }
     }
@@ -869,6 +872,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
         if (mLocation == PlaybackLocation.REMOTE) {
             return
         }

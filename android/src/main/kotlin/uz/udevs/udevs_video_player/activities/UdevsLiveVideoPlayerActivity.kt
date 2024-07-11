@@ -176,7 +176,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun startAdvertisement(advertisement: AdvertisementResponse?) {
         if (advertisement == null) return
-        player?.pause()
+        player?.release()
         setContent {
             MaterialTheme {
                 AdvertisementPage(
@@ -940,7 +940,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                     val map: HashMap<String, String> = hashMapOf()
                     map["Auto"] = body.channelStreamAll
                     playerConfiguration.resolutions = map
-
                     url = body.channelStreamAll
                     title?.text = channel.name
                     title1?.text = channel.name

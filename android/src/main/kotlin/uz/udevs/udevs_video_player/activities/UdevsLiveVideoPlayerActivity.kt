@@ -71,6 +71,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,6 +82,7 @@ import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
 import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.BottomSheet
 import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.TvChannelResponse
@@ -93,6 +95,7 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
 import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
+import uz.udevs.udevs_video_player.models.TvChannel
 
 @UnstableApi
 class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -354,8 +357,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         customSeekBar?.visibility = View.VISIBLE
         customSeekBar?.isEnabled = true
         Log.d(tag, "performViewsOnConnect: ${(player!!.duration / 1000).toInt()}")
-        customSeekBar?.max =
-            if (player?.duration != null) (player!!.duration / 1000).toInt() else 0
+        customSeekBar?.max = if (player?.duration != null) (player!!.duration / 1000).toInt() else 0
         customSeekBar?.progress =
             if (player?.currentPosition != null) (player!!.currentPosition / 1000).toInt() else 0
         customSeekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -365,10 +367,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 if (mLocation == PlaybackLocation.REMOTE) {
-                    val seekOptions: MediaSeekOptions = MediaSeekOptions
-                        .Builder()
-                        .setPosition((seekBar?.progress)!!.toLong() * 1000)
-                        .build()
+                    val seekOptions: MediaSeekOptions = MediaSeekOptions.Builder()
+                        .setPosition((seekBar?.progress)!!.toLong() * 1000).build()
                     mCastSession!!.remoteMediaClient?.seek(seekOptions)
                 }
             }
@@ -391,13 +391,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         }
         val remoteMediaClient = mCastSession!!.remoteMediaClient ?: return
         remoteMediaClient.load(
-            MediaLoadRequestData.Builder()
-                .setMediaInfo(buildMediaInfo(position, url))
-                .setAutoplay(true)
-                .setCurrentTime(position)
-                .setCredentials("user-credentials")
-                .setAtvCredentials("atv-user-credentials")
-                .build()
+            MediaLoadRequestData.Builder().setMediaInfo(buildMediaInfo(position, url))
+                .setAutoplay(true).setCurrentTime(position).setCredentials("user-credentials")
+                .setAtvCredentials("atv-user-credentials").build()
         )
     }
 
@@ -418,8 +414,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun unregisterCallBack() {
         val remoteMediaClient = mCastSession?.remoteMediaClient ?: return
-        if (callback != null)
-            remoteMediaClient.unregisterCallback(callback!!)
+        if (callback != null) remoteMediaClient.unregisterCallback(callback!!)
     }
 
     private var listener: RemoteMediaClient.ProgressListener? = null
@@ -437,18 +432,14 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun removeProgressListener() {
         val remoteMediaClient = mCastSession?.remoteMediaClient ?: return
-        if (listener != null)
-            remoteMediaClient.removeProgressListener(listener!!)
+        if (listener != null) remoteMediaClient.removeProgressListener(listener!!)
     }
 
     private fun buildMediaInfo(position: Long, url: String?): MediaInfo {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
         movieMetadata.putString(MediaMetadata.KEY_TITLE, titleText)
-        return MediaInfo.Builder(url ?: "")
-            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType("videos/m3u8")
-            .setMetadata(movieMetadata)
-            .setStreamDuration(position)
+        return MediaInfo.Builder(url ?: "").setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+            .setContentType("videos/m3u8").setMetadata(movieMetadata).setStreamDuration(position)
             .build()
     }
 
@@ -488,8 +479,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     override fun onResume() {
         setAudioFocus()
-        if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+        if (mLocation == PlaybackLocation.LOCAL) player?.playWhenReady = true
         if (brightness != 0.0) setScreenBrightness(brightness.toInt())
         mCastContext!!.sessionManager.addSessionManagerListener(
             mSessionManagerListener!!, CastSession::class.java
@@ -504,8 +494,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     override fun onRestart() {
         super.onRestart()
-        if (mLocation == PlaybackLocation.LOCAL)
-            player?.playWhenReady = true
+        if (mLocation == PlaybackLocation.LOCAL) player?.playWhenReady = true
     }
 
     override fun onStop() {
@@ -584,8 +573,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (mLocation == PlaybackLocation.REMOTE)
-                    return
+                if (mLocation == PlaybackLocation.REMOTE) return
                 if (isPlaying) {
                     mPlaybackState = PlaybackState.PLAYING
                     playPause?.setImageResource(R.drawable.ic_pause)
@@ -765,13 +753,12 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 return@setOnClickListener
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val params =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9))
-                            .setAutoEnterEnabled(false).build()
-                    } else {
-                        PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build()
-                    }
+                val params = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9))
+                        .setAutoEnterEnabled(false).build()
+                } else {
+                    PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build()
+                }
                 enterPictureInPictureMode(params)
             } else {
                 Toast.makeText(this, "This is my Toast message!", Toast.LENGTH_SHORT).show()
@@ -785,10 +772,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 if (player != null) player?.seekTo(player!!.currentPosition - 10000)
             } else {
                 val remoteMediaClient = mCastSession!!.remoteMediaClient
-                val seekOptions: MediaSeekOptions = MediaSeekOptions
-                    .Builder()
-                    .setPosition((customSeekBar!!.progress * 1000 - 10000).toLong())
-                    .build()
+                val seekOptions: MediaSeekOptions = MediaSeekOptions.Builder()
+                    .setPosition((customSeekBar!!.progress * 1000 - 10000).toLong()).build()
                 remoteMediaClient?.seek(seekOptions)
             }
         }
@@ -797,10 +782,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 if (player != null) player?.seekTo(player!!.currentPosition + 10000)
             } else {
                 val remoteMediaClient = mCastSession!!.remoteMediaClient
-                val seekOptions: MediaSeekOptions = MediaSeekOptions
-                    .Builder()
-                    .setPosition((customSeekBar!!.progress * 1000 + 10000).toLong())
-                    .build()
+                val seekOptions: MediaSeekOptions = MediaSeekOptions.Builder()
+                    .setPosition((customSeekBar!!.progress * 1000 + 10000).toLong()).build()
                 remoteMediaClient?.seek(seekOptions)
             }
         }
@@ -912,12 +895,41 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         }
     }
 
-    private fun getSingleTvChannel(tvCIndex: Int, cIndex: Int) {
+    private fun onChangeChannel(tvCIndex: Int, cIndex: Int) {
         tvCategoryIndex = tvCIndex
         channelIndex = cIndex
+        val channel = playerConfiguration.tvCategories[tvCIndex].channels[cIndex]
+        getAdvertisement(channel)
+    }
+
+    private fun getAdvertisement(channel: TvChannel) {
+        retrofitService?.getAdvertisement(
+            AdvertisementRequest(
+                age = playerConfiguration.age,
+                gender = playerConfiguration.gender,
+                paymentType = channel.paymentType,
+                region = playerConfiguration.region,
+                userId = playerConfiguration.userId
+            )
+        )?.enqueue(object : Callback<AdvertisementResponse> {
+            override fun onResponse(
+                call: Call<AdvertisementResponse>, response: Response<AdvertisementResponse>
+            ) {
+                val body = response.body()
+                Log.i("advertisementResponse", "result: $body")
+                getSingleTvChannel(channel = channel, advertisement = body)
+            }
+
+            override fun onFailure(call: Call<AdvertisementResponse>, t: Throwable) {
+                getSingleTvChannel(channel = channel, advertisement = null)
+            }
+        })
+    }
+
+    private fun getSingleTvChannel(channel: TvChannel, advertisement: AdvertisementResponse?) {
         retrofitService?.getSingleTvChannel(
             playerConfiguration.authorization,
-            playerConfiguration.tvCategories[tvCIndex].channels[cIndex].id,
+            channel.id,
             playerConfiguration.ip,
         )?.enqueue(object : Callback<TvChannelResponse> {
             override fun onResponse(
@@ -930,14 +942,15 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                     playerConfiguration.resolutions = map
 
                     url = body.channelStreamAll
-                    title?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
-                    title1?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
+                    title?.text = channel.name
+                    title1?.text = channel.name
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
                     player?.setMediaSource(hlsMediaSource)
                     player?.prepare()
                     player?.playWhenReady
+                    startAdvertisement(advertisement)
                 }
             }
 
@@ -1092,8 +1105,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                         "hasAccess",
                         "hasAccess : ${playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess}"
                     )
-                    if (playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess)
-                        getSingleTvChannel(tvCIndex, cIndex)
+                    if (playerConfiguration.tvCategories[tvCIndex].channels[cIndex].hasAccess) onChangeChannel(
+                        tvCIndex, cIndex
+                    )
                     bottomSheetDialog.dismiss()
                 }
             },
@@ -1174,17 +1188,17 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 //                        true,
 //                    )
 //            } else {
-            if (playerConfiguration.resolutions.isNotEmpty())
-                showQualitySpeedSheet(
-                    currentQuality,
-                    playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
-                    true,
-                )
+            if (playerConfiguration.resolutions.isNotEmpty()) showQualitySpeedSheet(
+                currentQuality,
+                playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
+                true,
+            )
 //            }
         }
         speed?.setOnClickListener {
-            if (mLocation == PlaybackLocation.LOCAL)
-                showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
+            if (mLocation == PlaybackLocation.LOCAL) showQualitySpeedSheet(
+                currentSpeed, speeds as ArrayList, false
+            )
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
@@ -1285,10 +1299,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                             player?.pause()
                         }
                         val currentPosition = player?.currentPosition
-                        val dataSourceFactory: DataSource.Factory =
-                            DefaultHttpDataSource.Factory()
-                        url =
-                            playerConfiguration.resolutions[currentQuality]?.toHttps()
+                        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                        url = playerConfiguration.resolutions[currentQuality]?.toHttps()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
                                 .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
@@ -1426,22 +1438,14 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private fun setAudioFocus() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioManager!!.requestAudioFocus(
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_GAME)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                            .build()
-                    )
-                    .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener(this)
-                    .build()
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).setAudioAttributes(
+                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build()
+                ).setAcceptsDelayedFocusGain(true).setOnAudioFocusChangeListener(this).build()
             )
         } else {
-            @Suppress("DEPRECATION")
-            audioManager!!.requestAudioFocus(
-                this, AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN
+            @Suppress("DEPRECATION") audioManager!!.requestAudioFocus(
+                this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN
             )
         }
     }

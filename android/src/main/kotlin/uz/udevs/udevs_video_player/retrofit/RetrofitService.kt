@@ -7,6 +7,8 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
@@ -50,4 +52,11 @@ interface RetrofitService {
         @Path("id") id: String,
         @Query("client_ip") clientIp: String,
     ): Call<TvChannelResponse>
+
+    @POST("advertisingTest")
+    fun getAdvertisement(
+        @Body request: AdvertisementRequest
+    ): Call<AdvertisementResponse>
+
+
 }

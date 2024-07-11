@@ -72,10 +72,16 @@ data class LivePlayerConfiguration(
     val selectTvCategoryIndex: Int,
 //    @SerializedName("movieShareLink")
 //    val movieShareLink: String,
-//    @SerializedName("userId")
-//    val userId: String,
 //    @SerializedName("profileId")
 //    val profileId: String
     @SerializedName("skipText")
     val skipText: String,
+    @SerializedName("userId")
+    val userId: String,
+    @SerializedName("age")
+    val age: Int,
+    @SerializedName("gender")
+    val gender: String,
+    @SerializedName("region")
+    val region: String,
 ) : Serializable

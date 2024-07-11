@@ -37,7 +37,10 @@ class LivePlayerConfiguration {
     required this.selectChannelIndex,
     this.selectTvCategoryIndex = 0,
     required this.tvCategories,
-    // required this.userId,
+    required this.userId,
+    required this.age,
+    required this.gender,
+    required this.region,
     // required this.profileId,
     this.advertisement,
     required this.skipText,
@@ -84,7 +87,10 @@ class LivePlayerConfiguration {
   final int selectTvCategoryIndex;
   final String skipText;
 
-  // final String userId;
+  final String userId;
+  final int age;
+  final String gender;
+  final String region;
 
   // final String profileId;
 
@@ -124,7 +130,10 @@ class LivePlayerConfiguration {
     map['selectChannelIndex'] = selectChannelIndex;
     map['selectTvCategoryIndex'] = selectTvCategoryIndex;
     // map['profileId'] = profileId;
-    // map['userId'] = userId;
+    map['userId'] = userId;
+    map['age'] = age;
+    map['gender'] = gender;
+    map['region'] = region;
     map['tvCategories'] = tvCategories.map((v) => v.toJson()).toList();
     map['skipText'] = skipText;
     return map;
@@ -164,7 +173,10 @@ class LivePlayerConfiguration {
       'channels: $tvCategories, '
       'ip: $ip'
       'selectChannelIndex: $selectChannelIndex'
-      // 'userId: $userId'
+      'userId: $userId'
+      'age: $age'
+      'gender: $gender'
+      'region: $region'
       // 'profileId: $profileId'
       'advertisement: $advertisement'
       'skipText: $skipText'

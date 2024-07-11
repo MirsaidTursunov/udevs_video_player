@@ -29,7 +29,7 @@ fun VideoPlayerLoadingIndicator(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.size(100.dp),
+                modifier = Modifier.size(60.dp),
                 color = Color.White,
             )
         }

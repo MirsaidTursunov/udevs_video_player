@@ -304,6 +304,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 skipDuration: 10,
                 link: 'https://t.me/uzdigital_tv_bot/app',
+                video: 'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'
               ),
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {

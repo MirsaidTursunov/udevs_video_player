@@ -78,6 +78,7 @@ class AdvertisementPage(
                     percent++
                     emit(percent * 0.002f)
                 } else {
+                    Log.i("", "isPlaying = ${exoPlayer?.isPlaying}")
                     if (exoPlayer?.isPlaying == true) {
                         percent++
                         emit(percent * 0.002f)
@@ -96,21 +97,20 @@ class AdvertisementPage(
             startIndicatorTimer()
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
+        Box(modifier = Modifier
+            .clickable { uriHandler.openUri(advertisement.link ?: "") }
+            .fillMaxSize()
+            .background(Color.Black)) {
             if (advertisement.video.isNullOrEmpty()) AsyncImage(
                 modifier = Modifier
-                    .clickable {
-                        uriHandler.openUri(advertisement.link?:"")
-                    }
                     .fillMaxSize()
                     .align(Alignment.Center),
-                model = ImageRequest.Builder(LocalContext.current).data(
-                    advertisement.bannerImage?.mobileImage
-                ).crossfade(true).build(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(
+                        (advertisement.bannerImage?.mobileImage ?: "").ifEmpty {
+                            advertisement.bannerImage?.webImage ?: ""
+                        }.ifEmpty { advertisement.bannerImage?.tvImage ?: "" },
+                    ).crossfade(true).build(),
                 contentDescription = "",
             ) else VideoPlayer(
                 videoUrl = advertisement.video,
@@ -201,7 +201,7 @@ class AdvertisementPage(
         var isLoading by remember { mutableStateOf(false) }
         var playbackState by remember { mutableIntStateOf(0) }
 
-        val exoPlayer = remember {
+        exoPlayer = remember {
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.Builder().apply {
                     setUri(
@@ -217,23 +217,25 @@ class AdvertisementPage(
 
         DisposableEffect(key1 = Unit) {
             val listener = object : Player.Listener {
+                var stopped: Boolean = false
                 override fun onEvents(
                     player: Player, events: Player.Events
                 ) {
                     super.onEvents(player, events)
                     playbackState = player.playbackState
                     isLoading = player.isLoading
-                    if (playbackState == 4) {
+                    if (playbackState == 4 && !stopped) {
+                        stopped = true
                         Log.i("tv advertisement", "video finished")
                         onFinish.invoke()
                     }
                 }
             }
-            exoPlayer.addListener(listener)
+            exoPlayer?.addListener(listener)
 
             onDispose {
-                exoPlayer.removeListener(listener)
-                exoPlayer.release()
+                exoPlayer?.removeListener(listener)
+                exoPlayer?.release()
             }
         }
 

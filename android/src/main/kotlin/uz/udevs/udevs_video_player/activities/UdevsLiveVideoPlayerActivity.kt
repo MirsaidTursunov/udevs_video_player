@@ -121,11 +121,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private var videoPosition: TextView? = null
     private var live: LinearLayout? = null
 
-    //    private var episodesButton: LinearLayout? = null
-//    private var episodesText: TextView? = null
-//    private var nextButtonHeight: CardView? = null
-//    private var nextButton: CardView? = null
-//    private var nextText: TextView? = null
     private var tvProgramsButton: ImageView? = null
     private var tvChannels: ImageView? = null
     private var tvChannelsButton: LinearLayout? = null
@@ -496,7 +491,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     }
 
     override fun onStop() {
-//        sendingAnalytics?.cancel()
         closeToRequestAuth?.cancel()
         super.onStop()
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -534,9 +528,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun playVideo() {
         val dataSourceFactory: DataSource.Factory =
-//            if (!playerConfiguration.fromCache)
             DefaultHttpDataSource.Factory()
-//            else DownloadUtil.getDataSourceFactory(this)
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
 
@@ -545,26 +537,10 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         playerView?.keepScreenOn = true
         playerView?.useController = playerConfiguration.showController
         player?.setMediaSource(hlsMediaSource)
-//        player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
-
-//        playerView?.findViewById<PlayerControlView>(androidx.media3.ui.R.id.exo_play)
-//            ?.addVisibilityListener { visibility ->
-//                val params = nextButtonHeight?.layoutParams
-                // Handle visibility change here
-//                if (visibility == View.VISIBLE) {
-//                    params?.height = dpToPx(100)
-//                } else {
-//                    params?.height = dpToPx(50)
-//                }
-//                nextButtonHeight?.layoutParams = params
-//            }
-
         wait3MinsAndClose()
 
-
         player?.addListener(object : Player.Listener {
-
             override fun onPlayerError(error: PlaybackException) {
                 Log.d(tag, "onPlayerError: ${error.errorCode}")
                 player?.pause()
@@ -605,15 +581,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
                     Player.STATE_ENDED -> {
                         if (!isPipMode) playPause?.setImageResource(R.drawable.ic_play)
-//                        if (playerConfiguration.isSerial) {
-//                            if (isLastEpisode()) {
-//                                onBackPressed()
-//                            } else {
-//                                nextButton?.performClick()
-//                            }
-//                        } else if (!playerConfiguration.isLive) {
-//                            onBackPressed()
-//                        }
                     }
 
                     Player.STATE_IDLE -> {
@@ -654,9 +621,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         pip = findViewById(R.id.video_pip)
         cast = findViewById(R.id.video_cast)
         tvChannels = findViewById(R.id.tv_channels)
-//        if (playerConfiguration.isLive) {
         tvChannelsButton?.visibility = View.VISIBLE
-//        }
         CastButtonFactory.setUpMediaRouteButton(applicationContext, cast!!)
         more = findViewById(R.id.video_more)
         title = findViewById(R.id.video_title)
@@ -731,7 +696,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         }
         close?.setOnClickListener {
             closeToRequestAuth?.cancel()
-//            sendingAnalytics?.cancel()
             if (player?.isPlaying == true) {
                 player?.stop()
             }
@@ -839,9 +803,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
-//                    if (playerConfiguration.isLive) {
                     playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//                    }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
             it.postDelayed({
@@ -865,15 +827,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         }
         enterPictureInPictureMode(params)
     }
-
-//    private fun shareMovieLink() {
-//        val url = playerConfiguration.movieShareLink
-//        val intent = Intent(Intent.ACTION_SEND)
-//        intent.type = "text/html"
-//        intent.putExtra(Intent.EXTRA_TEXT, url)
-//        val chooser = Intent.createChooser(intent, "Share using...")
-//        startActivity(chooser)
-//    }
 
 
     override fun onPictureInPictureModeChanged(
@@ -968,35 +921,23 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         currentOrientation = newConfig.orientation
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
-//            if (playerConfiguration.isLive) {
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-//            }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
             title1?.text = ""
             title1?.visibility = View.GONE
-//            if (playerConfiguration.isSerial)
-//                if (isLastEpisode())
-//                    nextButton?.visibility = View.GONE
-//                else
-//                    nextButton?.visibility = View.VISIBLE
-//            else
-//                nextButton?.visibility = View.GONE
             zoom?.visibility = View.VISIBLE
             orientation?.setImageResource(R.drawable.ic_portrait)
             when (currentBottomSheet) {
-                BottomSheet.EPISODES -> {
-//                    backButtonEpisodeBottomSheet?.visibility = View.VISIBLE
-                }
-
                 BottomSheet.SETTINGS -> {
                     backButtonSettingsBottomSheet?.visibility = View.VISIBLE
                 }
 
-                BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonQualitySpeedBottomSheet?.visibility =
                     View.VISIBLE
 
+                BottomSheet.TV_PROGRAMS -> {}
+                BottomSheet.EPISODES -> {}
                 BottomSheet.CHANNELS -> {}
                 BottomSheet.NONE -> {}
             }
@@ -1006,29 +947,19 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             title1?.visibility = View.VISIBLE
             title?.text = ""
             title?.visibility = View.INVISIBLE
-//            if (playerConfiguration.isSerial)
-//                if (isLastEpisode())
-//                    nextButton?.visibility = View.GONE
-//                else
-//                    nextButton?.visibility = View.VISIBLE
-//            else
-//                nextButton?.visibility = View.GONE
             zoom?.visibility = View.GONE
             orientation?.setImageResource(R.drawable.ic_landscape)
             playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             when (currentBottomSheet) {
-                BottomSheet.EPISODES -> {
-//                    backButtonEpisodeBottomSheet?.visibility = View.GONE
-                }
-
                 BottomSheet.SETTINGS -> {
                     backButtonSettingsBottomSheet?.visibility = View.GONE
                 }
 
-                BottomSheet.TV_PROGRAMS -> {}
                 BottomSheet.QUALITY_OR_SPEED -> backButtonSettingsBottomSheet?.visibility =
                     View.GONE
 
+                BottomSheet.TV_PROGRAMS -> {}
+                BottomSheet.EPISODES -> {}
                 BottomSheet.CHANNELS -> {}
                 BottomSheet.NONE -> {}
             }
@@ -1052,10 +983,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     }
 
     private var currentBottomSheet = BottomSheet.NONE
-
-//    private fun isLastEpisode(): Boolean {
-//        return playerConfiguration.seasons.size == seasonIndex + 1 && playerConfiguration.seasons[playerConfiguration.seasons.size - 1].movies.size == episodeIndex + 1
-//    }
 
     private fun showTvProgramsBottomSheet() {
         currentBottomSheet = BottomSheet.TV_PROGRAMS
@@ -1143,13 +1070,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         if (isSettingsBottomSheetOpened) {
             return
         }
-//        if (playerConfiguration.isMoreTv) {
-//            val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
-//            if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
-//                currentQuality = qualities[0]
-//                qualityText?.text = qualities[0]
-//            }
-//        }
 
         isSettingsBottomSheetOpened = true
         currentBottomSheet = BottomSheet.SETTINGS
@@ -1177,21 +1097,11 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
-//            if (playerConfiguration.isSerial) {
-//                if (playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.isNotEmpty())
-//                    showQualitySpeedSheet(
-//                        currentQuality,
-//                        playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.keys.toList() as? ArrayList
-//                            ?: ArrayList(),
-//                        true,
-//                    )
-//            } else {
             if (playerConfiguration.resolutions.isNotEmpty()) showQualitySpeedSheet(
                 currentQuality,
                 playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
                 true,
             )
-//            }
         }
         speed?.setOnClickListener {
             if (mLocation == PlaybackLocation.LOCAL) showQualitySpeedSheet(
@@ -1212,12 +1122,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         if (isQualitySpeedBottomSheetOpened) {
             return
         }
-//        var finalList: ArrayList<String> = list
-
-//        if (playerConfiguration.isMoreTv && fromQuality) {
-//            finalList = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
-//        }
-
         isQualitySpeedBottomSheetOpened = true
         currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -1244,7 +1148,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 playerConfiguration.speedText
         }
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
-        //sorting
+        // sorting
         val formats = mutableListOf<String>()
         if (fromQuality) {
             var auto = ""
@@ -1282,15 +1186,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
-//                        if (playerConfiguration.isMoreTv) {
-//                            MyHelper().changeVideoQuality(
-//                                player!!,
-//                                position,
-//                                finalList.size
-//                            )
-//                            currentQuality = finalList[position]
-//                            qualityText?.text = currentQuality
-//                        } else {
                         currentQuality = formats[position]
                         qualityText?.text = currentQuality
                         if (player?.isPlaying == true) {
@@ -1307,13 +1202,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                         if (mLocation == PlaybackLocation.LOCAL) {
                             player?.play()
                         } else {
-//                            if (playerConfiguration.isSerial) {
-//                                loadRemoteMedia(currentPosition ?: 0)
-//                            } else {
                             loadRemoteMedia(currentPosition ?: 0)
-//                            }
                         }
-//                        }
                     } else {
                         if (mLocation == PlaybackLocation.REMOTE) {
                             return

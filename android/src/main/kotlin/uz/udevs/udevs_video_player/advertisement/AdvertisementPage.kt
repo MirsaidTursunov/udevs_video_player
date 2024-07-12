@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,23 +41,21 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import uz.udevs.udevs_video_player.models.AdvertisementResponse
 import uz.udevs.udevs_video_player.advertisement.components.VideoPlayerLoadingIndicator
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
+import uz.udevs.udevs_video_player.models.AdvertisementResponse
 
 class AdvertisementPage(
     private val advertisement: AdvertisementResponse,
@@ -64,6 +64,7 @@ class AdvertisementPage(
 ) {
 
     private var indicatorFlow: Flow<Float>? = null
+    private var isImageLoaded: Boolean = false
 
     private var exoPlayer: ExoPlayer? = null
     private fun startIndicatorTimer() {
@@ -74,10 +75,12 @@ class AdvertisementPage(
             while (percent < 500) {
                 Log.i("", "startIndicatorTimer in while")
                 delay((skipDuration * 2).toLong())
-                if (advertisement.video.isNullOrEmpty()) {
+                /// if image advertisement
+                if (advertisement.video.isNullOrEmpty() && isImageLoaded) {
                     percent++
                     emit(percent * 0.002f)
                 } else {
+                    /// if video advertisement
                     Log.i("", "isPlaying = ${exoPlayer?.isPlaying}")
                     if (exoPlayer?.isPlaying == true) {
                         percent++
@@ -85,6 +88,9 @@ class AdvertisementPage(
                     }
                 }
                 Log.i("", "startIndicatorTimer emitted ${percent * 0.002f}")
+            }
+            if (percent == 500 && advertisement.video == null) {
+                onFinish.invoke()
             }
         }
     }
@@ -101,18 +107,28 @@ class AdvertisementPage(
             .clickable { uriHandler.openUri(advertisement.link ?: "") }
             .fillMaxSize()
             .background(Color.Black)) {
-            if (advertisement.video.isNullOrEmpty()) AsyncImage(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(
-                        (advertisement.bannerImage?.mobileImage ?: "").ifEmpty {
-                            advertisement.bannerImage?.webImage ?: ""
-                        }.ifEmpty { advertisement.bannerImage?.tvImage ?: "" },
-                    ).crossfade(true).build(),
-                contentDescription = "",
-            ) else VideoPlayer(
+            if (advertisement.video.isNullOrEmpty())
+
+                SubcomposeAsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(
+                            (advertisement.bannerImage?.mobileImage ?: "").ifEmpty {
+                                advertisement.bannerImage?.webImage ?: ""
+                            }.ifEmpty { advertisement.bannerImage?.tvImage ?: "" },
+                        ).crossfade(true).build(),
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(60.dp),
+                            color = Color.White,
+                        )
+                    },
+                    onSuccess = { isImageLoaded = true },
+                    contentDescription = "",
+                )
+            else VideoPlayer(
                 videoUrl = advertisement.video,
                 onFinish = onFinish,
             )
@@ -184,8 +200,8 @@ class AdvertisementPage(
                     Text(
                         modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp),
                         text = skipText,
-                        style = TextStyle(
-                            fontSize = 16.sp, fontWeight = FontWeight.Companion.W500
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 16.sp,
                         )
                     )
                 }

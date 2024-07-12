@@ -38,7 +38,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.MaterialTheme
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -71,7 +70,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -96,6 +94,7 @@ import kotlin.concurrent.timerTask
 import kotlin.math.abs
 import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
 import uz.udevs.udevs_video_player.models.TvChannel
+import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
 
 @UnstableApi
 class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -178,7 +177,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         if (advertisement == null) return
         player?.release()
         setContent {
-            MaterialTheme {
+            AppTheme {
                 AdvertisementPage(
                     advertisement = advertisement,
                     skipText = playerConfiguration.skipText,

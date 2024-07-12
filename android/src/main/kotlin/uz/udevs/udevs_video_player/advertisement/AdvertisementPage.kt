@@ -16,11 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,13 +47,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import uz.udevs.udevs_video_player.advertisement.components.VideoPlayerLoadingIndicator
+import uz.udevs.udevs_video_player.advertisement.components.LoadingIndicator
 import uz.udevs.udevs_video_player.models.AdvertisementResponse
 
 class AdvertisementPage(
@@ -108,7 +106,6 @@ class AdvertisementPage(
             .fillMaxSize()
             .background(Color.Black)) {
             if (advertisement.video.isNullOrEmpty())
-
                 SubcomposeAsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
@@ -120,10 +117,7 @@ class AdvertisementPage(
                             }.ifEmpty { advertisement.bannerImage?.tvImage ?: "" },
                         ).crossfade(true).build(),
                     loading = {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(60.dp),
-                            color = Color.White,
-                        )
+                        LoadingIndicator(isLoading = true)
                     },
                     onSuccess = { isImageLoaded = true },
                     contentDescription = "",
@@ -174,10 +168,10 @@ class AdvertisementPage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-                        .height(6.dp)
+                        .height(5.dp)
                         .clip(RoundedCornerShape(12.dp)),
                     strokeCap = StrokeCap.Round,
-                    trackColor = MaterialTheme.colorScheme.background,
+                    trackColor = Color.White,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
@@ -192,13 +186,13 @@ class AdvertisementPage(
             ) {
                 Button(
                     shape = RoundedCornerShape(12.dp),
-//                modifier = Modifier.focusRequester(skipButtonFocusRequester),
-//                containerColor = MaterialTheme.colorScheme.secondary,
-//                focusedContainerColor = MaterialTheme.colorScheme.primary,
                     onClick = onFinish,
+                    colors = ButtonDefaults.buttonColors().copy(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ),
                 ) {
                     Text(
-                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp),
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp),
                         text = skipText,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 16.sp,
@@ -268,7 +262,7 @@ class AdvertisementPage(
             },
         )
 
-        VideoPlayerLoadingIndicator(
+        LoadingIndicator(
             isLoading = isLoading && playbackState != PlaybackState.STATE_PLAYING,
         )
     }

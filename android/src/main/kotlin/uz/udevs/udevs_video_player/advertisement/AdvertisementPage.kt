@@ -168,10 +168,10 @@ class AdvertisementPage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-                        .height(5.dp)
+                        .height(4.dp)
                         .clip(RoundedCornerShape(12.dp)),
                     strokeCap = StrokeCap.Round,
-                    trackColor = Color.White,
+                    trackColor = Color.White.copy(0.7f),
                     color = MaterialTheme.colorScheme.primary,
                 )
             }

@@ -145,7 +145,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     private var maxVolume: Double = 0.0
     private var sWidth: Int = 0
     private var retrofitService: RetrofitService? = null
-    private val tag = "TAG1"
+    private val tag = "UdevsLiveVideoPlayer"
     private var currentOrientation: Int = Configuration.ORIENTATION_PORTRAIT
     private var titleText = ""
     private var url: String? = null
@@ -514,7 +514,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         if (playerConfiguration.authorization.isEmpty()) {
             closeToRequestAuth = Timer()
             closeToRequestAuth?.schedule(timerTask {
-                Log.i("wait3mins", "should request auto = true")
+                Log.i(tag, "should request auto = true")
                 removeProgressListener()
                 unregisterCallBack()
                 val intent = Intent()
@@ -867,7 +867,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 call: Call<AdvertisementResponse>, response: Response<AdvertisementResponse>
             ) {
                 val body = response.body()
-                Log.i("advertisementResponse", "result: $body")
+                Log.i(tag, "advertisementResponse: $body")
                 getSingleTvChannel(channel = channel, advertisement = body)
             }
 

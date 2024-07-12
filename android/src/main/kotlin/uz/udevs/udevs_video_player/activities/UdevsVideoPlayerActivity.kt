@@ -158,7 +158,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var seasonIndex: Int = 0
     private var episodeIndex: Int = 0
     private var retrofitService: RetrofitService? = null
-    private val tag = "TAG1"
+    private val tag = "UdevsVideoPlayer"
     private var currentOrientation: Int = Configuration.ORIENTATION_PORTRAIT
     private var titleText = ""
     private var url: String? = null
@@ -989,6 +989,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
         if (mLocation == PlaybackLocation.REMOTE) {
             return
         }

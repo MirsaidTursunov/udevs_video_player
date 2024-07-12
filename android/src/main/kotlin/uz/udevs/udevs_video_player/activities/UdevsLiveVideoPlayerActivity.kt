@@ -79,10 +79,13 @@ import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
-import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
+import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
 import uz.udevs.udevs_video_player.models.AdvertisementRequest
+import uz.udevs.udevs_video_player.models.AdvertisementResponse
 import uz.udevs.udevs_video_player.models.BottomSheet
 import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
+import uz.udevs.udevs_video_player.models.TvChannel
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
@@ -92,9 +95,6 @@ import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
-import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
-import uz.udevs.udevs_video_player.models.TvChannel
-import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
 
 @UnstableApi
 class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
@@ -549,8 +549,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 //        player?.seekTo(playerConfiguration.lastPosition * 1000)
         player?.prepare()
 
-        playerView?.findViewById<PlayerControlView>(androidx.media3.ui.R.id.exo_play)
-            ?.addVisibilityListener { visibility ->
+//        playerView?.findViewById<PlayerControlView>(androidx.media3.ui.R.id.exo_play)
+//            ?.addVisibilityListener { visibility ->
 //                val params = nextButtonHeight?.layoutParams
                 // Handle visibility change here
 //                if (visibility == View.VISIBLE) {
@@ -559,7 +559,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 //                    params?.height = dpToPx(50)
 //                }
 //                nextButtonHeight?.layoutParams = params
-            }
+//            }
 
         wait3MinsAndClose()
 
@@ -940,8 +940,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                     map["Auto"] = body.channelStreamAll
                     playerConfiguration.resolutions = map
                     url = body.channelStreamAll
-                    title?.text = channel.name
-                    title1?.text = channel.name
+                    titleText = channel.name
+                    title?.text = titleText
+                    title1?.text = titleText
                     val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                     val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(MediaItem.fromUri(Uri.parse(url)))

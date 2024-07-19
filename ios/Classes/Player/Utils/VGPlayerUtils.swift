@@ -128,8 +128,8 @@ func convertStringToDictionary(text: String) -> [String:Any]? {
        do {
            let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
            return json
-       } catch {
-           print("Something went wrong")
+       } catch let error {
+           print("Error occurred while serializing \(error)")
        }
    }
    return nil

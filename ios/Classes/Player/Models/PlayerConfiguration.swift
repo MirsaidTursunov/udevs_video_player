@@ -180,81 +180,81 @@ struct Movie {
         return Movie(id: (map["id"] as? String),title: (map["title"] as? String), description: map["description"] as? String, image: (map["image"] as? String), duration: (map["duration"] as? Int), resolutions: (map["resolutions"] as! [String:String]))
     }
 }
-
-struct ProgramInfo {
-    var day: String
-    var tvPrograms: [TvProgram]?
-    init(day: String, tvPrograms: [TvProgram]? = nil) {
-        self.day = day
-        self.tvPrograms = tvPrograms
-    }
-    static func fromMap(map : [String:Any])->ProgramInfo{
-        var tv: [TvProgram] = []
-        var tvPrograms: [Dictionary<String, Any>]?
-        tvPrograms = map["tvPrograms"] as! [Dictionary<String, Any>]?
-        tvPrograms?.forEach { data in
-            let tvProgram = TvProgram.fromMap(map: data as! [String:String])
-            tv.append(tvProgram)
-        }
-        return ProgramInfo(day: map["day"] as! String,tvPrograms: tv )
-    }
-}
-
-struct TvProgram{
-    var scheduledTime: String?
-    var programTitle: String?
-    init(scheduledTime: String? = nil, programTitle: String? = nil) {
-        self.scheduledTime = scheduledTime
-        self.programTitle = programTitle
-    }
-    
-    static func fromMap(map : [String:String])->TvProgram{
-        return TvProgram(scheduledTime: map["scheduledTime"]!, programTitle: map["programTitle"]!)
-    }
-}
-
-struct Channel {
-    var id: String?
-    var image: String?
-    var name: String?
-    var resolutions: [String:String]
-    
-    init(id: String? = nil, name: String? = nil, image: String? = nil, resolutions: [String : String]) {
-        self.id = id
-        self.name = name
-        self.image = image
-        self.resolutions = resolutions
-    }
-    
-    static func fromMap(map : [String:Any])-> Channel{
-        return Channel(id: (map["id"] as? String),name:(map["name"] as? String), image: (map["image"] as? String), resolutions: (map["resolutions"] as! [String:String]))
-    }
-}
-
-extension Channel: Equatable {
-     static func == (lhs: Channel, rhs: Channel) -> Bool {
-         lhs.id == rhs.id && lhs.name == rhs.name && lhs.image == rhs.image
-     }
- }
-struct TvCategories{
-    var id: String?
-    var title: String?
-    var channels: [Channel]
-    
-    init(id: String? = nil, title: String? = nil, channels: [Channel]) {
-        self.id = id
-        self.title = title
-        self.channels = channels
-    }
-    
-    static func fromMap(map : [String:Any])-> TvCategories{
-        var channels : [Channel] = []
-        var channelsMap : [Dictionary<String, Any>]?
-        channelsMap = map["tvChannels"] as? [Dictionary<String, Any>]
-        channelsMap?.forEach({ data in
-            let program = Channel.fromMap(map: data)
-            channels.append(program)
-        })
-        return TvCategories(id: (map["id"] as? String),title: map["title"] as? String, channels: channels)
-    }
-}
+//
+//struct ProgramInfo {
+//    var day: String
+//    var tvPrograms: [TvProgram]?
+//    init(day: String, tvPrograms: [TvProgram]? = nil) {
+//        self.day = day
+//        self.tvPrograms = tvPrograms
+//    }
+//    static func fromMap(map : [String:Any])->ProgramInfo{
+//        var tv: [TvProgram] = []
+//        var tvPrograms: [Dictionary<String, Any>]?
+//        tvPrograms = map["tvPrograms"] as! [Dictionary<String, Any>]?
+//        tvPrograms?.forEach { data in
+//            let tvProgram = TvProgram.fromMap(map: data as! [String:String])
+//            tv.append(tvProgram)
+//        }
+//        return ProgramInfo(day: map["day"] as! String,tvPrograms: tv )
+//    }
+//}
+//
+//struct TvProgram{
+//    var scheduledTime: String?
+//    var programTitle: String?
+//    init(scheduledTime: String? = nil, programTitle: String? = nil) {
+//        self.scheduledTime = scheduledTime
+//        self.programTitle = programTitle
+//    }
+//    
+//    static func fromMap(map : [String:String])->TvProgram{
+//        return TvProgram(scheduledTime: map["scheduledTime"]!, programTitle: map["programTitle"]!)
+//    }
+//}
+//
+//struct Channel {
+//    var id: String?
+//    var image: String?
+//    var name: String?
+//    var resolutions: [String:String]
+//    
+//    init(id: String? = nil, name: String? = nil, image: String? = nil, resolutions: [String : String]) {
+//        self.id = id
+//        self.name = name
+//        self.image = image
+//        self.resolutions = resolutions
+//    }
+//    
+//    static func fromMap(map : [String:Any])-> Channel{
+//        return Channel(id: (map["id"] as? String),name:(map["name"] as? String), image: (map["image"] as? String), resolutions: (map["resolutions"] as! [String:String]))
+//    }
+//}
+//
+//extension Channel: Equatable {
+//     static func == (lhs: Channel, rhs: Channel) -> Bool {
+//         lhs.id == rhs.id && lhs.name == rhs.name && lhs.image == rhs.image
+//     }
+// }
+//struct TvCategories{
+//    var id: String?
+//    var title: String?
+//    var channels: [Channel]
+//    
+//    init(id: String? = nil, title: String? = nil, channels: [Channel]) {
+//        self.id = id
+//        self.title = title
+//        self.channels = channels
+//    }
+//    
+//    static func fromMap(map : [String:Any])-> TvCategories{
+//        var channels : [Channel] = []
+//        var channelsMap : [Dictionary<String, Any>]?
+//        channelsMap = map["tvChannels"] as? [Dictionary<String, Any>]
+//        channelsMap?.forEach({ data in
+//            let program = Channel.fromMap(map: data)
+//            channels.append(program)
+//        })
+//        return TvCategories(id: (map["id"] as? String),title: map["title"] as? String, channels: channels)
+//    }
+//}

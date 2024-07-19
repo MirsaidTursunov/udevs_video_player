@@ -1,10 +1,11 @@
 //
-//  VideoPlayerViewController.swift
-//  Runner
+//  LivePlayerViewController.swift
+//  udevs_video_player
 //
-//  Created by Sunnatillo Shavkatov on 21/04/22.
+//  Created by Abdurahmon on 17/07/2024.
 //
 
+import Foundation
 import UIKit
 import TinyConstraints
 import AVFoundation
@@ -16,22 +17,8 @@ import SnapKit
 import GoogleCast
 import ScreenshotPreventing
 
-/* The player state. */
-enum PlaybackMode: Int {
-    case none = 0
-    case local
-    case remote
-}
 
-enum CastSessionStatus {
-    case started
-    case resumed
-    case ended
-    case failedToStart
-    case alreadyConnected
-}
-
-class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerDelegate,  GCKRequestDelegate, SettingsBottomSheetCellDelegate, BottomSheetCellDelegate, PlayerViewDelegate {
+class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControllerDelegate,  GCKRequestDelegate, SettingsBottomSheetCellDelegate, BottomSheetCellDelegate, LivePlayerViewDelegate {
     
     private var speedList = ["2.0","1.5","1.25","1.0","0.5"].sorted()
     
@@ -49,8 +36,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     var qualityLabelText = ""
     var speedLabelText = ""
     var subtitleLabelText = "Субтитле"
-    var selectedSeason: Int = 0
-    var selectSesonNum: Int = 0
     var selectChannelIndex: Int = 0
     var selectTvCategoryIndex: Int = 0
     var isRegular: Bool = false
@@ -60,16 +45,15 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     var qualityDelegate: QualityDelegate!
     var speedDelegte: SpeedDelegate!
     var subtitleDelegte: SubtitleDelegate!
-    var playerConfiguration: PlayerConfiguration!
+    var playerConfiguration: LivePlayerConfiguration!
     private var isVolume = false
     private var volumeViewSlider: UISlider!
     private var playerRate: Float = 1.0
     private var selectedSpeedText = "1.0x"
     var selectedQualityText = "Auto"
     private var selectedSubtitle = "None"
-    
-    lazy private var playerView: PlayerView = {
-        return PlayerView()
+    lazy private var playerView: LivePlayerView = {
+        return LivePlayerView()
     }()
 
     lazy var screenshotPreventView = ScreenshotPreventingView(contentView: playerView)
@@ -205,7 +189,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         if playbackMode == .local {
             return
         }
-        var playPosition: TimeInterval = TimeInterval(playerConfiguration.lastPosition)
+        var playPosition: TimeInterval = TimeInterval(0)
         var paused: Bool = false
         var ended: Bool = false
         if playbackMode == .remote {
@@ -394,13 +378,13 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     }
     
     func share() {
-        if let link = NSURL(string: playerConfiguration.movieShareLink)
-        {
-            let objectsToShare = [link] as [Any]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
-            self.present(activityVC, animated: true, completion: nil)
-        }
+//        if let link = NSURL(string: playerConfiguration.movieShareLink)
+//        {
+//            let objectsToShare = [link] as [Any]
+//            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+//            activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
+//            self.present(activityVC, animated: true, completion: nil)
+//        }
     }
     
     func changeOrientation(){
@@ -424,9 +408,9 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         }
     }
     
-    func updateSeasonNum(index:Int) {
-        selectedSeason = index
-    }
+//    func updateSeasonNum(index:Int) {
+//        selectedSeason = index
+//    }
     
     //MARK: - ****** Channels *******
     func channelsButtonPressed(){
@@ -441,17 +425,17 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     
     //MARK: - ****** SEASONS *******
     func episodesButtonPressed(){
-        let episodeVC = EpisodeCollectionUI()
-        episodeVC.modalPresentationStyle = .custom
-        episodeVC.seasons = self.seasons
-        episodeVC.delegate = self
-        episodeVC.seasonIndex = selectedSeason
-        episodeVC.episodeIndex = selectSesonNum
-        self.present(episodeVC, animated: true, completion: nil)
+//        let episodeVC = EpisodeCollectionUI()
+//        episodeVC.modalPresentationStyle = .custom
+//        episodeVC.seasons = self.seasons
+//        episodeVC.delegate = self
+//        episodeVC.seasonIndex = selectedSeason
+//        episodeVC.episodeIndex = selectSesonNum
+//        self.present(episodeVC, animated: true, completion: nil)
     }
     
     func nextEpisodesButtonPressed(){
-        onEpisodeCellTapped(seasonIndex: selectedSeason, episodeIndex: selectSesonNum+1)
+//        onEpisodeCellTapped(seasonIndex: selectedSeason, episodeIndex: selectSesonNum+1)
     }
     
     func settingsPressed() {
@@ -557,7 +541,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
 
     
     func showQualityBottomSheet(){
-       if (!playerConfiguration.isMoreTv) {
+//       if (!playerConfiguration.isMoreTv) {
             let resList = resolutions ?? ["480p": playerConfiguration.url]
             let array = Array(resList.keys)
             var listOfQuality = [String]()
@@ -578,7 +562,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.present(bottomSheetVC, animated: false, completion:nil)
             }
-        }
+//        }
     }
     
     func showSpeedBottomSheet(){
@@ -610,33 +594,33 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         
     }
     
-    func getPremierStream(episodeId:String) -> PremierStreamResponse?{
-        let _url : String = playerConfiguration.baseUrl+"premier/videos/\(playerConfiguration.videoId)/episodes/\(episodeId)/stream"
-        var premierSteamResponse: PremierStreamResponse?
-        let result = Networking.sharedInstance.getPremierStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
-        switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let success):
-            premierSteamResponse = success
-        }
-        return premierSteamResponse
-    }
+//    func getPremierStream(episodeId:String) -> PremierStreamResponse?{
+//        let _url : String = playerConfiguration.baseUrl+"premier/videos/\(playerConfiguration.videoId)/episodes/\(episodeId)/stream"
+//        var premierSteamResponse: PremierStreamResponse?
+//        let result = Networking.sharedInstance.getPremierStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
+//        switch result {
+//        case .failure(let error):
+//            print(error)
+//        case .success(let success):
+//            premierSteamResponse = success
+//        }
+//        return premierSteamResponse
+//    }
     
-    func getMoreTvStream(episodeId:String) -> MoreTvResponse?{
-        let _url : String = playerConfiguration.baseUrl+"moretv/play/\(episodeId)"
-        var moreTvStreamResponse: MoreTvResponse?
-        let result = Networking.sharedInstance.getMoreTvStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
-        print("_url11111")
-        print(result)
-        switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let success):
-            moreTvStreamResponse = success
-        }
-        return moreTvStreamResponse
-    }
+//    func getMoreTvStream(episodeId:String) -> MoreTvResponse?{
+//        let _url : String = playerConfiguration.baseUrl+"moretv/play/\(episodeId)"
+//        var moreTvStreamResponse: MoreTvResponse?
+//        let result = Networking.sharedInstance.getMoreTvStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
+//        print("_url11111")
+//        print(result)
+//        switch result {
+//        case .failure(let error):
+//            print(error)
+//        case .success(let success):
+//            moreTvStreamResponse = success
+//        }
+//        return moreTvStreamResponse
+//    }
     
     func getChannel(id : String) -> ChannelResponse? {
         let _url : String = playerConfiguration.baseUrl+"tv/channel/\(id)"
@@ -663,55 +647,55 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         return channelResponse
     }
     
-    func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
-        self.selectedSeason = _seasonIndex
-        self.selectSesonNum = _episodeIndex
-        self.resolutions = SortFunctions.sortWithKeys(_resolutions)
-        let isFinded = resolutions?.contains(where: { (key, value) in
-            if key == self.selectedQualityText {
-                return true
-            }
-            return false
-        }) ?? false
-        let title = seasons[_seasonIndex].movies[_episodeIndex].title ?? ""
-        if isFinded {
-            let videoUrl = self.resolutions?[selectedQualityText]
-            guard videoUrl != nil else{
-                return
-            }
-            guard URL(string: videoUrl!) != nil else {
-                return
-            }
-            if self.playerConfiguration.url != videoUrl!{
-                if playbackMode == .local{
-                    self.playerView.changeUrl(url: videoUrl, title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}" )
-                    self.url = videoUrl
-                } else {
-                    self.title = "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}"
-                    self.url = videoUrl
-                    self.loadRemoteMedia(position: TimeInterval(0))
-                }
-            } else {
-                print("ERROR")
-            }
-            return
-        } else if !self.resolutions!.isEmpty {
-            if playbackMode == .local {
-                let videoUrl = Array(resolutions!.values)[0]
-                self.playerView.changeUrl(url: videoUrl, title: title)
-                self.url = videoUrl
-            } else {
-                let videoUrl = Array(resolutions!.values)[0]
-                self.url = videoUrl
-                self.loadRemoteMedia(position: TimeInterval(0))
-            }
-            return
-        }
-    }
+//    func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
+//        self.selectedSeason = _seasonIndex
+//        self.selectSesonNum = _episodeIndex
+//        self.resolutions = SortFunctions.sortWithKeys(_resolutions)
+//        let isFinded = resolutions?.contains(where: { (key, value) in
+//            if key == self.selectedQualityText {
+//                return true
+//            }
+//            return false
+//        }) ?? false
+//        let title = seasons[_seasonIndex].movies[_episodeIndex].title ?? ""
+//        if isFinded {
+//            let videoUrl = self.resolutions?[selectedQualityText]
+//            guard videoUrl != nil else{
+//                return
+//            }
+//            guard URL(string: videoUrl!) != nil else {
+//                return
+//            }
+//            if self.playerConfiguration.url != videoUrl!{
+//                if playbackMode == .local{
+//                    self.playerView.changeUrl(url: videoUrl, title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}" )
+//                    self.url = videoUrl
+//                } else {
+//                    self.title = "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}"
+//                    self.url = videoUrl
+//                    self.loadRemoteMedia(position: TimeInterval(0))
+//                }
+//            } else {
+//                print("ERROR")
+//            }
+//            return
+//        } else if !self.resolutions!.isEmpty {
+//            if playbackMode == .local {
+//                let videoUrl = Array(resolutions!.values)[0]
+//                self.playerView.changeUrl(url: videoUrl, title: title)
+//                self.url = videoUrl
+//            } else {
+//                let videoUrl = Array(resolutions!.values)[0]
+//                self.url = videoUrl
+//                self.loadRemoteMedia(position: TimeInterval(0))
+//            }
+//            return
+//        }
+//    }
 }
 
 // MARK: - GCKRemoteMediaClientListener
-extension VideoPlayerViewController : GCKRemoteMediaClientListener {
+extension LiveVideoPlayerViewController : GCKRemoteMediaClientListener {
     func remoteMediaClient(remoteMedia: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
         self.refreshContentInformation()
     }
@@ -737,7 +721,7 @@ extension VideoPlayerViewController : GCKRemoteMediaClientListener {
 }
 
 // MARK: - GCKSessionManagerListener
-extension VideoPlayerViewController: GCKSessionManagerListener {
+extension LiveVideoPlayerViewController: GCKSessionManagerListener {
     func sessionManager(_ sessionManager: GCKSessionManager, willStart session: GCKCastSession) {
         
     }
@@ -765,7 +749,7 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
     }
 }
 
-extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, SubtitleDelegate, ChannelTappedDelegate {
+extension LiveVideoPlayerViewController: QualityDelegate, SpeedDelegate,  SubtitleDelegate, ChannelTappedDelegate {
     
     func onTvCategoryTapped(tvCategoryIndex: Int) {
         self.selectTvCategoryIndex = tvCategoryIndex
@@ -784,61 +768,61 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
         }
     }
     
-    func onEpisodeCellTapped(seasonIndex: Int, episodeIndex: Int) {
-        var resolutions: [String:String] = [:]
-        var startAt :Int64?
-        let episodeId : String = seasons[seasonIndex].movies[episodeIndex].id ?? ""
-        playerView.setEpisodeAndSeasonIndex(seasonIndex: seasonIndex, episodeIndex: episodeIndex)
-        if playerConfiguration.isMegogo {
-            let parameters : [String:String] = ["video_id":episodeId,"access_token":self.playerConfiguration.megogoAccessToken]
-            var success : MegogoStreamResponse?
-            success = self.getMegogoStream(parameters: parameters,id: episodeId)
-            if success != nil {
-                
-                resolutions[self.playerConfiguration.autoText] = success?.data.src
-                success?.data.bitrates.forEach({ bitrate in
-                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
-                })
-                startAt = Int64(success?.data.playStartTime ?? 0)
-                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-            }
-        }
-        if playerConfiguration.isPremier {
-            var success : PremierStreamResponse?
-            success = self.getPremierStream(episodeId: episodeId)
-            if success != nil {
-                success?.fileInfo.forEach({ file in
-                    if file.quality == "auto"{
-                        resolutions[self.playerConfiguration.autoText] = file.fileName
-                    } else {
-                        resolutions["\(file.quality)"] = file.fileName
-                    }
-                })
-                startAt = 0
-                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-            }
-        }
-        if playerConfiguration.isMoreTv {
-            var success : MoreTvResponse?
-            success = self.getMoreTvStream(episodeId: episodeId)
-            if success != nil {
-                
-                resolutions[self.playerConfiguration.autoText] = success?.data.url
+//    func onEpisodeCellTapped(seasonIndex: Int, episodeIndex: Int) {
+//        var resolutions: [String:String] = [:]
+//        var startAt :Int64?
+//        let episodeId : String = seasons[seasonIndex].movies[episodeIndex].id ?? ""
+//        playerView.setEpisodeAndSeasonIndex(seasonIndex: seasonIndex, episodeIndex: episodeIndex)
+//        if playerConfiguration.isMegogo {
+//            let parameters : [String:String] = ["video_id":episodeId,"access_token":self.playerConfiguration.megogoAccessToken]
+//            var success : MegogoStreamResponse?
+//            success = self.getMegogoStream(parameters: parameters,id: episodeId)
+//            if success != nil {
+//                
+//                resolutions[self.playerConfiguration.autoText] = success?.data.src
 //                success?.data.bitrates.forEach({ bitrate in
 //                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
 //                })
-                startAt = 0
-                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-            }
-        }
-        if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
-            seasons[seasonIndex].movies[episodeIndex].resolutions.map { (key: String, value: String) in
-                resolutions[key] = value
-                startAt = 0
-            }
-            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-        }
-    }
+//                startAt = Int64(success?.data.playStartTime ?? 0)
+//                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+//            }
+//        }
+//        if playerConfiguration.isPremier {
+//            var success : PremierStreamResponse?
+//            success = self.getPremierStream(episodeId: episodeId)
+//            if success != nil {
+//                success?.fileInfo.forEach({ file in
+//                    if file.quality == "auto"{
+//                        resolutions[self.playerConfiguration.autoText] = file.fileName
+//                    } else {
+//                        resolutions["\(file.quality)"] = file.fileName
+//                    }
+//                })
+//                startAt = 0
+//                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+//            }
+//        }
+//        if playerConfiguration.isMoreTv {
+//            var success : MoreTvResponse?
+//            success = self.getMoreTvStream(episodeId: episodeId)
+//            if success != nil {
+//                
+//                resolutions[self.playerConfiguration.autoText] = success?.data.url
+////                success?.data.bitrates.forEach({ bitrate in
+////                    resolutions["\(bitrate.bitrate)p"] = bitrate.src
+////                })
+//                startAt = 0
+//                self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+//            }
+//        }
+//        if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
+//            seasons[seasonIndex].movies[episodeIndex].resolutions.map { (key: String, value: String) in
+//                resolutions[key] = value
+//                startAt = 0
+//            }
+//            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+//        }
+//    }
     
     func speedBottomSheet() {
         showSpeedBottomSheet()

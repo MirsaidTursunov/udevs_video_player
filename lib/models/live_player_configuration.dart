@@ -26,7 +26,7 @@ class LivePlayerConfiguration {
     // required this.isMoreTv,
     // required this.isPremier,
     // required this.videoId,
-    // required this.sessionId,
+    required this.sessionId,
     // required this.megogoAccessToken,
     required this.authorization,
     required this.autoText,
@@ -72,7 +72,7 @@ class LivePlayerConfiguration {
   // final bool isPremier;
   // final bool isMoreTv;
   // final String videoId;
-  // final String sessionId;
+  final String sessionId;
 
   // final String megogoAccessToken;
   final String authorization;
@@ -119,7 +119,7 @@ class LivePlayerConfiguration {
     // map['isMoreTv'] = isMoreTv;
     // map['isPremier'] = isPremier;
     // map['videoId'] = videoId;
-    // map['sessionId'] = sessionId;
+    map['sessionId'] = sessionId;
     // map['megogoAccessToken'] = megogoAccessToken;
     map['authorization'] = authorization;
     map['autoText'] = autoText;
@@ -163,7 +163,7 @@ class LivePlayerConfiguration {
       // 'isMoreTv: $isMoreTv, '
       // 'isPremier: $isPremier, '
       // 'videoId: $videoId, '
-      // 'sessionId: $sessionId, '
+      'sessionId: $sessionId, '
       // 'megogoAccessToken: $megogoAccessToken, '
       'authorization: $authorization, '
       'autoText: $autoText '

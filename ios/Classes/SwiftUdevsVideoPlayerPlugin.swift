@@ -96,6 +96,25 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             vc.selectChannelIndex = playerConfiguration.selectChannelIndex
             vc.selectTvCategoryIndex = playerConfiguration.selectTvCategoryIndex
             SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true, completion: nil)
+//            wait3MinsAndClose(playerConfiguration: playerConfiguration)
+        case "playLiveVideo":
+            guard let args = call.arguments else { return }
+            guard let json = convertStringToDictionary(text: (args as! [String: String])["livePlayerConfigJsonString"] ?? "") else { return }
+            let playerConfiguration: LivePlayerConfiguration = LivePlayerConfiguration.fromMap(map: json)
+            let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
+            guard URL(string: playerConfiguration.url) != nil else { return }
+            let vc = LiveVideoPlayerViewController()
+            vc.modalPresentationStyle = .fullScreen
+            vc.delegate = self
+            vc.playerConfiguration = playerConfiguration
+            vc.qualityLabelText = playerConfiguration.qualityText
+            vc.speedLabelText = playerConfiguration.speedText
+            vc.resolutions = sortedResolutions
+            vc.selectedQualityText = playerConfiguration.autoText
+//            vc.seasons = playerConfiguration.seasons
+            vc.selectChannelIndex = playerConfiguration.selectChannelIndex
+            vc.selectTvCategoryIndex = playerConfiguration.selectTvCategoryIndex
+            SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true, completion: nil)
             wait3MinsAndClose(playerConfiguration: playerConfiguration)
         default:
             result("Not Implemented")
@@ -189,8 +208,8 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
         task?.resume()
     }
 
-    private func wait3MinsAndClose(playerConfiguration: PlayerConfiguration) {
-        if playerConfiguration.isLive && playerConfiguration.authorization.isEmpty {
+    private func wait3MinsAndClose(playerConfiguration: LivePlayerConfiguration) {
+        if playerConfiguration.authorization.isEmpty {
             closeToRequestAuthTimer = Timer.scheduledTimer(timeInterval: 180, target: self, selector: #selector(handleCloseToRequestAuth), userInfo: nil, repeats: false)
         }
     }

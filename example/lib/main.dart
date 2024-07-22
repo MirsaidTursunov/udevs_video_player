@@ -291,22 +291,22 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playLiveVideo(
             playerConfig: LivePlayerConfiguration(
+              sessionId: '',
               skipText: 'Skip Ad',
               advertisement: AdvertisementResponse(
-                id: 'f07d0dab-8466-45b5-8b10-74e264af8e8e',
-                bannerImage: BannerImage(
-                  mobileImage:
-                      'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/c30549a1-bda9-4f15-a7db-fe55ba816cf8.jpg',
-                  webImage:
-                      'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/49b46d84-f0f4-4bea-80df-69f10e51d15d.jpg',
-                  tvImage:
-                      'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/7ca0217a-b2ec-414e-aca8-849a8702a383.jpg',
-                ),
-                skipDuration: 5,
-                link: 'https://t.me/uzdigital_tv_bot/app',
-                video:
-                    'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'
-              ),
+                  id: 'f07d0dab-8466-45b5-8b10-74e264af8e8e',
+                  bannerImage: BannerImage(
+                    mobileImage:
+                        'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/c30549a1-bda9-4f15-a7db-fe55ba816cf8.jpg',
+                    webImage:
+                        'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/49b46d84-f0f4-4bea-80df-69f10e51d15d.jpg',
+                    tvImage:
+                        'https://cdn.uzd.udevs.io/uzdigital-images-compressed/images/7ca0217a-b2ec-414e-aca8-849a8702a383.jpg',
+                  ),
+                  skipDuration: 5,
+                  link: 'https://t.me/uzdigital_tv_bot/app',
+                  video:
+                      'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'),
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':

@@ -603,7 +603,6 @@ class LivePlayerView: UIView {
             }
             bottomView.alpha = alpha
         }, completion: nil)
-        
     }
     
     func resetTimer() {

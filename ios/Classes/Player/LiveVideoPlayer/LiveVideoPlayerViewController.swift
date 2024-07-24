@@ -756,8 +756,9 @@ extension LiveVideoPlayerViewController: QualityDelegate, SpeedDelegate,  Subtit
     }
     
     func onChannelTapped(channelIndex: Int, tvCategoryIndex: Int) {
-        if self.selectChannelIndex == channelIndex && self.selectTvCategoryIndex == tvCategoryIndex { return }
+//        if self.selectChannelIndex == channelIndex && self.selectTvCategoryIndex == tvCategoryIndex { return }
         let channel = self.playerConfiguration.tvCategories[tvCategoryIndex].channels[channelIndex]
+        if !(channel.hasAccess) { return }
         let success : ChannelResponse? = getChannel(id: channel.id ?? "")
         if success != nil {
             self.selectChannelIndex = channelIndex

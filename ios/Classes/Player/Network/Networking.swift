@@ -84,8 +84,53 @@ struct Networking {
         return result
     }
     
-    func getStreamUrl(_ baseUrl: String) -> Result<String, NetworkError> {
+    func getAdvertisement(_ baseUrl: String, 
+                          token: String,
+                          sessionId: String,
+                          advRequest: AdvertisementRequest
+    ) -> Result<AdvertisementResponse, NetworkError> {
         var components = URLComponents(string: baseUrl)!
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+        let jsonRequest = advRequest.toMap()
+        let jsonData = try? JSONSerialization.data(withJSONObject: jsonRequest)
+        print("requestJson: \(jsonRequest)")
+        request.httpBody = jsonData
+        var result: Result<AdvertisementResponse, NetworkError>!
+//        let fakeResponse = AdvertisementResponse(bannerImage: BannerImage(
+//            mobileImage: "https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_3x4.jpg",tvImage: "",webImage: ""), skipDuration: 5, id: "121", link: "https://google.com",video: nil)
+//        result = .success(fakeResponse)
+//        return result
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,response ,error in
+            guard let json = data else {
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do {
+                if let jsonResult = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary {
+                            print("response JSon: \(jsonResult)")
+                        }
+                let decoder = JSONDecoder()
+                let response = try decoder.decode(AdvertisementResponse.self, from: Data(json))
+                print("response")
+                print(json)
+                result = .success(response)
+            }
+            catch {
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
+    
+    func getStreamUrl(_ baseUrl: String) -> Result<String, NetworkError> {
+        let components = URLComponents(string: baseUrl)!
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
         

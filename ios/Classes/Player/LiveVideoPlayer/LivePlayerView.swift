@@ -16,16 +16,11 @@ import MediaPlayer
 protocol LivePlayerViewDelegate: NSObjectProtocol {
     func close(duration: Double)
     func settingsPressed()
-//    func episodesButtonPressed()
-//    func nextEpisodesButtonPressed()
     func channelsButtonPressed()
     func showPressed()
     func changeOrientation()
     func togglePictureInPictureMode()
-//    func skipForwardButtonPressed()
-//    func skipBackButtonPressed()
     func playButtonPressed()
-//    func sliderValueChanged(value: Float)
     func volumeChanged(value: Float)
     func isCheckPlay()
     func share()
@@ -33,7 +28,7 @@ protocol LivePlayerViewDelegate: NSObjectProtocol {
 
 class LivePlayerView: UIView {
     
-    private var player = AVPlayer()
+    var player = AVPlayer()
     var playerLayer =  AVPlayerLayer()
     private var mediaTimeObserver: Any?
     private var observingMediaPlayer: Bool = false

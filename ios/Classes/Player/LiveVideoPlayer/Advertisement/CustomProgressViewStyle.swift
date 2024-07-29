@@ -1,5 +1,5 @@
 //
-//  LinearProgressIndicator.swift
+//  CustomProgressViewStyle.swift
 //  udevs_video_player
 //
 //  Created by Abdurahmon on 25/07/2024.

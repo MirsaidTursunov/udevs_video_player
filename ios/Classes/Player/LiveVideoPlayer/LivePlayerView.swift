@@ -931,7 +931,7 @@ class LivePlayerView: UIView {
             print("pendingPlay")
             print(pendingPlay)
             pendingPlay = false
-            player.play()
+//            player.play()
             playerState = .playing
         } else {
             playerState = .paused

@@ -158,6 +158,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     
     
     func showAdvertisement(advertisement: AdvertisementResponse?) {
+        if(advertisement?.id == nil) {return}
         print("showAdvertisemnet called: \(advertisement)")
         if let advertisement = advertisement , #available(iOS 15,*) {
             let swiftUIView = AdvertisementSwiftUI(
@@ -176,7 +177,6 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
             } else {
               present(vc, animated:true,completion: nil)
             }
-            
 //            present(vc, animated:true,completion: nil)
         } else {
             playerView.player.play()

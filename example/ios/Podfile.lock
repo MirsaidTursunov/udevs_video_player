@@ -1,0 +1,78 @@
+PODS:
+  - CocoaLumberjack (3.8.5):
+    - CocoaLumberjack/Core (= 3.8.5)
+  - CocoaLumberjack/Core (3.8.5)
+  - Flutter (1.0.0)
+  - google-cast-sdk (4.7.0):
+    - google-cast-sdk/Core (= 4.7.0)
+    - Protobuf (~> 3.13)
+  - google-cast-sdk/Core (4.7.0):
+    - Protobuf (~> 3.13)
+  - NVActivityIndicatorView (5.2.0):
+    - NVActivityIndicatorView/Base (= 5.2.0)
+  - NVActivityIndicatorView/Base (5.2.0)
+  - Protobuf (3.27.1)
+  - ScreenshotPreventing (1.4.0):
+    - ScreenshotPreventing/Core (= 1.4.0)
+  - ScreenshotPreventing/Core (1.4.0)
+  - SDWebImage (5.19.2):
+    - SDWebImage/Core (= 5.19.2)
+  - SDWebImage/Core (5.19.2)
+  - SnapKit (4.2.0)
+  - SVGKit (3.0.0):
+    - CocoaLumberjack (~> 3.0)
+  - TinyConstraints (4.0.2)
+  - udevs_video_player (0.0.1):
+    - Flutter
+    - google-cast-sdk (< 5.0, >= 4.7.0)
+    - NVActivityIndicatorView
+    - ScreenshotPreventing (~> 1.4.0)
+    - SDWebImage (~> 5.0)
+    - SnapKit (~> 4.0)
+    - SVGKit
+    - TinyConstraints
+    - XLActionController
+  - XLActionController (5.1.0):
+    - XLActionController/Core (= 5.1.0)
+  - XLActionController/Core (5.1.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - udevs_video_player (from `.symlinks/plugins/udevs_video_player/ios`)
+
+SPEC REPOS:
+  trunk:
+    - CocoaLumberjack
+    - google-cast-sdk
+    - NVActivityIndicatorView
+    - Protobuf
+    - ScreenshotPreventing
+    - SDWebImage
+    - SnapKit
+    - SVGKit
+    - TinyConstraints
+    - XLActionController
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  udevs_video_player:
+    :path: ".symlinks/plugins/udevs_video_player/ios"
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  google-cast-sdk: 6731e9a206ce43e0f4433d15598ad8a19f0371d5
+  NVActivityIndicatorView: fe52a6a68664c2df8991d7d9e3d86d8d19453c53
+  Protobuf: f1b82a3ffb1c8f13d20e141a838c411840e1c223
+  ScreenshotPreventing: 7057fd23cb00599ba265c0b166768e1e0cb3a0b0
+  SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SVGKit: 1ad7513f8c74d9652f94ed64ddecda1a23864dea
+  TinyConstraints: 7b7ccc0c485bb3bb47082138ff28bc33cd49897f
+  udevs_video_player: 6a8fa91eb3c8e6a919e783e8fd71770c03346d30
+  XLActionController: 24140d835ab9e260270711afebc5efabebe9d392
+
+PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
+
+COCOAPODS: 1.15.2

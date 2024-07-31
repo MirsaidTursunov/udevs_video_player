@@ -31,5 +31,6 @@ struct Svg {
     static let subtitle :SVGKImage = SVGKImage(named: "play_speed", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let share :SVGKImage = SVGKImage(named: "share", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let channels :SVGKImage = SVGKImage(named: "channels", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let lock :SVGKImage = SVGKImage(named: "lock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     
 }

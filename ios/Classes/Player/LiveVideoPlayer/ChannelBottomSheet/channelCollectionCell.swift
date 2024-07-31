@@ -23,10 +23,20 @@ class channelCollectionCell: UICollectionViewCell {
         fadeBackground.frame.size.height = 104
         fadeBackground.frame.size.width = 104
         
-        let lock  = UIImageView()
-        lock.image = UIImage(named: "lock")
-        lock.frame = CGRect(x: 27, y: 27, width: 50, height: 50)
+        let lock = IconButton()
+        lock.setImage(Svg.lock.uiImage, for: .normal)
+        lock.translatesAutoresizingMaskIntoConstraints = false
         fadeBackground.addSubview(lock)
+        /// center lock logog
+        let leftConstraint = lock.leftAnchor.constraint(equalTo: fadeBackground.leftAnchor)
+        leftConstraint.isActive = true
+        let rightConstraint = lock.rightAnchor.constraint(equalTo: fadeBackground.rightAnchor)
+        rightConstraint.isActive = true
+        let topConstraint = lock.topAnchor.constraint(equalTo: fadeBackground.topAnchor)
+        topConstraint.isActive = true
+        let bottomConstraint = lock.bottomAnchor.constraint(equalTo: fadeBackground.bottomAnchor)
+        bottomConstraint.isActive = true
+        
         fadeBackground.isHidden = true
         return fadeBackground
     }()
@@ -46,7 +56,7 @@ class channelCollectionCell: UICollectionViewCell {
     
     
 
-    public func checkSubForUI(){
+    private func checkSubForUI(){
         if (model!.hasAccess) {
             lockUi.isHidden = true
         }else{

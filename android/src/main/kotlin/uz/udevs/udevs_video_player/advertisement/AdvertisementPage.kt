@@ -52,17 +52,24 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.udevs.udevs_video_player.advertisement.components.LoadingIndicator
+import uz.udevs.udevs_video_player.models.AdvertisementAnalyticsRequest
 import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.retrofit.RetrofitService
 
 class AdvertisementPage(
     private val advertisement: AdvertisementResponse,
     private val skipText: String,
+    private val retrofitService: RetrofitService?,
     private val onFinish: () -> Unit,
 ) {
 
     private var indicatorFlow: Flow<Float>? = null
     private var isImageLoaded: Boolean = false
+    private var isClicked: Boolean = false
 
     private var exoPlayer: ExoPlayer? = null
     private fun startIndicatorTimer() {
@@ -88,9 +95,36 @@ class AdvertisementPage(
                 Log.i("", "startIndicatorTimer emitted ${percent * 0.002f}")
             }
             if (percent == 500 && advertisement.video == null) {
+                sendAnalytics(false)
                 onFinish.invoke()
             }
         }
+    }
+
+    private fun sendAnalytics(interested: Boolean) {
+        retrofitService?.sendAdvertisementAnalytics(
+            AdvertisementAnalyticsRequest(
+                id = advertisement.id.toString(),
+                click = isClicked,
+                interested = isClicked || interested,
+                viewTime = if (advertisement.video == null) {
+                    advertisement.skipDuration ?: 15
+                } else {
+                    ((exoPlayer?.currentPosition?.toInt()) ?: 15000) / 1000
+                },
+            )
+        )?.enqueue(object : Callback<Any> {
+            override fun onResponse(
+                call: Call<Any>, response: Response<Any>
+            ) {
+                val body = response.body()
+                Log.i("", "advertisement analytics response: $body")
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                Log.i("", "advertisement analytics failed: ${t.message}")
+            }
+        })
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -102,7 +136,10 @@ class AdvertisementPage(
         }
 
         Box(modifier = Modifier
-            .clickable { uriHandler.openUri(advertisement.link ?: "") }
+            .clickable {
+                isClicked = true
+                uriHandler.openUri(advertisement.link ?: "")
+            }
             .fillMaxSize()
             .background(Color.Black)) {
             if (advertisement.video.isNullOrEmpty())
@@ -124,7 +161,10 @@ class AdvertisementPage(
                 )
             else VideoPlayer(
                 videoUrl = advertisement.video,
-                onFinish = onFinish,
+                onFinish = {
+                    sendAnalytics(true)
+                    onFinish.invoke()
+                } ,
             )
             Box(
                 modifier = Modifier
@@ -136,27 +176,7 @@ class AdvertisementPage(
                         ),
                     )
             )
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(LocalConfiguration.current.screenHeightDp.dp / 6)
-//                    .background(
-//                        Brush.verticalGradient(
-//                            colors = listOf(Color.Black.copy(0.3f), Color.Transparent),
-//                        ),
-//                    )
-//            )
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .align(Alignment.BottomCenter)
-//                    .height(LocalConfiguration.current.screenHeightDp.dp / 6)
-//                    .background(
-//                        Brush.verticalGradient(
-//                            colors = listOf(Color.Transparent, Color.Black),
-//                        ),
-//                    )
-//            )
+
             val indicatorPercentage = indicatorFlow?.collectAsState(initial = 0f)
             AnimatedVisibility(
                 visible = indicatorPercentage?.value != 1f,
@@ -186,7 +206,10 @@ class AdvertisementPage(
             ) {
                 Button(
                     shape = RoundedCornerShape(12.dp),
-                    onClick = onFinish,
+                    onClick = {
+                        sendAnalytics(false)
+                        onFinish.invoke()
+                    } ,
                     colors = ButtonDefaults.buttonColors().copy(
                         containerColor = MaterialTheme.colorScheme.secondary
                     ),

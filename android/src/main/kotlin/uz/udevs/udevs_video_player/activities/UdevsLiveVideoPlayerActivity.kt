@@ -175,6 +175,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                 AdvertisementPage(
                     advertisement = advertisement,
                     skipText = playerConfiguration.skipText,
+                    retrofitService = retrofitService,
                     onFinish = {
                         setContentView(R.layout.player_activity)
                         initializeViews()

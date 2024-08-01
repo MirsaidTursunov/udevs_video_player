@@ -78,7 +78,6 @@ class AdvertisementPage(
         indicatorFlow = flow {
             var percent = 0
             while (percent < 500) {
-                Log.i("", "startIndicatorTimer in while")
                 delay((skipDuration * 2).toLong())
                 /// if image advertisement
                 if (advertisement.video.isNullOrEmpty() && isImageLoaded) {
@@ -92,7 +91,6 @@ class AdvertisementPage(
                         emit(percent * 0.002f)
                     }
                 }
-                Log.i("", "startIndicatorTimer emitted ${percent * 0.002f}")
             }
             if (percent == 500 && advertisement.video == null) {
                 sendAnalytics(false)

@@ -10,6 +10,7 @@ import AVKit
 
 @available(iOS 15, *)
 struct AdvertisementSwiftUI: View {
+    let playerConfiguration: LivePlayerConfiguration
     let advertisement: AdvertisementResponse
     let skipText: String
     
@@ -17,6 +18,18 @@ struct AdvertisementSwiftUI: View {
     @State private var percent = 0.0
     @State private var player = AVPlayer()
     @State private var isImageLoaded = false
+    @State private var isClicked = false
+    
+    
+    func sendAnalytics(interested:Bool) {
+        let requestBody = AdvertisementAnalyticsRequest(
+            id: advertisement.id ?? "", interested: interested || isClicked, click: isClicked, viewTime: advertisement.video == nil ? (advertisement.skipDuration ?? 15): Int(CMTimeGetSeconds(player.currentTime())) )
+        let _url : String = playerConfiguration.baseUrl + "advertisingTest"
+        let result = Networking.sharedInstance.sendAdvertisementAnalytics(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId,
+                                                                analytics: requestBody
+        )
+        print("result adv analytics: \(result)")
+    }
     
     var body: some View {
         ZStack{
@@ -36,14 +49,16 @@ struct AdvertisementSwiftUI: View {
                             }
                     }.onTapGesture(perform: {
                         if let url = URL(string: advertisement.link ?? "") {
-                               UIApplication.shared.open(url)
-                            }
+                            isClicked  = true
+                            UIApplication.shared.open(url)
+                        }
                     })
                 } else {
                     Button(action: {
                         if let url = URL(string: advertisement.link ?? "") {
-                                                           UIApplication.shared.open(url)
-                                                        }
+                            isClicked = true
+                            UIApplication.shared.open(url)
+                            }
                     }, label: {
                         VideoPlayer(player: player).onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
                             print("UI went background")
@@ -56,7 +71,7 @@ struct AdvertisementSwiftUI: View {
                             }
                         }
                             .onAppear {
-                                let url = URL(string: "https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4")!
+                                let url = URL(string: advertisement.video ?? "")!
                                 player = AVPlayer(url: url)
                                 player.play()
                             }
@@ -78,7 +93,6 @@ struct AdvertisementSwiftUI: View {
                           /// if image advertisement
                           if 
                             advertisement.video == nil || advertisement.video?.isEmpty ?? true
-//                          false
                           {
                               if isImageLoaded {
                                   percent = percent + 1
@@ -87,6 +101,10 @@ struct AdvertisementSwiftUI: View {
                               percent = percent + 1
                           }
                       } else {
+                          sendAnalytics(interested: false)
+                          if(advertisement.video == nil){
+                              dismiss()
+                          }
                         timer.invalidate()
                       }
                     }
@@ -94,6 +112,7 @@ struct AdvertisementSwiftUI: View {
                 Spacer()
                 if !(percent < 500) {
                     Button {
+                        sendAnalytics(interested: false)
                         dismiss()
                     } label: {
                         Text(skipText)
@@ -112,12 +131,6 @@ struct AdvertisementSwiftUI: View {
         }
     }
 }
-
-//@available(iOS 15, *)
-//#Preview {
-//    AdvertisementSwiftUI()
-//}
-
 
 @available(iOS 13, *)
 extension Color {

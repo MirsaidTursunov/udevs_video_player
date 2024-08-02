@@ -163,6 +163,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         print("showAdvertisemnet called: \(advertisement)")
         if let advertisement = advertisement , #available(iOS 15,*) {
             let swiftUIView = AdvertisementSwiftUI(
+                playerConfiguration: playerConfiguration,
                 advertisement: advertisement,
                 skipText: playerConfiguration.skipText
             )
@@ -463,9 +464,6 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
 //        self.present(episodeVC, animated: true, completion: nil)
     }
     
-    func nextEpisodesButtonPressed(){
-//        onEpisodeCellTapped(seasonIndex: selectedSeason, episodeIndex: selectSesonNum+1)
-    }
     
     func settingsPressed() {
         let vc = SettingVC()

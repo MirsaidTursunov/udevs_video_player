@@ -267,7 +267,7 @@ class _MainPageState extends State<MainPage> {
               megogoAccessToken: '',
               authorization: '',
               autoText: 'Автонастройка',
-              fromCache: true,
+              fromCache: false,
               userId: '',
               profileId: '',
             ),

@@ -1,6 +1,9 @@
 import 'dart:core';
 
+import 'package:udevs_video_player/models/programs_info.dart';
 import 'package:udevs_video_player/models/season.dart';
+
+import 'tv_categories.dart';
 
 export 'programs_info.dart';
 export 'season.dart';
@@ -19,6 +22,9 @@ class PlayerConfiguration {
       required this.episodeButtonText,
       required this.nextButtonText,
       required this.seasons,
+      required this.isLive,
+      required this.tvProgramsText,
+      required this.programsInfoList,
       required this.showController,
       required this.playVideoFromAsset,
       required this.assetPath,
@@ -35,6 +41,10 @@ class PlayerConfiguration {
       required this.baseUrl,
       required this.fromCache,
       required this.movieShareLink,
+      required this.ip,
+      required this.selectChannelIndex,
+      this.selectTvCategoryIndex = 0,
+      required this.tvCategories,
       required this.userId,
       required this.profileId});
 
@@ -48,6 +58,9 @@ class PlayerConfiguration {
   final String episodeButtonText;
   final String nextButtonText;
   final List<Season> seasons;
+  final bool isLive;
+  final String tvProgramsText;
+  final List<ProgramsInfo> programsInfoList;
   final bool showController;
   final bool playVideoFromAsset;
   final String assetPath;
@@ -64,7 +77,12 @@ class PlayerConfiguration {
   final String baseUrl;
   final String movieShareLink;
   final bool fromCache;
+  final List<TvCategories> tvCategories;
+  final String ip;
+  final int selectChannelIndex;
+  final int selectTvCategoryIndex;
   final String userId;
+
   final String profileId;
 
   Map<String, dynamic> toJson() {
@@ -79,6 +97,9 @@ class PlayerConfiguration {
     map['episodeButtonText'] = episodeButtonText;
     map['nextButtonText'] = nextButtonText;
     map['seasons'] = seasons.map((v) => v.toJson()).toList();
+    map['isLive'] = isLive;
+    map['tvProgramsText'] = tvProgramsText;
+    map['programsInfoList'] = programsInfoList.map((v) => v.toJson()).toList();
     map['showController'] = showController;
     map['playVideoFromAsset'] = playVideoFromAsset;
     map['assetPath'] = assetPath;
@@ -95,8 +116,12 @@ class PlayerConfiguration {
     map['baseUrl'] = baseUrl;
     map['fromCache'] = fromCache;
     map['movieShareLink'] = movieShareLink;
+    map['ip'] = ip;
+    map['selectChannelIndex'] = selectChannelIndex;
+    map['selectTvCategoryIndex'] = selectTvCategoryIndex;
     map['profileId'] = profileId;
     map['userId'] = userId;
+    map['tvCategories'] = tvCategories.map((v) => v.toJson()).toList();
     return map;
   }
 
@@ -112,6 +137,9 @@ class PlayerConfiguration {
       'episodeButtonText: $episodeButtonText, '
       'nextButtonText: $nextButtonText, '
       'seasons: $seasons, '
+      'isLive: $isLive, '
+      'tvProgramsText: $tvProgramsText, '
+      'programsInfoList: $programsInfoList, '
       'showController: $showController, '
       'playVideoFromAsset: $playVideoFromAsset, '
       'assetPath: $assetPath, '
@@ -128,6 +156,9 @@ class PlayerConfiguration {
       'baseUrl: $baseUrl, '
       'fromCache: $fromCache, '
       'movieShareLink: $movieShareLink, '
+      'channels: $tvCategories, '
+      'ip: $ip'
+      'selectChannelIndex: $selectChannelIndex'
       'userId: $userId'
       'profileId: $profileId'
       '}';

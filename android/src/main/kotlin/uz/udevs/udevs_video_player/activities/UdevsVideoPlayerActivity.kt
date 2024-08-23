@@ -83,12 +83,15 @@ import uz.udevs.udevs_video_player.PLAYER_ACTIVITY_FINISH
 import uz.udevs.udevs_video_player.R
 import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
+import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
+import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.BottomSheet
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
@@ -97,6 +100,7 @@ import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
+import kotlin.concurrent.timerTask
 import kotlin.math.abs
 
 @UnstableApi
@@ -164,6 +168,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var mSessionManagerListener: SessionManagerListener<CastSession>? = null
     private var mCastSession: CastSession? = null
     private var mCastContext: CastContext? = null
+    private var channelIndex: Int = 0
+    private var tvCategoryIndex: Int = 0
     private var isPipMode: Boolean = false
     private var sendingAnalytics: Job? = null
 
@@ -204,6 +210,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         playerConfiguration = intent.getSerializableExtra(EXTRA_ARGUMENT) as PlayerConfiguration
         seasonIndex = playerConfiguration.seasonIndex
         episodeIndex = playerConfiguration.episodeIndex
+        channelIndex = playerConfiguration.selectChannelIndex
+        tvCategoryIndex = playerConfiguration.selectTvCategoryIndex
         currentQuality =
             if (playerConfiguration.initialResolution.isNotEmpty()) playerConfiguration.initialResolution.keys.first() else ""
         titleText = playerConfiguration.title
@@ -515,15 +523,31 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startSendingAnalytics() {
-        sendingAnalytics = GlobalScope.launch {
-            while (true) {
-                sendAnalytics()
-                delay(10000)
+        if (!playerConfiguration.isLive)
+            sendingAnalytics = GlobalScope.launch {
+                while (true) {
+                    sendAnalytics()
+                    delay(10000)
+                }
             }
-        }
     }
 
     private var closeToRequestAuth: Timer? = null
+
+    private fun wait3MinsAndClose() {
+        if (playerConfiguration.isLive && playerConfiguration.authorization.isEmpty()) {
+            closeToRequestAuth = Timer()
+            closeToRequestAuth?.schedule(timerTask {
+                Log.i("wait3mins", "should request auto = true")
+                removeProgressListener()
+                unregisterCallBack()
+                val intent = Intent()
+                intent.putExtra("position", -1L)
+                setResult(PLAYER_ACTIVITY_FINISH, intent)
+                finish()
+            }, 15000)
+        }
+    }
 
 
     private fun playVideo() {
@@ -555,6 +579,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
 
         startSendingAnalytics()
+        wait3MinsAndClose()
+
 
         player?.addListener(object : Player.Listener {
             override fun onEvents(
@@ -621,7 +647,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             } else {
                                 nextButton?.performClick()
                             }
-                        } else {
+                        } else if (!playerConfiguration.isLive) {
                             onBackPressed()
                         }
                     }
@@ -664,8 +690,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         pip = findViewById(R.id.video_pip)
         cast = findViewById(R.id.video_cast)
         tvChannels = findViewById(R.id.tv_channels)
-        tvChannelsButton?.visibility = View.GONE
-
+        if (playerConfiguration.isLive) {
+            tvChannelsButton?.visibility = View.VISIBLE
+        }
         CastButtonFactory.setUpMediaRouteButton(applicationContext, cast!!)
         more = findViewById(R.id.video_more)
         title = findViewById(R.id.video_title)
@@ -678,16 +705,16 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         playPause = findViewById(R.id.video_play_pause)
         progressbar = findViewById(R.id.video_progress_bar)
         timer = findViewById(R.id.timer)
-//        if (playerConfiguration.isLive) {
-//            timer?.visibility = View.GONE
-//        }
+        if (playerConfiguration.isLive) {
+            timer?.visibility = View.GONE
+        }
         videoPosition = findViewById(R.id.video_position)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)
-//        if (playerConfiguration.isLive) {
-//            shareMovieLinkIv?.visibility = View.GONE
-//            live?.visibility = View.VISIBLE
-//        }
+        if (playerConfiguration.isLive) {
+            shareMovieLinkIv?.visibility = View.GONE
+            live?.visibility = View.VISIBLE
+        }
         episodesButton = findViewById(R.id.button_episodes)
         episodesText = findViewById(R.id.text_episodes)
         if (playerConfiguration.seasons.isNotEmpty()) {
@@ -710,21 +737,21 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 //                nextText?.visibility = View.GONE
 //            }
         tvProgramsButton = findViewById(R.id.button_tv_programs)
-//        if (playerConfiguration.isLive) {
-//            tvProgramsButton?.visibility = View.VISIBLE
-//            tvChannels?.visibility = View.VISIBLE
-//        }
+        if (playerConfiguration.isLive) {
+            tvProgramsButton?.visibility = View.VISIBLE
+            tvChannels?.visibility = View.VISIBLE
+        }
         zoom = findViewById(R.id.zoom)
         orientation = findViewById(R.id.orientation)
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
-//        if (playerConfiguration.isLive) {
-//            exoProgress?.visibility = View.GONE
-//            rewind?.visibility = View.GONE
-//            forward?.visibility = View.GONE
-//            customSeekBar?.visibility = View.VISIBLE
-//        }
+        if (playerConfiguration.isLive) {
+            exoProgress?.visibility = View.GONE
+            rewind?.visibility = View.GONE
+            forward?.visibility = View.GONE
+            customSeekBar?.visibility = View.VISIBLE
+        }
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
                 scaleGestureDetector?.onTouchEvent(motionEvent)
@@ -850,8 +877,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 }
             }
         }
+        ///TODO:
         tvChannels?.setOnClickListener {
-//            showChannelsBottomSheet()
+            showChannelsBottomSheet()
         }
         episodesButton?.setOnClickListener {
             if (playerConfiguration.seasons.isNotEmpty())
@@ -914,9 +942,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 //            nextButton?.visibility = View.GONE
         }
 
-//        tvProgramsButton?.setOnClickListener {
-//            if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
-//        }
+        tvProgramsButton?.setOnClickListener {
+            if (playerConfiguration.programsInfoList.isNotEmpty()) showTvProgramsBottomSheet()
+        }
 
         zoom?.setOnClickListener {
             if (mLocation == PlaybackLocation.REMOTE) {
@@ -947,9 +975,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
-//                    if (playerConfiguration.isLive) {
-//                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//                    }
+                    if (playerConfiguration.isLive) {
+                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
             it.postDelayed({
@@ -1134,40 +1162,40 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         })
     }
 
-//    private fun getSingleTvChannel(tvCIndex: Int, cIndex: Int) {
-//        tvCategoryIndex = tvCIndex
-//        channelIndex = cIndex
-//        retrofitService?.getSingleTvChannel(
-//            playerConfiguration.authorization,
-//            playerConfiguration.tvCategories[tvCIndex].channels[cIndex].id,
-//            playerConfiguration.ip,
-//        )?.enqueue(object : Callback<TvChannelResponse> {
-//            override fun onResponse(
-//                call: Call<TvChannelResponse>, response: Response<TvChannelResponse>
-//            ) {
-//                val body = response.body()
-//                if (body != null) {
-//                    val map: HashMap<String, String> = hashMapOf()
-//                    map["Auto"] = body.channelStreamAll
-//                    playerConfiguration.resolutions = map
-//
-//                    url = body.channelStreamAll
-//                    title?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
-//                    title1?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
-//                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-//                        .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-//                    player?.setMediaSource(hlsMediaSource)
-//                    player?.prepare()
-//                    player?.playWhenReady
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<TvChannelResponse>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
-//    }
+    private fun getSingleTvChannel(tvCIndex: Int, cIndex: Int) {
+        tvCategoryIndex = tvCIndex
+        channelIndex = cIndex
+        retrofitService?.getSingleTvChannel(
+            playerConfiguration.authorization,
+            playerConfiguration.tvCategories[tvCIndex].channels[cIndex].id,
+            playerConfiguration.ip,
+        )?.enqueue(object : Callback<TvChannelResponse> {
+            override fun onResponse(
+                call: Call<TvChannelResponse>, response: Response<TvChannelResponse>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    val map: HashMap<String, String> = hashMapOf()
+                    map["Auto"] = body.channelStreamAll
+                    playerConfiguration.resolutions = map
+
+                    url = body.channelStreamAll
+                    title?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
+                    title1?.text = playerConfiguration.tvCategories[tvCIndex].channels[cIndex].name
+                    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+                    player?.setMediaSource(hlsMediaSource)
+                    player?.prepare()
+                    player?.playWhenReady
+                }
+            }
+
+            override fun onFailure(call: Call<TvChannelResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
 
     private fun dpToPx(dp: Int): Int {
         val scale = resources.displayMetrics.density
@@ -1179,9 +1207,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         currentOrientation = newConfig.orientation
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
-//            if (playerConfiguration.isLive) {
-//                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-//            }
+            if (playerConfiguration.isLive) {
+                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
             title1?.text = ""
@@ -1268,33 +1296,33 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         return playerConfiguration.seasons.size == seasonIndex + 1 && playerConfiguration.seasons[playerConfiguration.seasons.size - 1].movies.size == episodeIndex + 1
     }
 
-//    private fun showTvProgramsBottomSheet() {
-//        currentBottomSheet = BottomSheet.TV_PROGRAMS
-//        val bottomSheetDialog = BottomSheetDialog(this)
-//        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
-//        bottomSheetDialog.behavior.isDraggable = false
-//        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
-//        bottomSheetDialog.setContentView(R.layout.tv_programs_sheet)
-//        val backButtonBottomSheet =
-//            bottomSheetDialog.findViewById<ImageView>(R.id.tv_program_sheet_back)
-//        backButtonBottomSheet?.setOnClickListener {
-//            bottomSheetDialog.dismiss()
-//        }
-//        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.tv_program_sheet_title)
-//        titleBottomSheet?.text = title?.text
-//        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.tv_programs_tabs)
-//        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.tv_programs_view_pager)
-//        viewPager?.adapter = TvProgramsPagerAdapter(this, playerConfiguration.programsInfoList)
-//        viewPager?.currentItem = 1
-//        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-//            tab.text = playerConfiguration.programsInfoList[position].day
-//        }.attach()
-//        bottomSheetDialog.show()
-//        bottomSheetDialog.setOnDismissListener {
-//            currentBottomSheet = BottomSheet.NONE
-//        }
-//    }
+    private fun showTvProgramsBottomSheet() {
+        currentBottomSheet = BottomSheet.TV_PROGRAMS
+        val bottomSheetDialog = BottomSheetDialog(this)
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetDialog.setContentView(R.layout.tv_programs_sheet)
+        val backButtonBottomSheet =
+            bottomSheetDialog.findViewById<ImageView>(R.id.tv_program_sheet_back)
+        backButtonBottomSheet?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        val titleBottomSheet = bottomSheetDialog.findViewById<TextView>(R.id.tv_program_sheet_title)
+        titleBottomSheet?.text = title?.text
+        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.tv_programs_tabs)
+        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.tv_programs_view_pager)
+        viewPager?.adapter = TvProgramsPagerAdapter(this, playerConfiguration.programsInfoList)
+        viewPager?.currentItem = 1
+        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
+            tab.text = playerConfiguration.programsInfoList[position].day
+        }.attach()
+        bottomSheetDialog.show()
+        bottomSheetDialog.setOnDismissListener {
+            currentBottomSheet = BottomSheet.NONE
+        }
+    }
 
     private var backButtonEpisodeBottomSheet: ImageView? = null
     private fun showEpisodesBottomSheet() {
@@ -1375,37 +1403,37 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
     }
 
-//    private fun showChannelsBottomSheet() {
-//        currentBottomSheet = BottomSheet.CHANNELS
-//        val bottomSheetDialog = BottomSheetDialog(this, R.style.ChannelsBottomSheetDialog)
-//        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
-//        bottomSheetDialog.behavior.isDraggable = false
-//        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
-//        bottomSheetDialog.setContentView(R.layout.channels_page)
-//        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.tv_category_tabs)
-//        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.tv_category_view_pager)
-//        viewPager?.adapter = TvCategoryPagerAdapter(
-//            this, playerConfiguration.tvCategories,
-//            object : TvCategoryPagerAdapter.OnClickListener {
-//                override fun onClick(tvCIndex: Int, cIndex: Int) {
-//                    getSingleTvChannel(tvCIndex, cIndex)
-//                    bottomSheetDialog.dismiss()
-//                }
-//            },
-//        )
-//        viewPager?.currentItem = tvCategoryIndex
-//        viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-//        viewPager?.isUserInputEnabled = false
-//
-//        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-//            tab.text = playerConfiguration.tvCategories[position].title
-//        }.attach()
-//        bottomSheetDialog.show()
-//        bottomSheetDialog.setOnDismissListener {
-//            currentBottomSheet = BottomSheet.NONE
-//        }
-//    }
+    private fun showChannelsBottomSheet() {
+        currentBottomSheet = BottomSheet.CHANNELS
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.ChannelsBottomSheetDialog)
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetDialog.setContentView(R.layout.channels_page)
+        val tabLayout = bottomSheetDialog.findViewById<TabLayout>(R.id.tv_category_tabs)
+        val viewPager = bottomSheetDialog.findViewById<ViewPager2>(R.id.tv_category_view_pager)
+        viewPager?.adapter = TvCategoryPagerAdapter(
+            this, playerConfiguration.tvCategories,
+            object : TvCategoryPagerAdapter.OnClickListener {
+                override fun onClick(tvCIndex: Int, cIndex: Int) {
+                    getSingleTvChannel(tvCIndex, cIndex)
+                    bottomSheetDialog.dismiss()
+                }
+            },
+        )
+        viewPager?.currentItem = tvCategoryIndex
+        viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        viewPager?.isUserInputEnabled = false
+
+        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
+            tab.text = playerConfiguration.tvCategories[position].title
+        }.attach()
+        bottomSheetDialog.show()
+        bottomSheetDialog.setOnDismissListener {
+            currentBottomSheet = BottomSheet.NONE
+        }
+    }
 
     private fun dismissAllBottomSheets() {
         for (bottomSheet in listOfAllOpenedBottomSheets) {

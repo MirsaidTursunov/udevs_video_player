@@ -103,7 +103,6 @@ import uz.udevs.udevs_video_player.utils.changeSubtitle
 import uz.udevs.udevs_video_player.utils.getAvailableAudioLanguages
 import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
 import uz.udevs.udevs_video_player.utils.hideSubtitle
-import uz.udevs.udevs_video_player.utils.ifNullOrEmpty
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
@@ -1495,10 +1494,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         mutableListOf("0.25x", "0.5x", "0.75x", "1.0x", "1.25x", "1.5x", "1.75x", "2.0x")
     private var currentQuality = ""
     private var currentSpeed = "1.0x"
-    private var qualityText: TextView? = null
-    private var speedText: TextView? = null
-    private var subtitleText: TextView? = null
-    private var audioText: TextView? = null
+    private var qualityTextValue: TextView? = null
+    private var speedTextValue: TextView? = null
+    private var subtitleTextValue: TextView? = null
+    private var audioTextValue: TextView? = null
 
     private var backButtonSettingsBottomSheet: ImageView? = null
     private fun showSettingsBottomSheet() {
@@ -1510,7 +1509,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
             if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
                 currentQuality = qualities[0]
-                qualityText?.text = qualities[0]
+                qualityTextValue?.text = qualities[0]
             }
         }
 
@@ -1537,14 +1536,18 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             playerConfiguration.qualityText
         bottomSheetDialog.findViewById<TextView>(R.id.speed_settings_text)?.text =
             playerConfiguration.speedText
-        qualityText = bottomSheetDialog.findViewById(R.id.quality_settings_value_text)
-        speedText = bottomSheetDialog.findViewById(R.id.speed_settings_value_text)
-        qualityText?.text = currentQuality
-        speedText?.text = currentSpeed
-        subtitleText = bottomSheetDialog.findViewById(R.id.subtitle_settings_value_text)
-        subtitleText?.text = currentSubtitle.ifNullOrEmpty(playerConfiguration.noneText)
-        audioText = bottomSheetDialog.findViewById(R.id.audio_settings_value_text)
-        audioText?.text = currentAudioTrack.ifNullOrEmpty(playerConfiguration.subtitleText)
+        bottomSheetDialog.findViewById<TextView>(R.id.subtitle_settings_text)?.text =
+            playerConfiguration.subtitleText
+        bottomSheetDialog.findViewById<TextView>(R.id.audio_settings_text)?.text =
+            playerConfiguration.audioText
+        qualityTextValue = bottomSheetDialog.findViewById(R.id.quality_settings_value_text)
+        speedTextValue = bottomSheetDialog.findViewById(R.id.speed_settings_value_text)
+        qualityTextValue?.text = currentQuality
+        speedTextValue?.text = currentSpeed
+        subtitleTextValue = bottomSheetDialog.findViewById(R.id.subtitle_settings_value_text)
+        subtitleTextValue?.text = currentSubtitle ?: ""
+        audioTextValue = bottomSheetDialog.findViewById(R.id.audio_settings_value_text)
+        audioTextValue?.text = currentAudioTrack
 
         quality?.setOnClickListener {
             if (playerConfiguration.isSerial) {
@@ -1626,7 +1629,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     Log.d("", "onClickSubtitleSelection: $subtitle")
                     player?.changeSubtitle(subtitle)
                     currentSubtitle = subtitle
-                    subtitleText?.text = currentSubtitle
+                    subtitleTextValue?.text = currentSubtitle
                     subtitleButton?.setColorFilter(
                         ContextCompat.getColor(
                             baseContext,
@@ -1682,7 +1685,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     Log.d("", "onClickTrackSelection: $audioLang")
                     player?.changeAudioLanguage(audioLang)
                     currentAudioTrack = audioLang
-                    audioText?.text = currentAudioTrack
+                    audioTextValue?.text = currentAudioTrack
                     bottomSheetDialog.dismiss()
                 }
             })
@@ -1780,10 +1783,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                                 finalList.size
                             )
                             currentQuality = finalList[position]
-                            qualityText?.text = currentQuality
+                            qualityTextValue?.text = currentQuality
                         } else {
                             currentQuality = formats[position]
-                            qualityText?.text = currentQuality
+                            qualityTextValue?.text = currentQuality
                             if (player?.isPlaying == true) {
                                 player?.pause()
                             }
@@ -1813,7 +1816,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             return
                         }
                         currentSpeed = formats[position]
-                        speedText?.text = currentSpeed
+                        speedTextValue?.text = currentSpeed
                         player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
                     }
                     bottomSheetDialog.dismiss()

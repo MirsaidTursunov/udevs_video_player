@@ -310,7 +310,7 @@ class _MainPageState extends State<MainPage> {
                   link: 'https://t.me/uzdigital_tv_bot/app',
                   video:
                       'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'),
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: '',
               initialResolution: {
                 'Автонастройка':
                     'https://st1.uzdigital.tv/Uzb24/video.m3u8?token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46'

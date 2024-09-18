@@ -164,11 +164,14 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
+              audioText: 'audioText',
+              noneText: 'noneText',
+              subtitleText: 'subtitleText',
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: '',
               initialResolution: {
-                'moretv':
-                    'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
+                'auto':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/bbc795b69faf3c4d1063777f2b220144/master.m3u8'
               },
               resolutions: {
                 // 'Auto':
@@ -182,7 +185,7 @@ class _MainPageState extends State<MainPage> {
               speedText: 'Скорость',
               lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              isSerial: true,
+              isSerial: false,
               episodeButtonText: 'Эпизоды',
               nextButtonText: 'След.эпизод',
               seasons: [

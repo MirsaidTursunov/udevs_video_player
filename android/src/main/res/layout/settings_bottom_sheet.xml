@@ -103,4 +103,90 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_subtitles" />
+
+        <TextView
+            android:id="@+id/subtitle_settings_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/regular"
+            android:text="Subtitle"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/subtitle_settings_value_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/regular"
+            android:gravity="end"
+            android:paddingEnd="10dp"
+            android:text="None"
+            android:textColor="@color/grey10"
+            android:textFontWeight="300"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_arrow_forward" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_audio_track" />
+
+        <TextView
+            android:id="@+id/audio_settings_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/regular"
+            android:text="Audio"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/audio_settings_value_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/regular"
+            android:gravity="end"
+            android:paddingEnd="10dp"
+            android:text="Russian"
+            android:textColor="@color/grey10"
+            android:textFontWeight="300"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_arrow_forward" />
+
+    </LinearLayout>
+
 </LinearLayout>

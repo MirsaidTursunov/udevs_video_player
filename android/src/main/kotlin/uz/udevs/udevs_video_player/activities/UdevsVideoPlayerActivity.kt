@@ -38,6 +38,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -97,6 +98,12 @@ import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
+import uz.udevs.udevs_video_player.utils.changeAudioLanguage
+import uz.udevs.udevs_video_player.utils.changeSubtitle
+import uz.udevs.udevs_video_player.utils.getAvailableAudioLanguages
+import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
+import uz.udevs.udevs_video_player.utils.hideSubtitle
+import uz.udevs.udevs_video_player.utils.ifNullOrEmpty
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
@@ -137,6 +144,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var tvChannelsButton: LinearLayout? = null
     private var zoom: ImageView? = null
     private var orientation: ImageView? = null
+    private var subtitleButton: ImageView? = null
     private var exoProgress: DefaultTimeBar? = null
     private var customSeekBar: SeekBar? = null
     private var customPlayback: RelativeLayout? = null
@@ -172,6 +180,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var tvCategoryIndex: Int = 0
     private var isPipMode: Boolean = false
     private var sendingAnalytics: Job? = null
+    private var isSubtitleAvailable: Boolean = true
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -637,6 +646,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         if (playerView?.isControllerFullyVisible == false) {
                             playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                         }
+                        checkSubtitleButtonAvailability()
                     }
 
                     Player.STATE_ENDED -> {
@@ -743,6 +753,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         zoom = findViewById(R.id.zoom)
         orientation = findViewById(R.id.orientation)
+        subtitleButton = findViewById(R.id.subtitle_button)
+        subtitleButton?.visibility = View.VISIBLE
+
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
@@ -877,7 +890,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 }
             }
         }
-        ///TODO:
         tvChannels?.setOnClickListener {
             showChannelsBottomSheet()
         }
@@ -983,6 +995,42 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             it.postDelayed({
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
             }, 3000)
+        }
+
+        subtitleButton?.setOnClickListener {
+            if (!isSubtitleAvailable) return@setOnClickListener
+
+            if (currentSubtitle.isNullOrEmpty()) {
+                Log.d("", "subtitle: show initial")
+                player?.let {
+                    val subtitles = it.getAvailableSubtitles()
+                    if (subtitles.isNotEmpty()) {
+                        it.changeSubtitle(subtitles.first())
+                        currentSubtitle = subtitles.first()
+                    }
+                }
+                val newColor = ContextCompat.getColor(this, R.color.blue)
+                subtitleButton?.setColorFilter(newColor)
+            } else {
+                Log.d("", "subtitle: hide")
+                player?.hideSubtitle()
+                currentSubtitle = null
+                val newColor = ContextCompat.getColor(this, R.color.white)
+                subtitleButton?.setColorFilter(newColor)
+            }
+        }
+    }
+
+    private fun checkSubtitleButtonAvailability() {
+        val subtitles = player?.getAvailableSubtitles() ?: emptyList()
+        if (subtitles.isEmpty()) {
+            isSubtitleAvailable = false
+            val grayColor = ContextCompat.getColor(this, R.color.hint)
+            subtitleButton?.setColorFilter(grayColor)
+        } else {
+            isSubtitleAvailable = true
+            val whiteColor = ContextCompat.getColor(this, R.color.white)
+            subtitleButton?.setColorFilter(whiteColor)
         }
     }
 
@@ -1449,12 +1497,15 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var currentSpeed = "1.0x"
     private var qualityText: TextView? = null
     private var speedText: TextView? = null
+    private var subtitleText: TextView? = null
+    private var audioText: TextView? = null
 
     private var backButtonSettingsBottomSheet: ImageView? = null
     private fun showSettingsBottomSheet() {
         if (isSettingsBottomSheetOpened) {
             return
         }
+        currentAudioTrack = player?.audioFormat?.label ?: ""
         if (playerConfiguration.isMoreTv) {
             val qualities = MyHelper().getAvailableFormatsFromMoreTv(player!!.currentTracks.groups)
             if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
@@ -1480,6 +1531,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         val quality = bottomSheetDialog.findViewById<LinearLayout>(R.id.quality)
         val speed = bottomSheetDialog.findViewById<LinearLayout>(R.id.speed)
+        val subtitle = bottomSheetDialog.findViewById<LinearLayout>(R.id.subtitle)
+        val audio = bottomSheetDialog.findViewById<LinearLayout>(R.id.audio)
         bottomSheetDialog.findViewById<TextView>(R.id.quality_settings_text)?.text =
             playerConfiguration.qualityText
         bottomSheetDialog.findViewById<TextView>(R.id.speed_settings_text)?.text =
@@ -1488,6 +1541,11 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         speedText = bottomSheetDialog.findViewById(R.id.speed_settings_value_text)
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
+        subtitleText = bottomSheetDialog.findViewById(R.id.subtitle_settings_value_text)
+        subtitleText?.text = currentSubtitle.ifNullOrEmpty(playerConfiguration.noneText)
+        audioText = bottomSheetDialog.findViewById(R.id.audio_settings_value_text)
+        audioText?.text = currentAudioTrack.ifNullOrEmpty(playerConfiguration.subtitleText)
+
         quality?.setOnClickListener {
             if (playerConfiguration.isSerial) {
                 if (playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions.isNotEmpty() || playerConfiguration.isMoreTv)
@@ -1506,16 +1564,137 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     )
             }
         }
+
         speed?.setOnClickListener {
             if (mLocation == PlaybackLocation.LOCAL)
                 showQualitySpeedSheet(currentSpeed, speeds as ArrayList, false)
         }
+
+        subtitle?.setOnClickListener {
+            showSubtitlesBottomSheet()
+        }
+
+        audio?.setOnClickListener {
+            showAudioLanguageBottomSheet()
+        }
+
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
             isSettingsBottomSheetOpened = false
             currentBottomSheet = BottomSheet.NONE
         }
     }
+
+    private var currentAudioTrack: String = player?.audioFormat?.label ?: ""
+    private var currentSubtitle: String? = null
+
+    private fun showSubtitlesBottomSheet() {
+        isQualitySpeedBottomSheetOpened = true
+        currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
+        val bottomSheetDialog = BottomSheetDialog(this)
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
+        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+            playerConfiguration.subtitleText
+
+        val subtitles = player?.getAvailableSubtitles() ?: emptyList()
+
+        backButtonQualitySpeedBottomSheet =
+            bottomSheetDialog.findViewById(R.id.quality_speed_sheet_back)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            backButtonQualitySpeedBottomSheet?.visibility = View.GONE
+        } else {
+            backButtonQualitySpeedBottomSheet?.visibility = View.VISIBLE
+        }
+
+        backButtonQualitySpeedBottomSheet?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+
+        val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
+
+        val adapter = QualitySpeedAdapter(
+            currentSubtitle ?: "",
+            this,
+            subtitles as ArrayList<String>,
+            (object : QualitySpeedAdapter.OnClickListener {
+                override fun onClick(position: Int) {
+                    val subtitle = subtitles[position]
+                    Log.d("", "onClickSubtitleSelection: $subtitle")
+                    player?.changeSubtitle(subtitle)
+                    currentSubtitle = subtitle
+                    subtitleText?.text = currentSubtitle
+                    subtitleButton?.setColorFilter(
+                        ContextCompat.getColor(
+                            baseContext,
+                            R.color.blue
+                        )
+                    )
+                    bottomSheetDialog.dismiss()
+                }
+            })
+        )
+        listView.adapter = adapter
+        bottomSheetDialog.show()
+        bottomSheetDialog.setOnDismissListener {
+            currentBottomSheet = BottomSheet.SETTINGS
+            isQualitySpeedBottomSheetOpened = false
+        }
+    }
+
+    private fun showAudioLanguageBottomSheet() {
+        isQualitySpeedBottomSheetOpened = true
+        currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
+        val bottomSheetDialog = BottomSheetDialog(this)
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
+        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+            playerConfiguration.audioText
+
+        val audioLanguages =
+            player?.getAvailableAudioLanguages() ?: emptyList()
+
+        backButtonQualitySpeedBottomSheet =
+            bottomSheetDialog.findViewById(R.id.quality_speed_sheet_back)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            backButtonQualitySpeedBottomSheet?.visibility = View.GONE
+        } else {
+            backButtonQualitySpeedBottomSheet?.visibility = View.VISIBLE
+        }
+        backButtonQualitySpeedBottomSheet?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
+
+        val adapter = QualitySpeedAdapter(
+            currentAudioTrack,
+            this,
+            audioLanguages as ArrayList<String>,
+            (object : QualitySpeedAdapter.OnClickListener {
+                override fun onClick(position: Int) {
+                    val audioLang = audioLanguages[position]
+                    Log.d("", "onClickTrackSelection: $audioLang")
+                    player?.changeAudioLanguage(audioLang)
+                    currentAudioTrack = audioLang
+                    audioText?.text = currentAudioTrack
+                    bottomSheetDialog.dismiss()
+                }
+            })
+        )
+        listView.adapter = adapter
+        bottomSheetDialog.show()
+        bottomSheetDialog.setOnDismissListener {
+            currentBottomSheet = BottomSheet.SETTINGS
+            isQualitySpeedBottomSheetOpened = false
+        }
+    }
+
 
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
     private fun showQualitySpeedSheet(

@@ -397,6 +397,16 @@
                     tools:ignore="ContentDescription" />
 
                 <ImageView
+                    android:id="@+id/subtitle_button"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="6dp"
+                    android:padding="5dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_subtitles"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
                     android:id="@+id/orientation"
                     android:layout_width="32dp"
                     android:layout_height="32dp"

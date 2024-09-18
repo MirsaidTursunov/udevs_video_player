@@ -73,7 +73,12 @@ data class PlayerConfiguration(
     @SerializedName("userId")
     val userId: String,
     @SerializedName("profileId")
-    val profileId: String
-
-
+    val profileId: String,
+    //new
+    @SerializedName("noneText")
+    val noneText: String,
+    @SerializedName("subtitleText")
+    val subtitleText: String,
+    @SerializedName("audioText")
+    val audioText: String,
 ) : Serializable

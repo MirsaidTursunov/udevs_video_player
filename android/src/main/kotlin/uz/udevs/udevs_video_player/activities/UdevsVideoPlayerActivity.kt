@@ -106,6 +106,7 @@ import uz.udevs.udevs_video_player.utils.getAvailableAudioLanguages
 import uz.udevs.udevs_video_player.utils.getAvailableQualities
 import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
 import uz.udevs.udevs_video_player.utils.hideSubtitle
+import uz.udevs.udevs_video_player.utils.isAutoQuality
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
@@ -1485,13 +1486,13 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             return
         }
         currentAudioTrack = player?.audioFormat?.label ?: ""
-//        if (playerConfiguration.isUzdMovie()) {
-//            val qualities = player!!.getAvailableQualities()
-//            if (currentQuality == "auto") {
-//                currentQuality = qualities[0]
-//                qualityTextValue?.text = qualities[0]
-//            }
-//        }
+        if (playerConfiguration.isUzdMovie()) {
+            val qualities = player!!.getAvailableQualities()
+            if (currentQuality.isAutoQuality()) {
+                currentQuality = qualities[0]
+                qualityTextValue?.text = qualities[0]
+            }
+        }
 
         if (playerConfiguration.isMoreTv) {
             val qualities = player!!.getAvailableQualities()

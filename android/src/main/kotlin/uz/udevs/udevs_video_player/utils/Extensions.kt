@@ -6,3 +6,7 @@ fun String.toHttps(): String {
     }
     return this.replace("http://", "https://")
 }
+
+fun String.isAutoQuality(): Boolean {
+    return this == "Автонастройка" || this == "Auto" || this == "Avto"
+}

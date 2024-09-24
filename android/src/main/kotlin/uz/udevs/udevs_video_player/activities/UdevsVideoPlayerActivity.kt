@@ -1404,7 +1404,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         getMoreTvStream()
                     } else {
                         url =
-                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[uzdAutoQuality]
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)

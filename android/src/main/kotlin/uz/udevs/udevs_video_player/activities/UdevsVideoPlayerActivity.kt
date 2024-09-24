@@ -93,6 +93,7 @@ import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.PlayerConfiguration
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
+import uz.udevs.udevs_video_player.models.isUzdMovie
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
@@ -224,6 +225,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         tvCategoryIndex = playerConfiguration.selectTvCategoryIndex
         currentQuality =
             if (playerConfiguration.initialResolution.isNotEmpty()) playerConfiguration.initialResolution.keys.first() else ""
+        if (playerConfiguration.isUzdMovie()) {
+            uzdAutoQuality = playerConfiguration.initialResolution.keys.first()
+        }
         titleText = playerConfiguration.title
         url = playerConfiguration.initialResolution.values.first().ifEmpty { "" }
 
@@ -1467,6 +1471,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     private var speeds =
         mutableListOf("0.25x", "0.5x", "0.75x", "1.0x", "1.25x", "1.5x", "1.75x", "2.0x")
+    private var uzdAutoQuality = "auto"
     private var currentQuality = ""
     private var currentSpeed = "1.0x"
     private var qualityTextValue: TextView? = null
@@ -1480,6 +1485,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             return
         }
         currentAudioTrack = player?.audioFormat?.label ?: ""
+//        if (playerConfiguration.isUzdMovie()) {
+//            val qualities = player!!.getAvailableQualities()
+//            if (currentQuality == "auto") {
+//                currentQuality = qualities[0]
+//                qualityTextValue?.text = qualities[0]
+//            }
+//        }
+
         if (playerConfiguration.isMoreTv) {
             val qualities = player!!.getAvailableQualities()
             if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
@@ -1680,7 +1693,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         var finalList: ArrayList<String> = list
 
-        if (playerConfiguration.isMoreTv && fromQuality) {
+        if ((playerConfiguration.isUzdMovie() || playerConfiguration.isMoreTv) && fromQuality) {
             finalList = player!!.getAvailableQualities()
         }
 
@@ -1748,7 +1761,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     if (fromQuality) {
-                        if (playerConfiguration.isMoreTv) {
+                        if (playerConfiguration.isMoreTv || playerConfiguration.isUzdMovie()) {
                             player!!.changeVideoQuality(index = position, finalList.size)
                             currentQuality = finalList[position]
                             qualityTextValue?.text = currentQuality

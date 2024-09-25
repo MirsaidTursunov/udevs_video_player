@@ -28,9 +28,10 @@ struct Svg {
     static let programmes :SVGKImage = SVGKImage(named: "programmes", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serial :SVGKImage = SVGKImage(named: "serial", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let serialPlay :SVGKImage = SVGKImage(named: "serial_play", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
-    static let subtitle :SVGKImage = SVGKImage(named: "play_speed", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let share :SVGKImage = SVGKImage(named: "share", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let channels :SVGKImage = SVGKImage(named: "channels", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     static let lock :SVGKImage = SVGKImage(named: "lock", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let subtitle :SVGKImage = SVGKImage(named: "subtitles", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
+    static let audioTrack :SVGKImage = SVGKImage(named: "audio_track", in: Bundle(for: SwiftUdevsVideoPlayerPlugin.self), withCacheKey: nil)
     
 }

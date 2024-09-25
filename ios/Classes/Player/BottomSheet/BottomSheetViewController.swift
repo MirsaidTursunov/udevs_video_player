@@ -33,7 +33,7 @@ extension String {
 class BottomSheetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var items = [String]()
     var labelText : String?
-    var selectedIndex = 0
+    var selectedIndex: Int?
     var cellDelegate : BottomSheetCellDelegate?
     var bottomSheetType = BottomSheetType.quality
     

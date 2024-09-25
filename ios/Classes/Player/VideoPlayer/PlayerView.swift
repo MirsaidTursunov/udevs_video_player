@@ -316,6 +316,26 @@ class PlayerView: UIView {
     func isHiddenPiP(isPiP: Bool){
         overlayView.isHidden = isPiP
     }
+    /// Track functions
+    public func subtitles() -> [String]{
+        return player.currentItem?.tracks(type: .subtitle) ?? ["None"]
+    }
+    
+    public func audios() -> [String]{
+        return player.currentItem?.tracks(type: .audio) ?? ["Default"]
+    }
+    
+    func selectAudioLang(name: String) {
+        player.currentItem?.select(type: TrackType.audio, name: name)
+    }
+    
+    func selectedAudio() -> String {
+      return player.currentItem?.selected(type: .audio) ?? "Default"
+    }
+
+    func selectedSubtitle() -> String {
+      return player.currentItem?.selected(type: .subtitle) ?? "None"
+    }
     
     func loadMedia(_ media: GCKMediaInformation?, autoPlay: Bool, playPosition: TimeInterval, area:UILayoutGuide) {
         if self.media?.contentURL != nil && (self.media?.contentURL == media?.contentURL) {

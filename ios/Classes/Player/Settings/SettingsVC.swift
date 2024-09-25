@@ -18,6 +18,7 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
     var delegete: QualityDelegate?
     var speedDelegate: SpeedDelegate?
     var subtitleDelegate: SubtitleDelegate?
+    var audioDelegate: AudioDelegate?
     var speedTitle: String = "1x"
     
     var settingModel = [SettingModel]()
@@ -108,9 +109,9 @@ class SettingVC: UIViewController, UIGestureRecognizerDelegate {
         view.backgroundColor = .clear
         tableView.contentInsetAdjustmentBehavior = .never
         if UIDevice.current.userInterfaceIdiom == .phone {
-            menuHeight = 140
+            menuHeight = 240
         }else {
-            menuHeight = 300
+            menuHeight = 400
         }
         
         view.addSubview(backdropView)
@@ -195,9 +196,13 @@ extension SettingVC: UITableViewDataSource, UITableViewDelegate {
             self.dismiss(animated: true) {
                 self.speedDelegate?.speedBottomSheet()
             }
-        } else {
+        } else if(indexPath.row == 2) {
             self.dismiss(animated: true) {
                 self.subtitleDelegate?.subtitleBottomSheet()
+            }
+        } else if(indexPath.row == 3){
+            self.dismiss(animated: true) {
+                self.audioDelegate?.audioBottomSheet()
             }
         }
     }

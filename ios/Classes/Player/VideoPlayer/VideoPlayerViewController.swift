@@ -49,6 +49,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     var qualityLabelText = ""
     var speedLabelText = ""
     var subtitleLabelText = "Субтитле"
+    var audioLabelText = "Язык аудио"
     var selectedSeason: Int = 0
     var selectSesonNum: Int = 0
     var selectChannelIndex: Int = 0
@@ -460,10 +461,14 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         vc.delegete = self
         vc.speedDelegate = self
         vc.subtitleDelegate = self
+        vc.audioDelegate = self
         vc.settingModel = [
             SettingModel(leftIcon: Svg.settings.uiImage, title: qualityLabelText, configureLabel: selectedQualityText),
             SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
-//            SettingModel(leftIcon: Svg.subtitle.uiImage, title: subtitleLabelText, configureLabel: selectedSubtitle)
+            SettingModel(leftIcon: Svg.subtitle.uiImage, title: subtitleLabelText, configureLabel: selectedSubtitle),
+            SettingModel(
+                leftIcon: Svg.audioTrack.uiImage, title: audioLabelText,
+                configureLabel: "//todo")
         ]
         self.present(vc, animated: true, completion: nil)
     }
@@ -499,7 +504,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             showSubtitleBottomSheet()
             break
         case 3:
-            //            showAudioTrackBottomSheet()
+            showAudioBottomSheet()
             break
         default:
             break
@@ -537,6 +542,9 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             }
             break
         case .audio:
+            let audios = self.playerView.audios()
+            let selectedAudioLabel = audios[index]
+            self.playerView.selectAudioLang(name: selectedAudioLabel)
             break
         }
     }
@@ -546,9 +554,24 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
            let bottomSheetVC = BottomSheetViewController()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = subtitles
-           bottomSheetVC.labelText = "Субтитле"
+           bottomSheetVC.labelText = subtitleLabelText
            bottomSheetVC.bottomSheetType = .subtitle
            bottomSheetVC.selectedIndex = subtitles.firstIndex(of: selectedSubtitle) ?? 0
+           bottomSheetVC.cellDelegate = self
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+               self.present(bottomSheetVC, animated: false, completion:nil)
+           }
+       }
+    
+    private func showAudioBottomSheet(){
+           let audios = playerView.audios()
+           let bottomSheetVC = BottomSheetViewController()
+           let selectedAudio = self.playerView.selectedAudio()
+           bottomSheetVC.modalPresentationStyle = .overCurrentContext
+           bottomSheetVC.items = audios
+           bottomSheetVC.labelText = audioLabelText
+           bottomSheetVC.bottomSheetType = .audio
+           bottomSheetVC.selectedIndex = audios.firstIndex(of: selectedAudio)
            bottomSheetVC.cellDelegate = self
            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                self.present(bottomSheetVC, animated: false, completion:nil)
@@ -765,7 +788,7 @@ extension VideoPlayerViewController: GCKSessionManagerListener {
     }
 }
 
-extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, SubtitleDelegate, ChannelTappedDelegate {
+extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDelegate, SubtitleDelegate, AudioDelegate, ChannelTappedDelegate {
     
     func onTvCategoryTapped(tvCategoryIndex: Int) {
         self.selectTvCategoryIndex = tvCategoryIndex
@@ -850,6 +873,10 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
     
     func subtitleBottomSheet() {
         showSubtitleBottomSheet()
+    }
+    
+    func audioBottomSheet() {
+        showAudioBottomSheet()
     }
 }
 // 1170

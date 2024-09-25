@@ -19,3 +19,6 @@ protocol SpeedDelegate {
 protocol SubtitleDelegate {
     func subtitleBottomSheet()
 }
+protocol AudioDelegate {
+    func audioBottomSheet()
+}

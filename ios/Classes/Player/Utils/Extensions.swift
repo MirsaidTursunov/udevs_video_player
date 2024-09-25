@@ -15,23 +15,24 @@ extension AVPlayer {
     }
 }
 
+enum TrackType {
+    case subtitle
+    case audio
+    
+    /**
+     Return valid AVMediaSelectionGroup is item is available.
+     */
+    fileprivate func characteristic(item:AVPlayerItem) -> AVMediaSelectionGroup?  {
+        let str = self == .subtitle ? AVMediaCharacteristic.legible : AVMediaCharacteristic.audible
+        if item.asset.availableMediaCharacteristicsWithMediaSelectionOptions.contains(str) {
+            return item.asset.mediaSelectionGroup(forMediaCharacteristic: str)
+        }
+        return nil
+    }
+}
+
 extension AVPlayerItem {
     
-    enum TrackType {
-        case subtitle
-        case audio
-        
-        /**
-         Return valid AVMediaSelectionGroup is item is available.
-         */
-        fileprivate func characteristic(item:AVPlayerItem) -> AVMediaSelectionGroup?  {
-            let str = self == .subtitle ? AVMediaCharacteristic.legible : AVMediaCharacteristic.audible
-            if item.asset.availableMediaCharacteristicsWithMediaSelectionOptions.contains(str) {
-                return item.asset.mediaSelectionGroup(forMediaCharacteristic: str)
-            }
-            return nil
-        }
-    }
     
     func tracks(type:TrackType) -> [String] {
         if let characteristic = type.characteristic(item: self) {
@@ -48,7 +49,7 @@ extension AVPlayerItem {
         return selected?.displayName
     }
     
-    func select(type:TrackType, name:String) -> Bool {
+    func select(type: TrackType, name:String) -> Bool {
         
         if type == .subtitle && name == "None"{
             guard let group = type.characteristic(item: self) else { return false }
@@ -64,6 +65,21 @@ extension AVPlayerItem {
         }
         self.select(matched, in: group)
         return true
+    }
+}
+
+extension AVAsset{
+    func getAvailableQualities()-> [String] {
+        var qualities: [String] = []
+        
+        let videoTracks = self.tracks(withMediaType: .video)
+        for track in videoTracks {
+            let resolution = track.naturalSize
+            let bitrate = track.estimatedDataRate
+            print("Resolution: \(resolution), Bitrate: \(bitrate)")
+            qualities.append("\(resolution)")
+        }
+        return qualities
     }
 }
 

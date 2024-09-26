@@ -893,15 +893,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
                 resolutions[key] = value
                 startAt = 0
             }
-            self.selectedSeason = seasonIndex
-            self.selectSesonNum = episodeIndex
-//            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
-            let videoUrl = resolutions[playerConfiguration.autoText] ?? resolutions.first?.value ?? ""
-            let title = seasons[seasonIndex].movies[episodeIndex].title ?? ""
-            
-            self.title = "S\(seasonIndex + 1)" + " " + "E\(episodeIndex + 1)" + " \u{22}\(title)\u{22}"
-            self.url = videoUrl
-            self.loadRemoteMedia(position: TimeInterval(0))
+            self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             
             selectedQualityText = playerConfiguration.autoText
             selectedSubtitle = playerConfiguration.noneText

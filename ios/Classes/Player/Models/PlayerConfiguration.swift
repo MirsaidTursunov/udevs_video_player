@@ -40,8 +40,9 @@ struct PlayerConfiguration{
     var selectChannelIndex: Int
     var selectTvCategoryIndex: Int
     var tvCategories: [TvCategories]
+    var noneText: String
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories]) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],noneText:String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -75,6 +76,7 @@ struct PlayerConfiguration{
         self.selectChannelIndex = selectChannelIndex
         self.selectTvCategoryIndex = selectTvCategoryIndex
         self.tvCategories = tvCategories
+        self.noneText = noneText
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -132,7 +134,8 @@ struct PlayerConfiguration{
                                    movieShareLink: map["movieShareLink"] as! String,
                                    ip: map["ip"] as! String,
                                    selectChannelIndex: map["selectChannelIndex"] as? Int ?? 0, selectTvCategoryIndex: map["selectTvCategoryIndex"] as? Int ?? 0,
-                                   tvCategories: tvCategories
+                                   tvCategories: tvCategories,
+                                   noneText: map["noneText"] as! String
                                    
         )
     }

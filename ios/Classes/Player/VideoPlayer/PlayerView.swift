@@ -319,7 +319,7 @@ class PlayerView: UIView {
     }
     /// Track functions
     public func subtitles() -> [String]{
-        return player.currentItem?.tracks(type: .subtitle) ?? ["None"]
+        return player.currentItem?.tracks(type: .subtitle) ?? [playerConfiguration.noneText]
     }
     
     public func audios() -> [String]{
@@ -335,7 +335,7 @@ class PlayerView: UIView {
     }
 
     func selectedSubtitle() -> String {
-      return player.currentItem?.selected(type: .subtitle) ?? "None"
+      return player.currentItem?.selected(type: .subtitle) ?? playerConfiguration.noneText
     }
     
     open func setBitRate(_ definition: String) {
@@ -516,8 +516,8 @@ class PlayerView: UIView {
     }
     
     func setSubtitleCurrentItem() -> [String]{
-        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? ["None"]
-        subtitles.insert("None", at: 0)
+        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? [playerConfiguration.noneText]
+        subtitles.insert(playerConfiguration.noneText, at: 0)
         
         return subtitles
     }

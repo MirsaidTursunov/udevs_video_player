@@ -68,6 +68,16 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     private var selectedSpeedText = "1.0x"
     var selectedQualityText = "Auto"
     private var selectedSubtitle = "None"
+    private var selectedAudioLanguage = "None"
+    private var autoResolutions = [
+        "Auto",
+        "240p",
+        "360p",
+        "480p",
+        "720p",
+        "1080p",
+        "4k"
+    ]
     
     lazy private var playerView: PlayerView = {
         return PlayerView()
@@ -468,7 +478,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             SettingModel(leftIcon: Svg.subtitle.uiImage, title: subtitleLabelText, configureLabel: selectedSubtitle),
             SettingModel(
                 leftIcon: Svg.audioTrack.uiImage, title: audioLabelText,
-                configureLabel: "//todo")
+                configureLabel: selectedAudioLanguage)
         ]
         self.present(vc, animated: true, completion: nil)
     }
@@ -516,13 +526,22 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     func onBottomSheetCellTapped(index: Int, type : BottomSheetType) {
         switch type {
         case .quality:
-            let resList = resolutions ?? ["480p":playerConfiguration.url]
-            self.selectedQualityText = sortedResolutions[index]
-            let url = resList[sortedResolutions[index]]
-            self.playerView.changeQuality(url: url)
-            self.url = url
-            if playbackMode == .remote {
-                self.loadRemoteMedia(position: sessionManager.currentSession?.remoteMediaClient?.approximateStreamPosition() ?? 0)
+            if playerConfiguration.isUzdMovie(){
+                let quality = autoResolutions[index]
+                self.selectedQualityText = quality
+                self.playerView.setBitRate(quality)
+                if playbackMode == .remote {
+                    self.loadRemoteMedia(position: sessionManager.currentSession?.remoteMediaClient?.approximateStreamPosition() ?? 0)
+                }
+            } else {
+                let resList = resolutions ?? ["480p":playerConfiguration.url]
+                self.selectedQualityText = sortedResolutions[index]
+                let url = resList[sortedResolutions[index]]
+                self.playerView.changeQuality(url: url)
+                self.url = url
+                if playbackMode == .remote {
+                    self.loadRemoteMedia(position: sessionManager.currentSession?.remoteMediaClient?.approximateStreamPosition() ?? 0)
+                }
             }
             break
         case .speed:
@@ -545,6 +564,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             let audios = self.playerView.audios()
             let selectedAudioLabel = audios[index]
             self.playerView.selectAudioLang(name: selectedAudioLabel)
+            selectedAudioLanguage = selectedAudioLabel
             break
         }
     }
@@ -580,7 +600,20 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
 
     
     func showQualityBottomSheet(){
-       if (!playerConfiguration.isMoreTv) {
+        if playerConfiguration.isUzdMovie() {
+            print("auto: show qualities from uzdMovie")
+            let bottomSheetVC = BottomSheetViewController()
+            bottomSheetVC.modalPresentationStyle = .overCurrentContext
+            bottomSheetVC.items = autoResolutions
+            bottomSheetVC.labelText = qualityLabelText
+            bottomSheetVC.cellDelegate = self
+            bottomSheetVC.bottomSheetType = .quality
+            bottomSheetVC.selectedIndex = autoResolutions.firstIndex(of: selectedQualityText) ?? 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.present(bottomSheetVC, animated: false, completion:nil)
+            }
+        }
+        else if (!playerConfiguration.isMoreTv) {
             let resList = resolutions ?? ["480p": playerConfiguration.url]
             let array = Array(resList.keys)
             var listOfQuality = [String]()

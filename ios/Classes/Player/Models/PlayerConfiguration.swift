@@ -258,3 +258,9 @@ struct Movie {
 //        return TvCategories(id: (map["id"] as? String),title: map["title"] as? String, channels: channels)
 //    }
 //}
+
+extension PlayerConfiguration{
+    func isUzdMovie()->Bool{
+        return !(self.isMegogo || self.isPremier || self.isMoreTv)
+    }
+}

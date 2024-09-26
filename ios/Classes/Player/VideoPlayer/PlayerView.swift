@@ -45,6 +45,7 @@ class PlayerView: UIView {
     private var observingMediaPlayer: Bool = false
     var playerConfiguration: PlayerConfiguration!
     weak var delegate: PlayerViewDelegate?
+    var qualitiesAuto: [String] = []
     
     private var timer: Timer?
     private var seekForwardTimer: Timer?
@@ -335,6 +336,45 @@ class PlayerView: UIView {
 
     func selectedSubtitle() -> String {
       return player.currentItem?.selected(type: .subtitle) ?? "None"
+    }
+    
+    open func setBitRate(_ definition: String) {
+       var maxBitRate: Double = 0
+       var width = 0
+       var height = 0
+       switch definition {
+       case "240p":
+           maxBitRate = 700000
+           width = 320
+           height = 240
+       case "360p":
+           maxBitRate = 1500000
+           width = 640
+           height = 360
+       case "480p":
+           maxBitRate = 2000000
+           width = 640
+           height = 480
+       case "720p":
+           maxBitRate = 4000000
+           width = 1280
+           height = 720
+       case "1080p":
+           maxBitRate = 6000000
+           width = 1920
+           height = 1080
+       case "4k":
+           maxBitRate = 45000000
+           width = 3840
+           height = 2160
+       case "Auto":
+           maxBitRate = 0
+       default:
+           maxBitRate = 0
+       }
+        self.player.currentItem?.preferredPeakBitRate = maxBitRate
+        self.player.currentItem?.preferredMaximumResolution = CGSize(width: width, height: height)
+        print("Playing in Bit Rate \(String(describing:self.player.currentItem?.preferredMaximumResolution))")
     }
     
     func loadMedia(_ media: GCKMediaInformation?, autoPlay: Bool, playPosition: TimeInterval, area:UILayoutGuide) {

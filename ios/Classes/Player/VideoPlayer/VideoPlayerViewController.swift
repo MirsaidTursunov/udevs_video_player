@@ -472,6 +472,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         vc.speedDelegate = self
         vc.subtitleDelegate = self
         vc.audioDelegate = self
+        selectedAudioLanguage = self.playerView.selectedAudio()
         vc.settingModel = [
             SettingModel(leftIcon: Svg.settings.uiImage, title: qualityLabelText, configureLabel: selectedQualityText),
             SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
@@ -859,7 +860,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
                 self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }
         }
-        if playerConfiguration.isPremier {
+        else if playerConfiguration.isPremier {
             var success : PremierStreamResponse?
             success = self.getPremierStream(episodeId: episodeId)
             if success != nil {
@@ -874,7 +875,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
                 self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }
         }
-        if playerConfiguration.isMoreTv {
+        else if playerConfiguration.isMoreTv {
             var success : MoreTvResponse?
             success = self.getMoreTvStream(episodeId: episodeId)
             if success != nil {
@@ -887,12 +888,15 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
                 self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
             }
         }
-        if !playerConfiguration.isMegogo && !playerConfiguration.isPremier {
-            seasons[seasonIndex].movies[episodeIndex].resolutions.map { (key: String, value: String) in
+        else {
+            seasons[seasonIndex].movies[episodeIndex].resolutions.forEach { (key: String, value: String) in
                 resolutions[key] = value
                 startAt = 0
             }
             self.playSeason(_resolutions: resolutions, startAt: startAt, _episodeIndex: episodeIndex, _seasonIndex: seasonIndex)
+            selectedQualityText = playerConfiguration.autoText
+            selectedSubtitle = "None"
+            selectedAudioLanguage = self.playerView.selectedAudio()
         }
     }
     

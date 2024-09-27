@@ -1,12 +1,18 @@
 package uz.udevs.udevs_video_player.utils
 
+import android.net.Uri
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
 
 // quality
-fun ExoPlayer.getAvailableQualities(): ArrayList<String> {
+fun ExoPlayer.getAvailableQualities(autoText: String): ArrayList<String> {
     val tracks = this.currentTracks.groups
     val formats: MutableList<String> = mutableListOf()
     for (trackGroup in tracks) {
@@ -23,18 +29,38 @@ fun ExoPlayer.getAvailableQualities(): ArrayList<String> {
             }
         }
     }
+    formats.add(autoText)
     return formats.reversed().toCollection(ArrayList())
 }
 
+@OptIn(UnstableApi::class)
 fun ExoPlayer.changeVideoQuality(
     index: Int,
     numberOfQualities: Int,
+    url: String,
 ) {
-    this.trackSelectionParameters = this.trackSelectionParameters.buildUpon().setOverrideForType(
-        TrackSelectionOverride(
-            this.currentTracks.groups[0].mediaTrackGroup, numberOfQualities - index - 1
-        )
-    ).build()
+    // auto quality
+    if (index == 0) {
+        if (this.isPlaying) {
+            this.pause()
+        }
+        val currentPosition = this.currentPosition
+        val dataSourceFactory: DataSource.Factory =
+            DefaultHttpDataSource.Factory()
+        val hlsMediaSource: HlsMediaSource =
+            HlsMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+        this.setMediaSource(hlsMediaSource)
+        this.seekTo(currentPosition)
+        this.play()
+    } else {
+        this.trackSelectionParameters =
+            this.trackSelectionParameters.buildUpon().setOverrideForType(
+                TrackSelectionOverride(
+                    this.currentTracks.groups[0].mediaTrackGroup, numberOfQualities - index - 1
+                )
+            ).build()
+    }
 }
 
 // audio language

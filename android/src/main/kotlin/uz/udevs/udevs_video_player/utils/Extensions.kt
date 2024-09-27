@@ -1,5 +1,7 @@
 package uz.udevs.udevs_video_player.utils
 
+import uz.udevs.udevs_video_player.models.PlayerConfiguration
+
 fun String.toHttps(): String {
     if (this.startsWith("https://")) {
         return this
@@ -7,6 +9,6 @@ fun String.toHttps(): String {
     return this.replace("http://", "https://")
 }
 
-fun String.isAutoQuality(): Boolean {
-    return this == "Автонастройка" || this == "Auto" || this == "Avto"
+fun String.isAutoQuality(playerConfiguration: PlayerConfiguration): Boolean {
+    return this == playerConfiguration.autoText
 }

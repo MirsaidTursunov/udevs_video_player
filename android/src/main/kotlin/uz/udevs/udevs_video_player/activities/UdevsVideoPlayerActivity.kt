@@ -226,9 +226,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         tvCategoryIndex = playerConfiguration.selectTvCategoryIndex
         currentQuality =
             if (playerConfiguration.initialResolution.isNotEmpty()) playerConfiguration.initialResolution.keys.first() else ""
-        if (playerConfiguration.isUzdMovie()) {
-            uzdAutoQuality = playerConfiguration.initialResolution.keys.first()
-        }
         titleText = playerConfiguration.title
         url = playerConfiguration.initialResolution.values.first().ifEmpty { "" }
 
@@ -919,7 +916,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 getMoreTvStream()
             } else {
                 url =
-                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[currentQuality]
+                    playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[playerConfiguration.autoText]
                 val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
@@ -1405,9 +1402,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         getMoreTvStream()
                     } else {
                         url =
-                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[uzdAutoQuality]
-                        currentQuality = uzdAutoQuality
-                        qualityTextValue?.text = uzdAutoQuality
+                            playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[playerConfiguration.autoText]
+                        currentQuality = playerConfiguration.autoText
+                        qualityTextValue?.text = playerConfiguration.autoText
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)
@@ -1474,7 +1471,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     private var speeds =
         mutableListOf("0.25x", "0.5x", "0.75x", "1.0x", "1.25x", "1.5x", "1.75x", "2.0x")
-    private var uzdAutoQuality = "auto"
     private var currentQuality = ""
     private var currentSpeed = "1.0x"
     private var qualityTextValue: TextView? = null
@@ -1489,15 +1485,15 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
         currentAudioTrack = player?.audioFormat?.label ?: ""
         if (playerConfiguration.isUzdMovie()) {
-            val qualities = player!!.getAvailableQualities()
-            if (currentQuality.isAutoQuality()) {
+            val qualities = player!!.getAvailableQualities(playerConfiguration.autoText)
+            if (currentQuality.isAutoQuality(playerConfiguration)) {
                 currentQuality = qualities[0]
                 qualityTextValue?.text = qualities[0]
             }
         }
 
         if (playerConfiguration.isMoreTv) {
-            val qualities = player!!.getAvailableQualities()
+            val qualities = player!!.getAvailableQualities(playerConfiguration.autoText)
             if (currentQuality == "moretv" && playerConfiguration.isMoreTv) {
                 currentQuality = qualities[0]
                 qualityTextValue?.text = qualities[0]
@@ -1549,7 +1545,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     true,
                 )
             } else {
-                if (playerConfiguration.resolutions.isNotEmpty() || playerConfiguration.isMoreTv) showQualitySpeedSheet(
+                showQualitySpeedSheet(
                     currentQuality,
                     playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
                     true,
@@ -1697,7 +1693,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         var finalList: ArrayList<String> = list
 
         if ((playerConfiguration.isUzdMovie() || playerConfiguration.isMoreTv) && fromQuality) {
-            finalList = player!!.getAvailableQualities()
+            finalList = player!!.getAvailableQualities(playerConfiguration.autoText)
         }
 
         isQualitySpeedBottomSheetOpened = true
@@ -1765,7 +1761,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 override fun onClick(position: Int) {
                     if (fromQuality) {
                         if (playerConfiguration.isMoreTv || playerConfiguration.isUzdMovie()) {
-                            player!!.changeVideoQuality(index = position, finalList.size)
+                            player!!.changeVideoQuality(index = position, finalList.size, url ?: "")
                             currentQuality = finalList[position]
                             qualityTextValue?.text = currentQuality
                         } else {

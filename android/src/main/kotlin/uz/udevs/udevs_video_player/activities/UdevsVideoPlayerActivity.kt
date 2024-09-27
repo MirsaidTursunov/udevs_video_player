@@ -632,7 +632,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         if (playerView?.isControllerFullyVisible == false) {
                             playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                         }
-//                        checkSubtitleButtonAvailability()
                     }
 
                     Player.STATE_ENDED -> {
@@ -663,7 +662,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             registerCallBack()
             listenToProgress()
         }
-//        checkSubtitleButtonAvailability()
     }
 
     private fun rePlayVideo() {
@@ -922,13 +920,14 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
                 player?.setMediaSource(hlsMediaSource)
                 player?.prepare()
+                val newColor = ContextCompat.getColor(this, R.color.white)
+                subtitleButton?.setColorFilter(newColor)
                 if (mLocation == PlaybackLocation.LOCAL) {
                     player?.playWhenReady
                 } else {
                     loadRemoteMedia(0)
                 }
             }
-//            checkSubtitleButtonAvailability()
             if (isPipMode) playerView?.hideController()
 //            nextButton?.visibility = View.GONE
         }
@@ -984,10 +983,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     if (subtitles.isNotEmpty()) {
                         it.changeSubtitle(subtitles.first())
                         currentSubtitle = subtitles.first()
+                        val newColor = ContextCompat.getColor(this, R.color.blue)
+                        subtitleButton?.setColorFilter(newColor)
                     }
                 }
-                val newColor = ContextCompat.getColor(this, R.color.blue)
-                subtitleButton?.setColorFilter(newColor)
             } else {
                 Log.d("", "subtitle: hide")
                 player?.hideSubtitle()
@@ -997,17 +996,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             }
         }
     }
-
-//    private fun checkSubtitleButtonAvailability() {
-//        val subtitles = player?.getAvailableSubtitles() ?: emptyList()
-//        if (subtitles.isEmpty()) {
-//            val grayColor = ContextCompat.getColor(this, R.color.hint)
-//            subtitleButton?.setColorFilter(grayColor)
-//        } else {
-//            val whiteColor = ContextCompat.getColor(this, R.color.white)
-//            subtitleButton?.setColorFilter(whiteColor)
-//        }
-//    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -1414,7 +1402,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         } else {
                             loadRemoteMedia(0)
                         }
-//                        checkSubtitleButtonAvailability()
+                        val newColor = ContextCompat.getColor(baseContext, R.color.white)
+                        subtitleButton?.setColorFilter(newColor)
                     }
                     bottomSheetDialog.dismiss()
                 }

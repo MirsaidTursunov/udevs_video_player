@@ -183,7 +183,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var tvCategoryIndex: Int = 0
     private var isPipMode: Boolean = false
     private var sendingAnalytics: Job? = null
-    private var isSubtitleAvailable: Boolean = true
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -633,7 +632,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         if (playerView?.isControllerFullyVisible == false) {
                             playerView?.setShowBuffering(SHOW_BUFFERING_NEVER)
                         }
-                        checkSubtitleButtonAvailability()
+//                        checkSubtitleButtonAvailability()
                     }
 
                     Player.STATE_ENDED -> {
@@ -664,7 +663,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             registerCallBack()
             listenToProgress()
         }
-        checkSubtitleButtonAvailability()
+//        checkSubtitleButtonAvailability()
     }
 
     private fun rePlayVideo() {
@@ -929,7 +928,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
-            checkSubtitleButtonAvailability()
+//            checkSubtitleButtonAvailability()
             if (isPipMode) playerView?.hideController()
 //            nextButton?.visibility = View.GONE
         }
@@ -978,8 +977,6 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
 
         subtitleButton?.setOnClickListener {
-            if (!isSubtitleAvailable) return@setOnClickListener
-
             if (currentSubtitle.isNullOrEmpty()) {
                 Log.d("", "subtitle: show initial")
                 player?.let {
@@ -1001,18 +998,16 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         }
     }
 
-    private fun checkSubtitleButtonAvailability() {
-        val subtitles = player?.getAvailableSubtitles() ?: emptyList()
-        if (subtitles.isEmpty()) {
-            isSubtitleAvailable = false
-            val grayColor = ContextCompat.getColor(this, R.color.hint)
-            subtitleButton?.setColorFilter(grayColor)
-        } else {
-            isSubtitleAvailable = true
-            val whiteColor = ContextCompat.getColor(this, R.color.white)
-            subtitleButton?.setColorFilter(whiteColor)
-        }
-    }
+//    private fun checkSubtitleButtonAvailability() {
+//        val subtitles = player?.getAvailableSubtitles() ?: emptyList()
+//        if (subtitles.isEmpty()) {
+//            val grayColor = ContextCompat.getColor(this, R.color.hint)
+//            subtitleButton?.setColorFilter(grayColor)
+//        } else {
+//            val whiteColor = ContextCompat.getColor(this, R.color.white)
+//            subtitleButton?.setColorFilter(whiteColor)
+//        }
+//    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -1419,7 +1414,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         } else {
                             loadRemoteMedia(0)
                         }
-                        checkSubtitleButtonAvailability()
+//                        checkSubtitleButtonAvailability()
                     }
                     bottomSheetDialog.dismiss()
                 }

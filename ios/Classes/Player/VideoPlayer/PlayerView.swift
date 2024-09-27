@@ -349,6 +349,7 @@ class PlayerView: UIView {
     func getAvailableSubtitles() -> [String]{
         var subtitles = player.currentItem?.tracks(type: .subtitle) ?? []
         subtitles.insert(playerConfiguration.noneText, at: 0)
+        subtitles.removeAll(where: {val in val == "CC"})
         
         return subtitles
     }

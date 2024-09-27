@@ -331,7 +331,7 @@ class PlayerView: UIView {
     /// Track functions
     
     public func getAvailableAudios() -> [String]{
-        return player.currentItem?.tracks(type: .audio) ?? ["Default"]
+        return player.currentItem?.tracks(type: .audio) ?? [playerConfiguration.defaultText]
     }
     
     func setAudioLang(name: String) {
@@ -339,7 +339,7 @@ class PlayerView: UIView {
     }
     
     func getSelectedAudio() -> String {
-      return player.currentItem?.selected(type: .audio) ?? "Default"
+      return player.currentItem?.selected(type: .audio) ?? playerConfiguration.defaultText
     }
 
     func getSelectedSubtitle() -> String {

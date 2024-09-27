@@ -164,6 +164,7 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
+              defaultText: 'defaultText',
               audioText: 'audioText',
               noneText: 'noneText',
               subtitleText: 'subtitleText',

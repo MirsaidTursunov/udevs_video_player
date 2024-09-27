@@ -577,6 +577,11 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             let selectedSubtitleLabel = subtitles[index]
             playerView.setSubtitle(selectedSubtitleLabel: selectedSubtitleLabel)
             selectedSubtitle = selectedSubtitleLabel
+            if selectedSubtitleLabel == playerConfiguration.noneText{
+                playerView.subtitleButton.tintColor = .white
+            }else{
+                playerView.subtitleButton.tintColor = Colors.blue
+            }
             break
         case .audio:
             let audios = self.playerView.getAvailableAudios()

@@ -50,6 +50,7 @@ class PlayerConfiguration {
     required this.noneText,
     required this.subtitleText,
     required this.audioText,
+    required this.defaultText,
   });
 
   final Map<String, String> initialResolution;
@@ -90,6 +91,7 @@ class PlayerConfiguration {
   final String noneText;
   final String subtitleText;
   final String audioText;
+  final String defaultText;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -131,6 +133,7 @@ class PlayerConfiguration {
     map['noneText'] = noneText;
     map['subtitleText'] = subtitleText;
     map['audioText'] = audioText;
+    map['defaultText'] = defaultText;
     return map;
   }
 
@@ -173,5 +176,6 @@ class PlayerConfiguration {
       'noneText: $noneText'
       'subtitleText: $subtitleText'
       'audioText: $audioText'
+      'defaultText: $defaultText'
       '}';
 }

@@ -24,4 +24,5 @@ class Colors {
     static let blue = UIColor(red:80, green: 134, blue: 236)
     static let gradient1 = UIColor(red: 0.99, green: 0.27, blue: 0.42, alpha: 1.00)
     static let gradient2 = UIColor(red: 0.25, green: 0.37, blue: 0.98, alpha: 1.00)
+    static let gray = UIColor(red: 192, green: 192, blue: 192)
 }

@@ -210,6 +210,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     
     func populateMediaInfo(_ autoPlay: Bool, playPosition: TimeInterval) {
         playerView.loadMedia(buildMediaInfo(position: playerView.streamPosition ?? 0, url: playerConfiguration.url), autoPlay: autoPlay, playPosition: playPosition, area: view.safeAreaLayoutGuide)
+        selectedSubtitle = playerConfiguration.noneText
     }
     
     func switchToLocalPlayback() {
@@ -414,6 +415,23 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         }
     }
     
+    func subtitleButtonPressed(){
+        let subtitles = playerView.getAvailableSubtitles()
+        if subtitles.count < 2 {return}
+        if selectedSubtitle == playerConfiguration.noneText {
+            if(subtitles.count > 1){
+                playerView.setSubtitle(selectedSubtitleLabel: subtitles[1])
+                selectedSubtitle = subtitles[1]
+                playerView.subtitleButton.tintColor = Colors.blue
+            }
+        } else {
+            playerView.setSubtitle(selectedSubtitleLabel: subtitles[0])
+            selectedSubtitle = subtitles[0]
+            playerView.subtitleButton.tintColor = .white
+        }
+//        playerView.checkSubtitleButton()
+    }
+    
     func changeOrientation(){
         var value = UIInterfaceOrientation.landscapeRight.rawValue
         if UIApplication.shared.statusBarOrientation == .landscapeLeft || UIApplication.shared.statusBarOrientation == .landscapeRight {
@@ -472,7 +490,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         vc.speedDelegate = self
         vc.subtitleDelegate = self
         vc.audioDelegate = self
-        selectedAudioLanguage = self.playerView.selectedAudio()
+        selectedAudioLanguage = self.playerView.getSelectedAudio()
         vc.settingModel = [
             SettingModel(leftIcon: Svg.settings.uiImage, title: qualityLabelText, configureLabel: selectedQualityText),
             SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
@@ -555,23 +573,22 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             }
             break
         case .subtitle:
-            var subtitles = playerView.setSubtitleCurrentItem()
+            let subtitles = playerView.getAvailableSubtitles()
             let selectedSubtitleLabel = subtitles[index]
-            if (playerView.getSubtitleTrackIsEmpty(selectedSubtitleLabel: selectedSubtitleLabel)){
-                    selectedSubtitle = selectedSubtitleLabel
-            }
+            playerView.setSubtitle(selectedSubtitleLabel: selectedSubtitleLabel)
+            selectedSubtitle = selectedSubtitleLabel
             break
         case .audio:
-            let audios = self.playerView.audios()
+            let audios = self.playerView.getAvailableAudios()
             let selectedAudioLabel = audios[index]
-            self.playerView.selectAudioLang(name: selectedAudioLabel)
+            self.playerView.setAudioLang(name: selectedAudioLabel)
             selectedAudioLanguage = selectedAudioLabel
             break
         }
     }
     
     private func showSubtitleBottomSheet(){
-           let subtitles = playerView.setSubtitleCurrentItem()
+           let subtitles = playerView.getAvailableSubtitles()
            let bottomSheetVC = BottomSheetViewController()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = subtitles
@@ -585,9 +602,9 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
        }
     
     private func showAudioBottomSheet(){
-           let audios = playerView.audios()
+           let audios = playerView.getAvailableAudios()
            let bottomSheetVC = BottomSheetViewController()
-           let selectedAudio = self.playerView.selectedAudio()
+           let selectedAudio = self.playerView.getSelectedAudio()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = audios
            bottomSheetVC.labelText = audioLabelText
@@ -897,7 +914,8 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
             
             selectedQualityText = playerConfiguration.autoText
             selectedSubtitle = playerConfiguration.noneText
-            selectedAudioLanguage = self.playerView.selectedAudio()
+            selectedAudioLanguage = self.playerView.getSelectedAudio()
+            playerView.subtitleButton.tintColor = Colors.white
         }
     }
     

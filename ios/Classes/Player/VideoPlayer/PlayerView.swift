@@ -28,6 +28,7 @@ protocol PlayerViewDelegate: NSObjectProtocol {
     func volumeChanged(value: Float)
     func isCheckPlay()
     func share()
+    func subtitleButtonPressed()
 }
 
 enum LocalPlayerState: Int {
@@ -129,6 +130,16 @@ class PlayerView: UIView {
         liveView.distribution = .equalSpacing
         return liveView
     }()
+    
+    public lazy var subtitleButton: IconButton = {
+        let button = IconButton()
+        button.height(24)
+        button.sizeToFit()
+        button.setImage(Svg.subtitle.uiImage.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.addTarget(self, action: #selector(subtitleButtonPressed(_:)), for: .touchUpInside)
+        return button
+    }()
+
     
     private lazy var landscapeButton: IconButton = {
         let button = IconButton()
@@ -318,24 +329,32 @@ class PlayerView: UIView {
         overlayView.isHidden = isPiP
     }
     /// Track functions
-    public func subtitles() -> [String]{
-        return player.currentItem?.tracks(type: .subtitle) ?? [playerConfiguration.noneText]
-    }
     
-    public func audios() -> [String]{
+    public func getAvailableAudios() -> [String]{
         return player.currentItem?.tracks(type: .audio) ?? ["Default"]
     }
     
-    func selectAudioLang(name: String) {
-        player.currentItem?.select(type: TrackType.audio, name: name)
+    func setAudioLang(name: String) {
+        let _ = player.currentItem?.select(type: TrackType.audio, name: name)
     }
     
-    func selectedAudio() -> String {
+    func getSelectedAudio() -> String {
       return player.currentItem?.selected(type: .audio) ?? "Default"
     }
 
-    func selectedSubtitle() -> String {
+    func getSelectedSubtitle() -> String {
       return player.currentItem?.selected(type: .subtitle) ?? playerConfiguration.noneText
+    }
+    
+    func getAvailableSubtitles() -> [String]{
+        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? []
+        subtitles.insert(playerConfiguration.noneText, at: 0)
+        
+        return subtitles
+    }
+    
+    func setSubtitle(selectedSubtitleLabel: String){
+       let _ = player.currentItem?.select(type: .subtitle, name: selectedSubtitleLabel)
     }
     
     open func setBitRate(_ definition: String) {
@@ -399,6 +418,7 @@ class PlayerView: UIView {
         pendingPlayPosition = playPosition
         pendingPlay = autoPlay
         playOfflineAsset()
+//        checkSubtitleButton()
     }
     
     private func uiSetup(){
@@ -515,17 +535,6 @@ class PlayerView: UIView {
         self.player.automaticallyWaitsToMinimizeStalling = true
     }
     
-    func setSubtitleCurrentItem() -> [String]{
-        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? [playerConfiguration.noneText]
-        subtitles.insert(playerConfiguration.noneText, at: 0)
-        
-        return subtitles
-    }
-    
-    func getSubtitleTrackIsEmpty(selectedSubtitleLabel: String) -> Bool{
-        return (player.currentItem?.select(type: .subtitle, name: selectedSubtitleLabel)) != nil
-    }
-    
     func changeSpeed(rate: Float){
         self.playerRate = rate
         self.player.preroll(atRate: self.playerRate, completionHandler: nil)
@@ -545,6 +554,10 @@ class PlayerView: UIView {
     
     @objc func togglePictureInPictureMode(_ sender: UIButton){
         delegate?.togglePictureInPictureMode()
+    }
+    
+    @objc func subtitleButtonPressed(_ sender: UIButton){
+        delegate?.subtitleButtonPressed()
     }
     
     @objc func settingPressed(_ sender: UIButton){
@@ -771,6 +784,7 @@ class PlayerView: UIView {
         bottomView.addSubview(episodesButton)
         bottomView.addSubview(channelsButton)
         bottomView.addSubview(showsBtn)
+        bottomView.addSubview(subtitleButton)
         bottomView.addSubview(landscapeButton)
         bottomView.addSubview(liveStackView)
     }
@@ -865,8 +879,10 @@ class PlayerView: UIView {
         durationTimeLabel.leftToRight(of: seperatorLabel)
         durationTimeLabel.centerY(to: seperatorLabel)
         
+        subtitleButton.rightToLeft(of: landscapeButton, offset: 0)
+        subtitleButton.centerY(to: landscapeButton)
         
-        episodesButton.rightToLeft(of: landscapeButton, offset: -8)
+        episodesButton.rightToLeft(of: subtitleButton, offset: -8)
         episodesButton.centerY(to: landscapeButton)
         
         showsBtn.rightToLeft(of: channelsButton, offset: -16)

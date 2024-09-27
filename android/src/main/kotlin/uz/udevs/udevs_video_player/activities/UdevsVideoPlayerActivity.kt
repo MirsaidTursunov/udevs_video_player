@@ -1407,6 +1407,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             playerConfiguration.seasons[seasonIndex].movies[episodeIndex].resolutions[playerConfiguration.autoText]
                         currentQuality = playerConfiguration.autoText
                         qualityTextValue?.text = playerConfiguration.autoText
+                        currentSubtitle = null
                         val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
                         val hlsMediaSource: HlsMediaSource =
                             HlsMediaSource.Factory(dataSourceFactory)

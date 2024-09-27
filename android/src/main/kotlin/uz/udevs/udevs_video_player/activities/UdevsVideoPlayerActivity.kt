@@ -664,6 +664,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             registerCallBack()
             listenToProgress()
         }
+        checkSubtitleButtonAvailability()
     }
 
     private fun rePlayVideo() {
@@ -928,6 +929,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                     loadRemoteMedia(0)
                 }
             }
+            checkSubtitleButtonAvailability()
             if (isPipMode) playerView?.hideController()
 //            nextButton?.visibility = View.GONE
         }
@@ -1416,6 +1418,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                         } else {
                             loadRemoteMedia(0)
                         }
+                        checkSubtitleButtonAvailability()
                     }
                     bottomSheetDialog.dismiss()
                 }

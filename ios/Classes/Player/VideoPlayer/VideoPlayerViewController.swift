@@ -915,7 +915,7 @@ extension VideoPlayerViewController: QualityDelegate, SpeedDelegate, EpisodeDele
             selectedQualityText = playerConfiguration.autoText
             selectedSubtitle = playerConfiguration.noneText
             selectedAudioLanguage = self.playerView.getSelectedAudio()
-            playerView.subtitleButton.tintColor = Colors.white
+            playerView.subtitleButton.tintColor = .white
         }
     }
     

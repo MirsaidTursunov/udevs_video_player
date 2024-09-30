@@ -169,7 +169,7 @@ class _MainPageState extends State<MainPage> {
               noneText: 'noneText',
               subtitleText: 'subtitleText',
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
-              baseUrl: '',
+              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':
                     'https://cdn.uzd.udevs.io/uzdigital/videos/bbc795b69faf3c4d1063777f2b220144/master.m3u8'

@@ -12,10 +12,10 @@ import uz.udevs.udevs_video_player.models.advertisement.AdvertisementAnalyticsRe
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
-import uz.udevs.udevs_video_player.models.TvChannelResponse
+import uz.udevs.udevs_video_player.models.response.MegogoStreamResponse
+import uz.udevs.udevs_video_player.models.response.MoreTvStreamResponse
+import uz.udevs.udevs_video_player.models.response.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.response.TvChannelResponse
 import uz.udevs.udevs_video_player.models.track.TrackRequest
 
 interface RetrofitService {

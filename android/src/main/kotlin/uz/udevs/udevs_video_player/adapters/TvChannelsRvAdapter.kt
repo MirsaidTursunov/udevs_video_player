@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.TvChannel
+import uz.udevs.udevs_video_player.models.configuration.TvChannel
 
 class TvChannelsRvAdapter(
     var context: Context,

@@ -1,9 +1,6 @@
 package uz.udevs.udevs_video_player.models.configuration
 
 import com.google.gson.annotations.SerializedName
-import uz.udevs.udevs_video_player.models.ProgramsInfo
-import uz.udevs.udevs_video_player.models.Season
-import uz.udevs.udevs_video_player.models.TvCategories
 import java.io.Serializable
 
 data class PlayerConfiguration(
@@ -47,7 +44,3 @@ data class PlayerConfiguration(
     @SerializedName("subtitleText") val subtitleText: String,
     @SerializedName("audioText") val audioText: String,
 ) : Serializable
-
-fun PlayerConfiguration.isUzdMovie(): Boolean {
-    return !(this.isMegogo || this.isPremier || this.isMoreTv)
-}

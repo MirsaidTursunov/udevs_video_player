@@ -1,7 +1,6 @@
 package uz.udevs.udevs_video_player.models.advertisement
 
 import com.google.gson.annotations.SerializedName
-import uz.udevs.udevs_video_player.models.BannerImage
 import java.io.Serializable
 
 data class AdvertisementResponse(

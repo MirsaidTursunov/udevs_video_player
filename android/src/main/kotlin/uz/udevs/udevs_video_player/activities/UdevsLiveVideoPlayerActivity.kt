@@ -82,10 +82,10 @@ import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
 import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
-import uz.udevs.udevs_video_player.models.BottomSheet
+import uz.udevs.udevs_video_player.domain.BottomSheet
 import uz.udevs.udevs_video_player.models.configuration.LivePlayerConfiguration
-import uz.udevs.udevs_video_player.models.TvChannel
-import uz.udevs.udevs_video_player.models.TvChannelResponse
+import uz.udevs.udevs_video_player.models.configuration.TvChannel
+import uz.udevs.udevs_video_player.models.response.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver

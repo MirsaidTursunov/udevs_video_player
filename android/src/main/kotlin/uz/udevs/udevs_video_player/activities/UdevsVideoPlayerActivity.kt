@@ -86,14 +86,13 @@ import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
+import uz.udevs.udevs_video_player.domain.BottomSheet
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
-import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.MegogoStreamResponse
-import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.configuration.PlayerConfiguration
-import uz.udevs.udevs_video_player.models.PremierStreamResponse
-import uz.udevs.udevs_video_player.models.TvChannelResponse
-import uz.udevs.udevs_video_player.models.configuration.isUzdMovie
+import uz.udevs.udevs_video_player.models.response.MegogoStreamResponse
+import uz.udevs.udevs_video_player.models.response.MoreTvStreamResponse
+import uz.udevs.udevs_video_player.models.response.PremierStreamResponse
+import uz.udevs.udevs_video_player.models.response.TvChannelResponse
 import uz.udevs.udevs_video_player.models.track.TrackRequest
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
@@ -108,6 +107,7 @@ import uz.udevs.udevs_video_player.utils.getAvailableQualities
 import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
 import uz.udevs.udevs_video_player.utils.hideSubtitle
 import uz.udevs.udevs_video_player.utils.isAutoQuality
+import uz.udevs.udevs_video_player.utils.isUzdMovie
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer

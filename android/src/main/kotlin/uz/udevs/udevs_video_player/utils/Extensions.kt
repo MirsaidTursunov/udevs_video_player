@@ -12,3 +12,8 @@ fun String.toHttps(): String {
 fun String.isAutoQuality(playerConfiguration: PlayerConfiguration): Boolean {
     return this == playerConfiguration.autoText
 }
+
+
+fun PlayerConfiguration.isUzdMovie(): Boolean {
+    return !(this.isMegogo || this.isPremier || this.isMoreTv)
+}

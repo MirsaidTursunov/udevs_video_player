@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.viewpager2.widget.ViewPager2
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.Season
+import uz.udevs.udevs_video_player.models.configuration.Season
 
 class EpisodePagerAdapter(
     var viewPager: ViewPager2,

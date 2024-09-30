@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.ProgramsInfo
+import uz.udevs.udevs_video_player.models.configuration.ProgramsInfo
 
 class TvProgramsPagerAdapter(
     var context: Context,

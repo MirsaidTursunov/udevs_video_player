@@ -1,8 +1,6 @@
 package uz.udevs.udevs_video_player.models.configuration
 
 import com.google.gson.annotations.SerializedName
-import uz.udevs.udevs_video_player.models.ProgramsInfo
-import uz.udevs.udevs_video_player.models.TvCategories
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import java.io.Serializable
 

@@ -1,4 +1,4 @@
-package uz.udevs.udevs_video_player.models
+package uz.udevs.udevs_video_player.domain
 
 enum class BottomSheet {
     NONE,

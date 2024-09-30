@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.TvProgram
+import uz.udevs.udevs_video_player.models.configuration.TvProgram
 
 class TvProgramsRvAdapter(var list: List<TvProgram>) :
     RecyclerView.Adapter<TvProgramsRvAdapter.Vh>() {

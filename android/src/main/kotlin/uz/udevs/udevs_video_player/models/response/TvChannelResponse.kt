@@ -1,6 +1,7 @@
-package uz.udevs.udevs_video_player.models
+package uz.udevs.udevs_video_player.models.response
 
 import com.google.gson.annotations.SerializedName
+import uz.udevs.udevs_video_player.models.configuration.ProgramsInfo
 import java.io.Serializable
 
 data class TvChannelResponse(

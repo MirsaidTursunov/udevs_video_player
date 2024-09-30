@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uz.udevs.udevs_video_player.R
-import uz.udevs.udevs_video_player.models.Movie
+import uz.udevs.udevs_video_player.models.configuration.Movie
 import uz.udevs.udevs_video_player.utils.MyHelper
 
 class EpisodesRvAdapter(

@@ -8,9 +8,9 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
-import uz.udevs.udevs_video_player.models.AdvertisementAnalyticsRequest
-import uz.udevs.udevs_video_player.models.AdvertisementRequest
-import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementAnalyticsRequest
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse

@@ -22,14 +22,13 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import uz.udevs.udevs_video_player.activities.UdevsLiveVideoPlayerActivity
 import uz.udevs.udevs_video_player.activities.UdevsVideoPlayerActivity
 import uz.udevs.udevs_video_player.models.DownloadConfiguration
-import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
+import uz.udevs.udevs_video_player.models.configuration.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.MediaItemDownload
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.configuration.PlayerConfiguration
 import uz.udevs.udevs_video_player.services.DownloadTracker
 import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.MyDownloadService

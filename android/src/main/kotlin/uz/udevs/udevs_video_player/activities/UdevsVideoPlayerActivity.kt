@@ -90,10 +90,10 @@ import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.BottomSheet
 import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.configuration.PlayerConfiguration
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
-import uz.udevs.udevs_video_player.models.isUzdMovie
+import uz.udevs.udevs_video_player.models.configuration.isUzdMovie
 import uz.udevs.udevs_video_player.models.track.TrackRequest
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService

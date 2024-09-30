@@ -56,8 +56,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import uz.udevs.udevs_video_player.advertisement.components.LoadingIndicator
-import uz.udevs.udevs_video_player.models.AdvertisementAnalyticsRequest
-import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementAnalyticsRequest
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 
 class AdvertisementPage(

@@ -1,6 +1,6 @@
 package uz.udevs.udevs_video_player.utils
 
-import uz.udevs.udevs_video_player.models.PlayerConfiguration
+import uz.udevs.udevs_video_player.models.configuration.PlayerConfiguration
 
 fun String.toHttps(): String {
     if (this.startsWith("https://")) {

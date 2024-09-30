@@ -80,10 +80,10 @@ import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
 import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
 import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
-import uz.udevs.udevs_video_player.models.AdvertisementRequest
-import uz.udevs.udevs_video_player.models.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
+import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import uz.udevs.udevs_video_player.models.BottomSheet
-import uz.udevs.udevs_video_player.models.LivePlayerConfiguration
+import uz.udevs.udevs_video_player.models.configuration.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.TvChannel
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.retrofit.Common

@@ -72,6 +72,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -520,7 +521,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startCroneJob() {
-        if (!playerConfiguration.isLive) croneJob = GlobalScope.launch {
+        if (!playerConfiguration.isLive) croneJob = GlobalScope.launch(Dispatchers.Main) {
             while (true) {
                 sendAnalytics()
                 sendMovieTrack()

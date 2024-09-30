@@ -16,6 +16,7 @@ import uz.udevs.udevs_video_player.models.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
+import uz.udevs.udevs_video_player.models.track.TrackRequest
 
 interface RetrofitService {
     @GET("megogo/stream")
@@ -32,6 +33,14 @@ interface RetrofitService {
         @Header("SessionId") sessionId: String,
         @Body body: AnalyticsRequest,
     ): Call<Any>
+
+    @POST("movie-track")
+    fun sendMovieTrack(
+        @Header("Authorization") authorization: String,
+        @Header("SessionId") sessionId: String,
+        @Body request: TrackRequest,
+    ): Call<Any>
+
 
     @GET("moretv/play/{video-id}")
     fun getMoreTvStream(
@@ -63,6 +72,6 @@ interface RetrofitService {
     @PUT("advertisingTest")
     fun sendAdvertisementAnalytics(
         @Body request: AdvertisementAnalyticsRequest
-    ):Call<Any>
+    ): Call<Any>
 
 }

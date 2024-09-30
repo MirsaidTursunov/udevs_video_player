@@ -94,6 +94,7 @@ import uz.udevs.udevs_video_player.models.PlayerConfiguration
 import uz.udevs.udevs_video_player.models.PremierStreamResponse
 import uz.udevs.udevs_video_player.models.TvChannelResponse
 import uz.udevs.udevs_video_player.models.isUzdMovie
+import uz.udevs.udevs_video_player.models.track.TrackRequest
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.DownloadUtil
@@ -110,7 +111,6 @@ import uz.udevs.udevs_video_player.utils.isAutoQuality
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
-import kotlin.concurrent.timerTask
 import kotlin.math.abs
 
 @UnstableApi
@@ -182,7 +182,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var channelIndex: Int = 0
     private var tvCategoryIndex: Int = 0
     private var isPipMode: Boolean = false
-    private var sendingAnalytics: Job? = null
+    private var croneJob: Job? = null
 
     enum class PlaybackLocation {
         LOCAL, REMOTE
@@ -445,7 +445,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        sendingAnalytics?.cancel()
+        croneJob?.cancel()
         closeToRequestAuth?.cancel()
         var seconds = 0L
         if (player?.currentPosition != null) {
@@ -499,7 +499,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     }
 
     override fun onStop() {
-        sendingAnalytics?.cancel()
+        croneJob?.cancel()
         closeToRequestAuth?.cancel()
         super.onStop()
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -519,31 +519,17 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun startSendingAnalytics() {
-        if (!playerConfiguration.isLive) sendingAnalytics = GlobalScope.launch {
+    private fun startCroneJob() {
+        if (!playerConfiguration.isLive) croneJob = GlobalScope.launch {
             while (true) {
                 sendAnalytics()
+                sendMovieTrack()
                 delay(10000)
             }
         }
     }
 
     private var closeToRequestAuth: Timer? = null
-
-    private fun wait3MinsAndClose() {
-        if (playerConfiguration.isLive && playerConfiguration.authorization.isEmpty()) {
-            closeToRequestAuth = Timer()
-            closeToRequestAuth?.schedule(timerTask {
-                Log.i("wait3mins", "should request auto = true")
-                removeProgressListener()
-                unregisterCallBack()
-                val intent = Intent()
-                intent.putExtra("position", -1L)
-                setResult(PLAYER_ACTIVITY_FINISH, intent)
-                finish()
-            }, 15000)
-        }
-    }
 
 
     private fun playVideo() {
@@ -574,8 +560,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 nextButtonHeight?.layoutParams = params
             }
 
-        startSendingAnalytics()
-        wait3MinsAndClose()
+        startCroneJob()
 
 
         player?.addListener(object : Player.Listener {
@@ -799,7 +784,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
         close?.setOnClickListener {
             closeToRequestAuth?.cancel()
-            sendingAnalytics?.cancel()
+            croneJob?.cancel()
             if (player?.isPlaying == true) {
                 player?.stop()
             }
@@ -1068,6 +1053,36 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
             override fun onFailure(call: Call<Any>, t: Throwable) {
                 Log.i("SEND ANALYTICS", "error: $t")
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun sendMovieTrack() {
+        val request = TrackRequest(
+            element = if (playerConfiguration.isSerial) "episode" else "movie",
+            movieKey = playerConfiguration.videoId,
+            profileId = playerConfiguration.profileId,
+            seconds = (player?.currentPosition?.toInt() ?: 0) / 1000,
+            seasonKey = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
+            episodeKey = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
+            userId = playerConfiguration.userId,
+            duration = player?.duration?.toInt() ?: 0,
+        )
+        Log.i("SEND TRACK", "request: $request")
+        retrofitService?.sendMovieTrack(
+            playerConfiguration.authorization,
+            playerConfiguration.sessionId,
+            request = request,
+        )?.enqueue(object : Callback<Any> {
+            override fun onResponse(
+                call: Call<Any>, response: Response<Any>
+            ) {
+                Log.i("SEND TRACK", "response: ${response.body()}")
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                Log.i("SEND TRACK", "error: $t")
                 t.printStackTrace()
             }
         })

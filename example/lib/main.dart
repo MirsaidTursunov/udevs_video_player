@@ -258,7 +258,6 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ])
               ],
-              isLive: false,
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],
               showController: true,
@@ -275,8 +274,6 @@ class _MainPageState extends State<MainPage> {
               authorization: '',
               autoText: 'Автонастройка',
               fromCache: true,
-              selectChannelIndex: 0,
-              ip: '',
               tvCategories: [],
               userId: '',
               profileId: '',

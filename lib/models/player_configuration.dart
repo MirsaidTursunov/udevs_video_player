@@ -51,6 +51,7 @@ class PlayerConfiguration {
     this.selectChannelIndex = 0,
     this.selectTvCategoryIndex = 0,
     this.tvCategories = const [],
+    this.sendMovieTrack = true,
   });
 
   final Map<String, String> initialResolution;
@@ -92,6 +93,7 @@ class PlayerConfiguration {
   final String subtitleText;
   final String audioText;
   final String defaultText;
+  final bool sendMovieTrack;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -134,6 +136,7 @@ class PlayerConfiguration {
     map['subtitleText'] = subtitleText;
     map['audioText'] = audioText;
     map['defaultText'] = defaultText;
+    map['sendMovieTrack'] = sendMovieTrack;
     return map;
   }
 
@@ -177,5 +180,6 @@ class PlayerConfiguration {
       'subtitleText: $subtitleText'
       'audioText: $audioText'
       'defaultText: $defaultText'
+      'sendMovieTrack: $sendMovieTrack'
       '}';
 }

@@ -42,8 +42,11 @@ struct PlayerConfiguration{
     var tvCategories: [TvCategories]
     var noneText: String
     var defaultText: String
+    var profileID:String
+    var userID:String
+    var sendMovieTrack:Bool
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],noneText:String,defaultText:String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],noneText:String,defaultText:String,profileID:String,userID:String,sendMovieTrack:Bool) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -79,6 +82,9 @@ struct PlayerConfiguration{
         self.tvCategories = tvCategories
         self.noneText = noneText
         self.defaultText = defaultText
+        self.profileID = profileID
+        self.userID = userID
+        self.sendMovieTrack = sendMovieTrack
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -138,8 +144,10 @@ struct PlayerConfiguration{
                                    selectChannelIndex: map["selectChannelIndex"] as? Int ?? 0, selectTvCategoryIndex: map["selectTvCategoryIndex"] as? Int ?? 0,
                                    tvCategories: tvCategories,
                                    noneText: map["noneText"] as! String,
-                                   defaultText: map["defaultText"] as! String
-                                   
+                                   defaultText: map["defaultText"] as! String,
+                                   profileID: map["profileId"] as! String,
+                                   userID: map["userId"] as! String,
+                                   sendMovieTrack: map["sendMovieTrack"] as! Bool
         )
     }
 }

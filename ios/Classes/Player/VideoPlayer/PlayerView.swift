@@ -40,7 +40,7 @@ enum LocalPlayerState: Int {
 
 class PlayerView: UIView {
     
-    private var player = AVPlayer()
+    var player = AVPlayer()
     var playerLayer =  AVPlayerLayer()
     private var mediaTimeObserver: Any?
     private var observingMediaPlayer: Bool = false

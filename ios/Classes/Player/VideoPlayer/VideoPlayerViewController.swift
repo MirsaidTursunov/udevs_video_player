@@ -78,6 +78,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         "1080p",
         "4k"
     ]
+    private var cronTimer: Timer?
     
     lazy private var playerView: PlayerView = {
         return PlayerView()
@@ -145,7 +146,27 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         NotificationCenter.default.addObserver(self, selector: #selector(castDeviceDidChange),
                                                name: NSNotification.Name.gckCastStateDidChange,
                                                object: GCKCastContext.sharedInstance())
+        if playerConfiguration.sendMovieTrack {
+            initCroneJob()
+        }
+    }
+    
+    private func initCroneJob(){
+        cronTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(runCronJob), userInfo: nil, repeats: true)
+    }
+    
+    @objc func runCronJob() {
+            // Add your recurring task logic here
+            print("Cron job executed!")
         
+            sendMovieTrack()
+        }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("viewDidDisappear")
+        cronTimer?.invalidate()
+        print("Cron job disposed!")
     }
     
     @objc func castDeviceDidChange(_: Notification) {
@@ -728,6 +749,34 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             channelResponse = success
         }
         return channelResponse
+    }
+    
+    func sendMovieTrack() {
+        let _url : String = playerConfiguration.baseUrl+"movie-track"
+        
+        let episodeIndex = playerView.episodeIndex
+        let seasonIndex = playerView.seasonIndex
+        let trackRequest = MovieTrackRequest(
+            duration: playerView.player.currentItem?.duration.seconds.toInt() ?? 0,
+            element: playerConfiguration.isSerial ? "episode" : "movie",
+            episodeID: playerConfiguration.isSerial ? playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id ?? "" : "",
+            episodeKey: playerConfiguration.isSerial ? "\(episodeIndex+1)" : "0",
+            isMegogo: playerConfiguration.isMegogo,
+            isPremier: playerConfiguration.isPremier,
+            movieKey: playerConfiguration.videoId,
+            profileID: playerConfiguration.profileID,
+            seasonKey: playerConfiguration.isSerial ? "\(seasonIndex+1)" : "0",
+            seconds: playerView.player.currentItem?.currentTime().seconds.toInt() ?? 0,
+            userID: playerConfiguration.userID
+        )
+        
+        let result = Networking.sharedInstance.sendMovieTrack(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId,trackRequest: trackRequest)
+        switch result {
+        case .failure(let error):
+            print("ERROR on send movie track\(error)")
+        case .success(let success):
+            return
+        }
     }
     
     func getStreamUrl(url : String) -> String? {

@@ -220,3 +220,9 @@ extension UIButton{
         layer.insertSublayer(gradientLayer, at: 0)
     }
 }
+
+extension Double{
+    func toInt()->Int{
+        return Int(self)
+    }
+}

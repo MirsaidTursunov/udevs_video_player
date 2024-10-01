@@ -84,6 +84,37 @@ struct Networking {
         return result
     }
     
+    func sendMovieTrack(_ baseUrl: String, token: String, sessionId: String, trackRequest: MovieTrackRequest) -> Result<Any, NetworkError> {
+        var components = URLComponents(string: baseUrl)!
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+        let requestBody = try? JSONSerialization.data(withJSONObject: trackRequest.toMap())
+        print("requestJson: \(trackRequest.toMap())")
+        request.httpBody = requestBody
+        var result: Result<Any, NetworkError>!
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request){data,_,__ in
+            guard let json = data else {
+                result = .failure(.NoDataAvailable)
+                return
+            }
+            do {
+                if let jsonResult = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary {
+                            print("response track JSon: \(jsonResult)")
+                        }
+                result = .success(Data(json))
+            }
+            catch{
+                result = .failure(.CanNotProcessData)
+            }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(wallTimeout: .distantFuture)
+        return result
+    }
+    
     func getAdvertisement(_ baseUrl: String, 
                           token: String,
                           sessionId: String,

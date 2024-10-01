@@ -1067,6 +1067,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             seconds = (player?.currentPosition?.toInt() ?: 0) / 1000,
             seasonKey = if (playerConfiguration.isSerial) "${seasonIndex + 1}" else "0",
             episodeKey = if (playerConfiguration.isSerial) "${episodeIndex + 1}" else "0",
+            episodeId = if (playerConfiguration.isSerial) playerConfiguration.seasons[seasonIndex].movies[episodeIndex].id
+            else "",
+            isMegogo = playerConfiguration.isMegogo,
+            isPremier = playerConfiguration.isPremier,
             userId = playerConfiguration.userId,
             duration = player?.duration?.toInt() ?: 0,
         )

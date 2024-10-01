@@ -14,7 +14,6 @@ data class PlayerConfiguration(
     @SerializedName("episodeButtonText") val episodeButtonText: String,
     @SerializedName("nextButtonText") val nextButtonText: String,
     @SerializedName("seasons") val seasons: List<Season>,
-    @SerializedName("isLive") val isLive: Boolean = false,
     @SerializedName("tvProgramsText") val tvProgramsText: String,
     @SerializedName("programsInfoList") val programsInfoList: List<ProgramsInfo>,
     @SerializedName("showController") val showController: Boolean,
@@ -43,4 +42,5 @@ data class PlayerConfiguration(
     @SerializedName("noneText") val noneText: String,
     @SerializedName("subtitleText") val subtitleText: String,
     @SerializedName("audioText") val audioText: String,
+    @SerializedName("sendMovieTrack") val sendMovieTrack: Boolean,
 ) : Serializable

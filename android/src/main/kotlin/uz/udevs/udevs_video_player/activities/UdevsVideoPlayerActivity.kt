@@ -145,7 +145,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var nextText: TextView? = null
     private var tvProgramsButton: ImageView? = null
     private var tvChannels: ImageView? = null
-    private var tvChannelsButton: LinearLayout? = null
+//    private var tvChannelsButton: LinearLayout? = null
     private var zoom: ImageView? = null
     private var orientation: ImageView? = null
     private var subtitleButton: ImageView? = null
@@ -521,7 +521,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startCroneJob() {
-        if (!playerConfiguration.isLive) croneJob = GlobalScope.launch(Dispatchers.Main) {
+        croneJob = GlobalScope.launch(Dispatchers.Main) {
             while (true) {
                 sendAnalytics()
                 sendMovieTrack()
@@ -561,8 +561,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 nextButtonHeight?.layoutParams = params
             }
 
-        startCroneJob()
-
+        if (playerConfiguration.sendMovieTrack) {
+            startCroneJob()
+        }
 
         player?.addListener(object : Player.Listener {
             override fun onEvents(
@@ -628,7 +629,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                             } else {
                                 nextButton?.performClick()
                             }
-                        } else if (!playerConfiguration.isLive) {
+                        } else {
                             onBackPressed()
                         }
                     }
@@ -671,9 +672,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         pip = findViewById(R.id.video_pip)
         cast = findViewById(R.id.video_cast)
         tvChannels = findViewById(R.id.tv_channels)
-        if (playerConfiguration.isLive) {
-            tvChannelsButton?.visibility = View.VISIBLE
-        }
+//        if (playerConfiguration.isLive) {
+//            tvChannelsButton?.visibility = View.VISIBLE
+//        }
         CastButtonFactory.setUpMediaRouteButton(applicationContext, cast!!)
         more = findViewById(R.id.video_more)
         title = findViewById(R.id.video_title)
@@ -686,16 +687,16 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         playPause = findViewById(R.id.video_play_pause)
         progressbar = findViewById(R.id.video_progress_bar)
         timer = findViewById(R.id.timer)
-        if (playerConfiguration.isLive) {
-            timer?.visibility = View.GONE
-        }
+//        if (playerConfiguration.isLive) {
+//            timer?.visibility = View.GONE
+//        }
         videoPosition = findViewById(R.id.video_position)
         exoPosition = findViewById(R.id.exo_position)
         live = findViewById(R.id.live)
-        if (playerConfiguration.isLive) {
-            shareMovieLinkIv?.visibility = View.GONE
-            live?.visibility = View.VISIBLE
-        }
+//        if (playerConfiguration.isLive) {
+//            shareMovieLinkIv?.visibility = View.GONE
+//            live?.visibility = View.VISIBLE
+//        }
         episodesButton = findViewById(R.id.button_episodes)
         episodesText = findViewById(R.id.text_episodes)
         if (playerConfiguration.seasons.isNotEmpty()) {
@@ -718,10 +719,10 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 //                nextText?.visibility = View.GONE
 //            }
         tvProgramsButton = findViewById(R.id.button_tv_programs)
-        if (playerConfiguration.isLive) {
-            tvProgramsButton?.visibility = View.VISIBLE
-            tvChannels?.visibility = View.VISIBLE
-        }
+//        if (playerConfiguration.isLive) {
+//            tvProgramsButton?.visibility = View.VISIBLE
+//            tvChannels?.visibility = View.VISIBLE
+//        }
         zoom = findViewById(R.id.zoom)
         orientation = findViewById(R.id.orientation)
         subtitleButton = findViewById(R.id.subtitle_button)
@@ -730,12 +731,12 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         exoProgress = findViewById(R.id.exo_progress)
         customSeekBar = findViewById(R.id.progress_bar)
         customSeekBar?.isEnabled = false
-        if (playerConfiguration.isLive) {
-            exoProgress?.visibility = View.GONE
-            rewind?.visibility = View.GONE
-            forward?.visibility = View.GONE
-            customSeekBar?.visibility = View.VISIBLE
-        }
+//        if (playerConfiguration.isLive) {
+//            exoProgress?.visibility = View.GONE
+//            rewind?.visibility = View.GONE
+//            forward?.visibility = View.GONE
+//            customSeekBar?.visibility = View.VISIBLE
+//        }
         findViewById<PlayerView>(R.id.exo_player_view).setOnTouchListener { _, motionEvent ->
             if (motionEvent.pointerCount == 2) {
                 scaleGestureDetector?.onTouchEvent(motionEvent)
@@ -951,9 +952,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 } else {
-                    if (playerConfiguration.isLive) {
-                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    }
+//                    if (playerConfiguration.isLive) {
+//                        playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//                    }
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
             it.postDelayed({
@@ -1236,9 +1237,9 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         currentOrientation = newConfig.orientation
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullScreen()
-            if (playerConfiguration.isLive) {
-                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            }
+//            if (playerConfiguration.isLive) {
+//                playerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//            }
             title?.text = title1?.text
             title?.visibility = View.VISIBLE
             title1?.text = ""

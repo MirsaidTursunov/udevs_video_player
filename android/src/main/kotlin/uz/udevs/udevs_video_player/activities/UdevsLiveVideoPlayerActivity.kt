@@ -1174,14 +1174,11 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             bottomSheetDialog.dismiss()
         }
 
-
         bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
             playerConfiguration.qualityText
-
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
-        // sorting
-        val availableQualities = player!!.getAvailableQualities(playerConfiguration.autoText)
 
+        val availableQualities = player!!.getAvailableQualities(playerConfiguration.autoText)
         val adapter = QualitySpeedAdapter(
             currentQuality,
             this,

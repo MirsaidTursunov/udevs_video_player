@@ -29,6 +29,9 @@ fun ExoPlayer.getAvailableQualities(autoText: String): ArrayList<String> {
             }
         }
     }
+
+    formats.sortBy { it.substring(0, it.length - 1).toIntOrNull() }
+
     formats.add(autoText)
     return formats.reversed().toCollection(ArrayList())
 }
@@ -45,11 +48,9 @@ fun ExoPlayer.setVideoQuality(
             this.pause()
         }
         val currentPosition = this.currentPosition
-        val dataSourceFactory: DataSource.Factory =
-            DefaultHttpDataSource.Factory()
-        val hlsMediaSource: HlsMediaSource =
-            HlsMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
         this.setMediaSource(hlsMediaSource)
         this.seekTo(currentPosition)
         this.play()

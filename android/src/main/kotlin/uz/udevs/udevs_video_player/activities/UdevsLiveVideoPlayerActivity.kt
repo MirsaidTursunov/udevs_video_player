@@ -80,9 +80,9 @@ import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
 import uz.udevs.udevs_video_player.advertisement.AdvertisementPage
 import uz.udevs.udevs_video_player.advertisement.theme.AppTheme
+import uz.udevs.udevs_video_player.domain.BottomSheet
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
-import uz.udevs.udevs_video_player.domain.BottomSheet
 import uz.udevs.udevs_video_player.models.configuration.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.models.configuration.TvChannel
 import uz.udevs.udevs_video_player.models.response.TvChannelResponse
@@ -90,7 +90,8 @@ import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
-import uz.udevs.udevs_video_player.utils.toHttps
+import uz.udevs.udevs_video_player.utils.getAvailableQualities
+import uz.udevs.udevs_video_player.utils.setVideoQuality
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
@@ -216,10 +217,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         registerReceiver(networkChangeReceiver, intentFilter)
         channelIndex = playerConfiguration.selectChannelIndex
         tvCategoryIndex = playerConfiguration.selectTvCategoryIndex
-        currentQuality =
-            if (playerConfiguration.initialResolution.isNotEmpty()) playerConfiguration.initialResolution.keys.first() else ""
+        currentQuality = playerConfiguration.autoText
         titleText = playerConfiguration.title
-        url = playerConfiguration.initialResolution.values.first().ifEmpty { "" }
+        url = playerConfiguration.videoUrl
 
         initializeViews()
         mPlaybackState = PlaybackState.PLAYING
@@ -235,13 +235,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             }
         Log.d(tag, "onCreate: ${remoteMediaClient?.mediaInfo?.contentUrl}")
         if (mLocation == PlaybackLocation.REMOTE) {
-            playerConfiguration.resolutions.values.forEach {
-                Log.d(tag, "onCreate: $it")
-                if (it == remoteMediaClient?.mediaInfo?.contentUrl) {
-                    url = it
-                    sameWithStreamingContent = true
-                }
-            }
+            Log.d(tag, "onCreate: $playerConfiguration.videoUrl")
+            url = playerConfiguration.videoUrl
+            sameWithStreamingContent = true
         }
 
         retrofitService =
@@ -528,8 +524,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
 
     private fun playVideo() {
-        val dataSourceFactory: DataSource.Factory =
-            DefaultHttpDataSource.Factory()
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
 
@@ -889,9 +884,6 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             ) {
                 val body = response.body()
                 if (body != null) {
-                    val map: HashMap<String, String> = hashMapOf()
-                    map["Auto"] = body.channelStreamAll
-                    playerConfiguration.resolutions = map
                     url = body.channelStreamAll
                     titleText = channel.name
                     title?.text = titleText
@@ -902,6 +894,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
                     player?.setMediaSource(hlsMediaSource)
                     player?.prepare()
                     player?.playWhenReady
+                    currentQuality = playerConfiguration.autoText
                     startAdvertisement(advertisement)
                 }
             }
@@ -1093,16 +1086,10 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         qualityText?.text = currentQuality
         speedText?.text = currentSpeed
         quality?.setOnClickListener {
-            if (playerConfiguration.resolutions.isNotEmpty()) showQualitySpeedSheet(
-                currentQuality,
-                playerConfiguration.resolutions.keys.toList() as? ArrayList ?: ArrayList(),
-                true,
-            )
+            showQualityBottomSheet()
         }
         speed?.setOnClickListener {
-            if (mLocation == PlaybackLocation.LOCAL) showQualitySpeedSheet(
-                currentSpeed, speeds as ArrayList, false
-            )
+            if (mLocation == PlaybackLocation.LOCAL) showSpeedBottomSheet()
         }
         bottomSheetDialog.show()
         bottomSheetDialog.setOnDismissListener {
@@ -1112,9 +1099,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
     }
 
     private var backButtonQualitySpeedBottomSheet: ImageView? = null
-    private fun showQualitySpeedSheet(
-        initialValue: String, list: ArrayList<String>, fromQuality: Boolean
-    ) {
+    private fun showSpeedBottomSheet() {
         if (isQualitySpeedBottomSheetOpened) {
             return
         }
@@ -1136,78 +1121,80 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             bottomSheetDialog.dismiss()
         }
 
-        if (fromQuality) {
-            bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
-                playerConfiguration.qualityText
-        } else {
-            bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
-                playerConfiguration.speedText
-        }
+
+        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+            playerConfiguration.speedText
+
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
-        // sorting
-        val formats = mutableListOf<String>()
-        if (fromQuality) {
-            var auto = ""
-            list.forEach {
-                if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-                    formats.add(it)
-                } else {
-                    auto = it
-                }
-            }
-            for (i in 0 until formats.size) {
-                for (j in i until formats.size) {
-                    val first = formats[i]
-                    val second = formats[j]
-                    if (first.substring(0, first.length - 1).toInt() < second.substring(
-                            0, second.length - 1
-                        ).toInt()
-                    ) {
-                        val a = formats[i]
-                        formats[i] = formats[j]
-                        formats[j] = a
-                    }
-                }
-            }
-            if (auto.isNotEmpty()) {
-                formats.add(0, auto)
-            }
-        } else {
-            formats.addAll(list)
-        }
+
         val adapter = QualitySpeedAdapter(
-            initialValue,
+            currentSpeed,
             this,
-            formats as ArrayList<String>,
+            speeds as ArrayList<String>,
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
-                    if (fromQuality) {
-                        currentQuality = formats[position]
-                        qualityText?.text = currentQuality
-                        if (player?.isPlaying == true) {
-                            player?.pause()
-                        }
-                        val currentPosition = player?.currentPosition
-                        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-                        url = playerConfiguration.resolutions[currentQuality]?.toHttps()
-                        val hlsMediaSource: HlsMediaSource =
-                            HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
-                        player?.setMediaSource(hlsMediaSource)
-                        player?.seekTo(currentPosition!!)
-                        if (mLocation == PlaybackLocation.LOCAL) {
-                            player?.play()
-                        } else {
-                            loadRemoteMedia(currentPosition ?: 0)
-                        }
-                    } else {
-                        if (mLocation == PlaybackLocation.REMOTE) {
-                            return
-                        }
-                        currentSpeed = formats[position]
-                        speedText?.text = currentSpeed
-                        player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
+                    if (mLocation == PlaybackLocation.REMOTE) {
+                        return
                     }
+                    currentSpeed = speeds[position]
+                    speedText?.text = currentSpeed
+                    player?.setPlaybackSpeed(currentSpeed.replace("x", "").toFloat())
+
+                    bottomSheetDialog.dismiss()
+                }
+            })
+        )
+        listView.adapter = adapter
+        bottomSheetDialog.show()
+        bottomSheetDialog.setOnDismissListener {
+            currentBottomSheet = BottomSheet.SETTINGS
+            isQualitySpeedBottomSheetOpened = false
+        }
+    }
+
+    private fun showQualityBottomSheet() {
+        if (isQualitySpeedBottomSheetOpened) {
+            return
+        }
+        isQualitySpeedBottomSheetOpened = true
+        currentBottomSheet = BottomSheet.QUALITY_OR_SPEED
+        val bottomSheetDialog = BottomSheetDialog(this)
+        listOfAllOpenedBottomSheets.add(bottomSheetDialog)
+        bottomSheetDialog.behavior.isDraggable = false
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.setContentView(R.layout.quality_speed_sheet)
+        backButtonQualitySpeedBottomSheet =
+            bottomSheetDialog.findViewById(R.id.quality_speed_sheet_back)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            backButtonQualitySpeedBottomSheet?.visibility = View.GONE
+        } else {
+            backButtonQualitySpeedBottomSheet?.visibility = View.VISIBLE
+        }
+        backButtonQualitySpeedBottomSheet?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+
+        bottomSheetDialog.findViewById<TextView>(R.id.quality_speed_text)?.text =
+            playerConfiguration.qualityText
+
+        val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
+        // sorting
+        val availableQualities = player!!.getAvailableQualities(playerConfiguration.autoText)
+
+        val adapter = QualitySpeedAdapter(
+            currentQuality,
+            this,
+            availableQualities,
+            (object : QualitySpeedAdapter.OnClickListener {
+                override fun onClick(position: Int) {
+                    currentQuality = availableQualities[position]
+                    qualityText?.text = currentQuality
+                    player?.setVideoQuality(
+                        index = position,
+                        numberOfQualities = availableQualities.size,
+                        url = url ?: ""
+                    )
                     bottomSheetDialog.dismiss()
                 }
             })

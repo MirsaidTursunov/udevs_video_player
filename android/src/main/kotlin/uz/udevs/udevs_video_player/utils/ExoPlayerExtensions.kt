@@ -34,7 +34,7 @@ fun ExoPlayer.getAvailableQualities(autoText: String): ArrayList<String> {
 }
 
 @OptIn(UnstableApi::class)
-fun ExoPlayer.changeVideoQuality(
+fun ExoPlayer.setVideoQuality(
     index: Int,
     numberOfQualities: Int,
     url: String,

@@ -4,8 +4,7 @@ import 'package:udevs_video_player/models/tv_categories.dart';
 
 class LivePlayerConfiguration {
   const LivePlayerConfiguration({
-    required this.initialResolution,
-    required this.resolutions,
+    required this.videoUrl,
     required this.qualityText,
     required this.speedText,
     required this.title,
@@ -28,8 +27,7 @@ class LivePlayerConfiguration {
     required this.skipText,
   });
 
-  final Map<String, String> initialResolution;
-  final Map<String, String> resolutions;
+  final String videoUrl;
   final String qualityText;
   final String speedText;
   final AdvertisementResponse? advertisement;
@@ -54,8 +52,7 @@ class LivePlayerConfiguration {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['initialResolution'] = initialResolution;
-    map['resolutions'] = resolutions;
+    map['videoUrl'] = videoUrl;
     map['qualityText'] = qualityText;
     map['speedText'] = speedText;
     map['title'] = title;
@@ -81,8 +78,7 @@ class LivePlayerConfiguration {
 
   @override
   String toString() => 'PlayerConfiguration{'
-      'initialResolution: $initialResolution, '
-      'resolutions: $resolutions, '
+      'videoUrl: $videoUrl, '
       'qualityText: $qualityText, '
       'speedText: $speedText, '
       'title: $title, '

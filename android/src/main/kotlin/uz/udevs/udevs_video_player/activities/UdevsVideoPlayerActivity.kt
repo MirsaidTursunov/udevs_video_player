@@ -102,7 +102,7 @@ import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.changeAudioLanguage
 import uz.udevs.udevs_video_player.utils.changeSubtitle
-import uz.udevs.udevs_video_player.utils.changeVideoQuality
+import uz.udevs.udevs_video_player.utils.setVideoQuality
 import uz.udevs.udevs_video_player.utils.getAvailableAudioLanguages
 import uz.udevs.udevs_video_player.utils.getAvailableQualities
 import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
@@ -1770,7 +1770,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
                 override fun onClick(position: Int) {
                     if (fromQuality) {
                         if (playerConfiguration.isMoreTv || playerConfiguration.isUzdMovie()) {
-                            player!!.changeVideoQuality(index = position, finalList.size, url ?: "")
+                            player!!.setVideoQuality(index = position, finalList.size, url ?: "")
                             currentQuality = finalList[position]
                             qualityTextValue?.text = currentQuality
                         } else {

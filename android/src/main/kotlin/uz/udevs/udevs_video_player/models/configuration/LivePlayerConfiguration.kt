@@ -5,84 +5,24 @@ import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
 import java.io.Serializable
 
 data class LivePlayerConfiguration(
-    @SerializedName("initialResolution")
-    val initialResolution: HashMap<String, String>,
-    @SerializedName("resolutions")
-    var resolutions: HashMap<String, String>,
-    @SerializedName("qualityText")
-    val qualityText: String,
-    @SerializedName("speedText")
-    val speedText: String,
-//    @SerializedName("lastPosition")
-//    val lastPosition: Long,
-    @SerializedName("title")
-    val title: String,
-    @SerializedName("advertisement")
-    val advertisement: AdvertisementResponse?,
-//    @SerializedName("isSerial")
-//    val isSerial: Boolean,
-//    @SerializedName("episodeButtonText")
-//    val episodeButtonText: String,
-//    @SerializedName("nextButtonText")
-//    val nextButtonText: String,
-//    @SerializedName("seasons")
-//    val seasons: List<Season>,
-//    @SerializedName("isLive")
-//    val isLive: Boolean,
-    @SerializedName("tvProgramsText")
-    val tvProgramsText: String,
-    @SerializedName("programsInfoList")
-    val programsInfoList: List<ProgramsInfo>,
-    @SerializedName("showController")
-    val showController: Boolean,
-//    @SerializedName("playVideoFromAsset")
-//    val playVideoFromAsset: Boolean,
-//    @SerializedName("assetPath")
-//    val assetPath: String,
-//    @SerializedName("seasonIndex")
-//    val seasonIndex: Int,
-//    @SerializedName("episodeIndex")
-//    val episodeIndex: Int,
-//    @SerializedName("isMegogo")
-//    val isMegogo: Boolean,
-//    @SerializedName("isMoreTv")
-//    val isMoreTv: Boolean,
-//    @SerializedName("isPremier")
-//    val isPremier: Boolean,
-//    @SerializedName("videoId")
-//    val videoId: String,
-//    @SerializedName("sessionId")
-//    val sessionId: String,
-//    @SerializedName("megogoAccessToken")
-//    val megogoAccessToken: String,
-    @SerializedName("authorization")
-    val authorization: String,
-    @SerializedName("autoText")
-    val autoText: String,
-    @SerializedName("baseUrl")
-    val baseUrl: String,
-//    @SerializedName("fromCache")
-//    val fromCache: Boolean,
-    @SerializedName("tvCategories")
-    val tvCategories: List<TvCategories>,
-    @SerializedName("ip")
-    val ip: String,
-    @SerializedName("selectChannelIndex")
-    val selectChannelIndex: Int,
-    @SerializedName("selectTvCategoryIndex")
-    val selectTvCategoryIndex: Int,
-//    @SerializedName("movieShareLink")
-//    val movieShareLink: String,
-//    @SerializedName("profileId")
-//    val profileId: String
-    @SerializedName("skipText")
-    val skipText: String,
-    @SerializedName("userId")
-    val userId: String,
-    @SerializedName("age")
-    val age: Int,
-    @SerializedName("gender")
-    val gender: String,
-    @SerializedName("region")
-    val region: String,
+    @SerializedName("videoUrl") val videoUrl: String,
+    @SerializedName("qualityText") val qualityText: String,
+    @SerializedName("speedText") val speedText: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("advertisement") val advertisement: AdvertisementResponse?,
+    @SerializedName("tvProgramsText") val tvProgramsText: String,
+    @SerializedName("programsInfoList") val programsInfoList: List<ProgramsInfo>,
+    @SerializedName("showController") val showController: Boolean,
+    @SerializedName("authorization") val authorization: String,
+    @SerializedName("autoText") val autoText: String,
+    @SerializedName("baseUrl") val baseUrl: String,
+    @SerializedName("tvCategories") val tvCategories: List<TvCategories>,
+    @SerializedName("ip") val ip: String,
+    @SerializedName("selectChannelIndex") val selectChannelIndex: Int,
+    @SerializedName("selectTvCategoryIndex") val selectTvCategoryIndex: Int,
+    @SerializedName("skipText") val skipText: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("age") val age: Int,
+    @SerializedName("gender") val gender: String,
+    @SerializedName("region") val region: String,
 ) : Serializable

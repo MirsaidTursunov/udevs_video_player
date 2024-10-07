@@ -271,7 +271,8 @@ class _MainPageState extends State<MainPage> {
               videoId: 'vremya-vernutsya',
               sessionId: '8c526abd-2d0a-45c1-b527-814f99b5f040',
               megogoAccessToken: '',
-              authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODY1NTk5MDIsImlzcyI6InVzZXIiLCJwaWQiOjc2MDY2LCJyb2xlIjoiY3VzdG9tZXIiLCJzdWIiOiI4YzUyNmFiZC0yZDBhLTQ1YzEtYjUyNy04MTRmOTliNWYwNDAifQ.ffXIBxI693pcaZmMrXNWEa_HrvYO_waN77FzBLbryUI',
+              authorization:
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODY1NTk5MDIsImlzcyI6InVzZXIiLCJwaWQiOjc2MDY2LCJyb2xlIjoiY3VzdG9tZXIiLCJzdWIiOiI4YzUyNmFiZC0yZDBhLTQ1YzEtYjUyNy04MTRmOTliNWYwNDAifQ.ffXIBxI693pcaZmMrXNWEa_HrvYO_waN77FzBLbryUI',
               autoText: 'Автонастройка',
               fromCache: true,
               userId: '8c526abd-2d0a-45c1-b527-814f99b5f040',
@@ -291,6 +292,8 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playLiveVideo(
             playerConfig: LivePlayerConfiguration(
+              videoUrl:
+                  'https://cdn.uzd.udevs.io/uzdigital/videos/bbc795b69faf3c4d1063777f2b220144/master.m3u8',
               sessionId: '',
               skipText: 'Skip Ad',
               advertisement: AdvertisementResponse(
@@ -308,38 +311,12 @@ class _MainPageState extends State<MainPage> {
                   video:
                       'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'),
               baseUrl: '',
-              initialResolution: {
-                'Автонастройка':
-                    'https://st1.uzdigital.tv/Uzb24/video.m3u8?token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46'
-              },
-              resolutions: {
-                'Автонастройка':
-                    'https://st1.uzdigital.tv/Uzb24/video.m3u8?token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46',
-                '1080p':
-                    'http://st1.uzdigital.tv/Uzb24/tracks-v1a1a2/mono.m3u8?remote=178.218.201.46&token=141177c8cccc734cbfa8c7b75f96a5dc833f50cf-796276414c4a4858514c524a75756a76-1720599034-1720588234&remote=178.218.201.46'
-              },
               qualityText: 'Качество',
               speedText: 'Скорость',
-              // lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              // isSerial: true,
-              // episodeButtonText: 'Эпизоды',
-              // nextButtonText: 'След.эпизод',
-              // seasons: [],
-              // isLive: true,
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],
               showController: true,
-              // playVideoFromAsset: false,
-              // assetPath: '',
-              // seasonIndex: 0,
-              // episodeIndex: 0,
-              // isMegogo: false,
-              // isPremier: false,
-              // isMoreTv: true,
-              // videoId: '',
-              // sessionId: '',
-              // megogoAccessToken: '',
               authorization: '',
               autoText: 'Автонастройка',
               // fromCache: true,

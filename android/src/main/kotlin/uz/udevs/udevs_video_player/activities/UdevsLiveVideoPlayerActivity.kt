@@ -1179,18 +1179,39 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
 
         val availableQualities = player!!.getAvailableQualities(playerConfiguration.autoText)
+        val sortedQualities = mutableListOf<String>()
+
+        availableQualities.forEach {
+            if (it.substring(0, it.length - 1).toIntOrNull() != null) {
+                sortedQualities.add(it)
+            }
+        }
+        for (i in 0 until sortedQualities.size) {
+            for (j in i until sortedQualities.size) {
+                val first = sortedQualities[i]
+                val second = sortedQualities[j]
+                if (first.substring(0, first.length - 1).toInt() < second.substring(
+                        0, second.length - 1
+                    ).toInt()
+                ) {
+                    val a = sortedQualities[i]
+                    sortedQualities[i] = sortedQualities[j]
+                    sortedQualities[j] = a
+                }
+            }
+        }
+        sortedQualities.add(0, playerConfiguration.autoText)
+
         val adapter = QualitySpeedAdapter(
             currentQuality,
             this,
-            availableQualities,
+            sortedQualities as ArrayList<String>,
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
-                    currentQuality = availableQualities[position]
+                    currentQuality = sortedQualities[position]
                     qualityText?.text = currentQuality
                     player?.setVideoQuality(
-                        index = position,
-                        numberOfQualities = availableQualities.size,
-                        url = url ?: ""
+                        index = position, numberOfQualities = sortedQualities.size, url = url ?: ""
                     )
                     bottomSheetDialog.dismiss()
                 }

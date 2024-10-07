@@ -30,8 +30,6 @@ fun ExoPlayer.getAvailableQualities(autoText: String): ArrayList<String> {
         }
     }
 
-    formats.sortBy { it.substring(0, it.length - 1).toIntOrNull() }
-
     formats.add(autoText)
     return formats.reversed().toCollection(ArrayList())
 }

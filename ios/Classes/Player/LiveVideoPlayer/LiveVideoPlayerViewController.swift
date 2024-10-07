@@ -21,6 +21,7 @@ import SwiftUI
 class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControllerDelegate,  GCKRequestDelegate, SettingsBottomSheetCellDelegate, BottomSheetCellDelegate, LivePlayerViewDelegate {
     
     private var speedList = ["2.0","1.5","1.25","1.0","0.5"].sorted()
+    private var qualities: [String] = []
     
     private var pipController: AVPictureInPictureController!
     private var pipPossibleObservation: NSKeyValueObservation?
@@ -32,15 +33,13 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     private var localPlaybackImplicitlyPaused: Bool = false
     ///
     weak var delegate: VideoPlayerDelegate?
-    private var url: String?
+    var videoUrl: String
     var qualityLabelText = ""
     var speedLabelText = ""
     var subtitleLabelText = "Субтитле"
     var selectChannelIndex: Int = 0
     var selectTvCategoryIndex: Int = 0
     var isRegular: Bool = false
-    var resolutions: [String:String]?
-    var sortedResolutions: [String] = []
     var seasons : [Season] = [Season]()
     var qualityDelegate: QualityDelegate!
     var speedDelegte: SpeedDelegate!
@@ -61,7 +60,11 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     private var portraitConstraints = Constraints()
     private var landscapeConstraints = Constraints()
     
-    init() {
+    init(playerConfig: LivePlayerConfiguration) {
+        self.playerConfiguration = playerConfig
+        self.videoUrl = playerConfig.videoUrl
+        
+        qualities = [playerConfig.autoText,"1080p","576p"]
         sessionManager = GCKCastContext.sharedInstance().sessionManager
         castMediaController = GCKUIMediaController()
         volumeController = GCKUIDeviceVolumeController()
@@ -95,18 +98,9 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        url = playerConfiguration.url
+        videoUrl = playerConfiguration.videoUrl
         title = playerConfiguration.title
-        let resList = resolutions ?? ["480p":playerConfiguration.url]
-        sortedResolutions = Array(resList.keys).sorted().reversed()
-        Array(resList.keys).sorted().reversed().forEach { quality in
-            if quality == "1080p"{
-                sortedResolutions.removeLast()
-                sortedResolutions.insert("1080p", at: 1)
-            }
-        }
         view.backgroundColor = .black
-
         playerView.delegate = self
         playerView.playerConfiguration = playerConfiguration
         view.addSubview(playerView)
@@ -160,7 +154,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     func showAdvertisement(advertisement: AdvertisementResponse?) {
         playerView.player.play()
         if(advertisement?.id == nil) {return}
-        print("showAdvertisemnet called: \(advertisement)")
+        print("showAdvertisemnet called: \(String(describing: advertisement))")
         if let advertisement = advertisement , #available(iOS 15,*) {
             let swiftUIView = AdvertisementSwiftUI(
                 playerConfiguration: playerConfiguration,
@@ -212,7 +206,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     }
     
     func populateMediaInfo(_ autoPlay: Bool, playPosition: TimeInterval) {
-        playerView.loadMedia(buildMediaInfo(position: playerView.streamPosition ?? 0, url: playerConfiguration.url), autoPlay: autoPlay, playPosition: playPosition, area: view.safeAreaLayoutGuide)
+        playerView.loadMedia(buildMediaInfo(position: playerView.streamPosition ?? 0, url: playerConfiguration.videoUrl), autoPlay: autoPlay, playPosition: playPosition, area: view.safeAreaLayoutGuide)
     }
     
     func switchToLocalPlayback() {
@@ -240,7 +234,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         // If we were playing locally, load the local media on the remote player
         if playbackMode == .local, (playerView.playerState != .stopped) {
             let mediaLoadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
-            mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: playerView.streamPosition ?? 0, url: playerConfiguration.url)
+            mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: playerView.streamPosition ?? 0, url: playerConfiguration.videoUrl)
             mediaLoadRequestDataBuilder.autoplay = true
             mediaLoadRequestDataBuilder.startTime = playerView.streamPosition ?? 0
             mediaLoadRequestDataBuilder.credentials = "user-credentials"
@@ -257,7 +251,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         if playbackMode == .remote {
             let remoteMediaClient = sessionManager.currentSession?.remoteMediaClient
             playerRate = remoteMediaClient?.mediaStatus?.playbackRate ?? 1.0
-            if remoteMediaClient?.mediaStatus?.mediaInformation?.contentURL != URL(string: url!){
+            if remoteMediaClient?.mediaStatus?.mediaInformation?.contentURL != URL(string: videoUrl){
                 loadRemoteMedia(position: TimeInterval(0))
             }
         }
@@ -269,13 +263,13 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         }
         let mediaLoadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
         if playbackMode == .local {
-            mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: position, url: url ?? "")
+            mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: position, url: videoUrl)
             mediaLoadRequestDataBuilder.startTime = position
         } else {
             let castSession = sessionManager.currentCastSession
             if castSession != nil {
                 _ = sessionManager.currentSession?.remoteMediaClient
-                mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: position, url: url ?? "")
+                mediaLoadRequestDataBuilder.mediaInformation = buildMediaInfo(position: position, url: videoUrl)
                 mediaLoadRequestDataBuilder.startTime = position
             }
         }
@@ -407,15 +401,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         delegate?.getDuration(duration: duration)
     }
     
-    func share() {
-//        if let link = NSURL(string: playerConfiguration.movieShareLink)
-//        {
-//            let objectsToShare = [link] as [Any]
-//            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-//            activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
-//            self.present(activityVC, animated: true, completion: nil)
-//        }
-    }
+    func share() {}
     
     func changeOrientation(){
         var value = UIInterfaceOrientation.landscapeRight.rawValue
@@ -522,11 +508,9 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     func onBottomSheetCellTapped(index: Int, type : BottomSheetType) {
         switch type {
         case .quality:
-            let resList = resolutions ?? ["480p":playerConfiguration.url]
-            self.selectedQualityText = sortedResolutions[index]
-            let url = resList[sortedResolutions[index]]
-            self.playerView.changeQuality(url: url)
-            self.url = url
+            let selectedQuality = qualities[index]
+            self.selectedQualityText = selectedQuality
+            self.playerView.setBitRate(selectedQuality)
             if playbackMode == .remote {
                 self.loadRemoteMedia(position: sessionManager.currentSession?.remoteMediaClient?.approximateStreamPosition() ?? 0)
             }
@@ -568,28 +552,16 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
 
     
     func showQualityBottomSheet(){
-//       if (!playerConfiguration.isMoreTv) {
-            let resList = resolutions ?? ["480p": playerConfiguration.url]
-            let array = Array(resList.keys)
-            var listOfQuality = [String]()
-            listOfQuality = array.sorted().reversed()
-            array.sorted().reversed().forEach { quality in
-                if quality == "1080p"{
-                    listOfQuality.removeLast()
-                    listOfQuality.insert("1080p", at: 1)
-                }
-            }
             let bottomSheetVC = BottomSheetViewController()
             bottomSheetVC.modalPresentationStyle = .overCurrentContext
-            bottomSheetVC.items = listOfQuality
+            bottomSheetVC.items = qualities
             bottomSheetVC.labelText = qualityLabelText
             bottomSheetVC.cellDelegate = self
             bottomSheetVC.bottomSheetType = .quality
-            bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
+            bottomSheetVC.selectedIndex = qualities.firstIndex(of: selectedQualityText) ?? 0
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 self.present(bottomSheetVC, animated: false, completion:nil)
             }
-//        }
     }
     
     func showSpeedBottomSheet(){
@@ -605,49 +577,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         }
     }
     
-    func getMegogoStream(parameters:[String:String], id:String) -> MegogoStreamResponse? {
-        var megogoResponse:MegogoStreamResponse?
-        let _url:String = playerConfiguration.baseUrl+"megogo/stream"
-        let result = Networking.sharedInstance.getMegogoStream(_url, token: self.playerConfiguration.authorization, sessionId: id, parameters: parameters)
-        switch result {
-        case .failure(let error):
-            print(error)
-            break
-        case .success(let success):
-            megogoResponse = success
-            break
-        }
-        return megogoResponse
-        
-    }
     
-//    func getPremierStream(episodeId:String) -> PremierStreamResponse?{
-//        let _url : String = playerConfiguration.baseUrl+"premier/videos/\(playerConfiguration.videoId)/episodes/\(episodeId)/stream"
-//        var premierSteamResponse: PremierStreamResponse?
-//        let result = Networking.sharedInstance.getPremierStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
-//        switch result {
-//        case .failure(let error):
-//            print(error)
-//        case .success(let success):
-//            premierSteamResponse = success
-//        }
-//        return premierSteamResponse
-//    }
-    
-//    func getMoreTvStream(episodeId:String) -> MoreTvResponse?{
-//        let _url : String = playerConfiguration.baseUrl+"moretv/play/\(episodeId)"
-//        var moreTvStreamResponse: MoreTvResponse?
-//        let result = Networking.sharedInstance.getMoreTvStream(_url, token: playerConfiguration.authorization, sessionId: playerConfiguration.sessionId)
-//        print("_url11111")
-//        print(result)
-//        switch result {
-//        case .failure(let error):
-//            print(error)
-//        case .success(let success):
-//            moreTvStreamResponse = success
-//        }
-//        return moreTvStreamResponse
-//    }
     
     func getChannel(id : String) -> ChannelResponse? {
         let _url : String = playerConfiguration.baseUrl+"tv/channel/\(id)"
@@ -695,51 +625,6 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
         return channelResponse
     }
     
-//    func playSeason(_resolutions : [String:String],startAt:Int64?,_episodeIndex:Int,_seasonIndex:Int ){
-//        self.selectedSeason = _seasonIndex
-//        self.selectSesonNum = _episodeIndex
-//        self.resolutions = SortFunctions.sortWithKeys(_resolutions)
-//        let isFinded = resolutions?.contains(where: { (key, value) in
-//            if key == self.selectedQualityText {
-//                return true
-//            }
-//            return false
-//        }) ?? false
-//        let title = seasons[_seasonIndex].movies[_episodeIndex].title ?? ""
-//        if isFinded {
-//            let videoUrl = self.resolutions?[selectedQualityText]
-//            guard videoUrl != nil else{
-//                return
-//            }
-//            guard URL(string: videoUrl!) != nil else {
-//                return
-//            }
-//            if self.playerConfiguration.url != videoUrl!{
-//                if playbackMode == .local{
-//                    self.playerView.changeUrl(url: videoUrl, title: "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}" )
-//                    self.url = videoUrl
-//                } else {
-//                    self.title = "S\(_seasonIndex + 1)" + " " + "E\(_episodeIndex + 1)" + " \u{22}\(title)\u{22}"
-//                    self.url = videoUrl
-//                    self.loadRemoteMedia(position: TimeInterval(0))
-//                }
-//            } else {
-//                print("ERROR")
-//            }
-//            return
-//        } else if !self.resolutions!.isEmpty {
-//            if playbackMode == .local {
-//                let videoUrl = Array(resolutions!.values)[0]
-//                self.playerView.changeUrl(url: videoUrl, title: title)
-//                self.url = videoUrl
-//            } else {
-//                let videoUrl = Array(resolutions!.values)[0]
-//                self.url = videoUrl
-//                self.loadRemoteMedia(position: TimeInterval(0))
-//            }
-//            return
-//        }
-//    }
 }
 
 // MARK: - GCKRemoteMediaClientListener
@@ -811,9 +696,9 @@ extension LiveVideoPlayerViewController: QualityDelegate, SpeedDelegate,  Subtit
         if channelData != nil {
             self.selectChannelIndex = channelIndex
             self.selectTvCategoryIndex = tvCategoryIndex
-            self.url = channelData?.channelStreamIos ?? ""
-            self.resolutions = ["Auto": channelData?.channelStreamIos ?? ""]
-            self.playerView.changeUrl(url: self.url, title: channel.name ?? "")
+            self.videoUrl = channelData?.channelStreamIos ?? ""
+            self.playerView.changeUrl(url: self.videoUrl, title: channel.name ?? "")
+            self.selectedQualityText = playerConfiguration.autoText
             showAdvertisement(advertisement: advertisement)
         }
     }

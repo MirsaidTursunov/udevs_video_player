@@ -101,17 +101,13 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             guard let args = call.arguments else { return }
             guard let json = convertStringToDictionary(text: (args as! [String: String])["livePlayerConfigJsonString"] ?? "") else { return }
             let playerConfiguration: LivePlayerConfiguration = LivePlayerConfiguration.fromMap(map: json)
-            let sortedResolutions = SortFunctions.sortWithKeys(playerConfiguration.resolutions)
-            guard URL(string: playerConfiguration.url) != nil else { return }
-            let vc = LiveVideoPlayerViewController()
+            guard URL(string: playerConfiguration.videoUrl) != nil else { return }
+            let vc = LiveVideoPlayerViewController(playerConfig: playerConfiguration)
             vc.modalPresentationStyle = .fullScreen
             vc.delegate = self
-            vc.playerConfiguration = playerConfiguration
             vc.qualityLabelText = playerConfiguration.qualityText
             vc.speedLabelText = playerConfiguration.speedText
-            vc.resolutions = sortedResolutions
             vc.selectedQualityText = playerConfiguration.autoText
-//            vc.seasons = playerConfiguration.seasons
             vc.selectChannelIndex = playerConfiguration.selectChannelIndex
             vc.selectTvCategoryIndex = playerConfiguration.selectTvCategoryIndex
             SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true, completion: nil)

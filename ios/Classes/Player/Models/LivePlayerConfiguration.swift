@@ -8,9 +8,8 @@
 import Foundation
 
 struct LivePlayerConfiguration{
-    var initialResolution: [String:String]
-    var resolutions: [String:String]
-    var url, qualityText: String
+    var videoUrl:String
+    var qualityText: String
     var speedText: String
     var title: String
     var tvProgramsText: String
@@ -32,12 +31,11 @@ struct LivePlayerConfiguration{
     var advertisement: AdvertisementResponse?
     
     
-    init(initialResolution: [String : String], 
-         resolutions: [String : String], qualityText: String, speedText: String,
+    init(videoUrl:String, qualityText: String, speedText: String,
          title: String,
          tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool,
          sessionId: String,
-         authorization: String, autoText: String, baseUrl: String,url: String,
+         authorization: String, autoText: String, baseUrl: String,
          ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],
      skipText:String,
      userId: String,
@@ -46,11 +44,9 @@ struct LivePlayerConfiguration{
      region: String,
      advertisement: AdvertisementResponse?
     ) {
-        self.initialResolution = initialResolution
-        self.resolutions = resolutions
+        self.videoUrl = videoUrl
         self.qualityText = qualityText
         self.speedText = speedText
-
         self.title = title
         self.tvProgramsText = tvProgramsText
         self.programsInfoList = programsInfoList
@@ -59,7 +55,6 @@ struct LivePlayerConfiguration{
         self.authorization = authorization
         self.autoText = autoText
         self.baseUrl = baseUrl
-        self.url = url
         self.ip = ip
         self.selectChannelIndex = selectChannelIndex
         self.selectTvCategoryIndex = selectTvCategoryIndex
@@ -88,8 +83,8 @@ struct LivePlayerConfiguration{
             tvCategories.append(program)
         })
         
-        return LivePlayerConfiguration(initialResolution: map["initialResolution"] as! [String:String],
-                                   resolutions: map["resolutions"] as! [String:String],
+        return LivePlayerConfiguration(
+                                    videoUrl: map["videoUrl"] as! String,
                                    qualityText: map["qualityText"] as! String,
                                    speedText: map["speedText"] as! String,
                                    title: map["title"] as! String,
@@ -100,7 +95,6 @@ struct LivePlayerConfiguration{
                                    authorization: map["authorization"] as! String,
                                    autoText: map["autoText"] as! String,
                                    baseUrl: map["baseUrl"] as! String,
-                                   url: (map["initialResolution"] as! [String:String]).values.first ?? "",
                                    ip: map["ip"] as! String,
                                    selectChannelIndex: map["selectChannelIndex"] as? Int ?? 0, selectTvCategoryIndex: map["selectTvCategoryIndex"] as? Int ?? 0,
                                    tvCategories: tvCategories,

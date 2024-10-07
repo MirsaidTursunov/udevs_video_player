@@ -57,10 +57,7 @@ class LivePlayerView: UIView {
     // If there is a pending request to start playback.
     var pendingPlay: Bool = false
     var seeking: Bool = false
-//    var isLastEpisod: Bool = false
     ///
-//    var seasonIndex: Int = 0
-//    var episodeIndex: Int = 0
 
     
     private var videoView: UIView = {
@@ -124,30 +121,6 @@ class LivePlayerView: UIView {
         button.addTarget(self, action: #selector(changeOrientation(_:)), for: .touchUpInside)
         return button
     }()
-    
-//    var currentTimeLabel: UILabel = {
-//        let label = UILabel()
-//        label.text = "00:00"
-//        label.textColor = .white
-//        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-//        return label
-//    }()
-
-//    private var durationTimeLabel: UILabel = {
-//        let label = UILabel()
-//        label.text = "00:00"
-//        label.textColor = .white
-//        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-//        return label
-//    }()
-
-//    private var seperatorLabel: UILabel = {
-//        let label = UILabel()
-//        label.text = " / "
-//        label.textColor = .white
-//        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-//        return label
-//    }()
 
     private lazy var timeSlider: UISlider = {
         let slider = UISlider()
@@ -192,48 +165,6 @@ class LivePlayerView: UIView {
         button.addTarget(self, action: #selector(playButtonPressed(_:)), for: .touchUpInside)
         return button
     }()
-
-//    private lazy var skipForwardButton: IconButton = {
-//        let button = IconButton()
-//        button.setImage(Svg.forward.uiImage, for: .normal)
-//        button.addTarget(self, action: #selector(skipForwardButtonPressed(_:)), for: .touchUpInside)
-//        return button
-//    }()
-
-//    private lazy var skipBackwardButton: IconButton = {
-//        let button = IconButton()
-//        button.setImage(Svg.replay.uiImage, for: .normal)
-//        button.addTarget(self, action: #selector(skipBackButtonPressed(_:)), for: .touchUpInside)
-//        return button
-//    }()
-
-//    private lazy var nextEpisodButton: UIButton = {
-//        let button = UIButton()
-//        button.setImage(Svg.play.uiImage, for: .normal)
-//        button.setTitle("", for: .normal)
-//        button.layer.zPosition = 3
-//        button.isHidden = true
-//        button.layer.cornerRadius = 8
-//        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 14)
-//        button.backgroundColor = Colors.gradient1
-//        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
-//        button.setTitleColor(.white, for: .normal)
-//        button.imageView?.contentMode = .scaleAspectFit
-//        button.addTarget(self, action: #selector(nextEpisodesButtonPressed(_:)), for: .touchUpInside)
-//        return button
-//    }()
-
-//    private lazy var episodesButton: UIButton = {
-//        let button = UIButton()
-//        button.setImage(Svg.serial.uiImage, for: .normal)
-//        button.setTitle("", for: .normal)
-//        button.layer.zPosition = 3
-//        button.titleLabel?.font = UIFont.systemFont(ofSize: 13,weight: .semibold)
-//        button.setTitleColor(.white, for: .normal)
-//        button.imageView?.contentMode = .scaleAspectFit
-//        button.addTarget(self, action: #selector(episodesButtonPressed(_:)), for: .touchUpInside)
-//        return button
-//    }()
 
     private lazy var channelsButton: UIButton = {
         let button = UIButton()
@@ -332,16 +263,7 @@ class LivePlayerView: UIView {
     
     private func uiSetup(){
         configureVolume()
-//        episodesButton.setTitle(" "+playerConfiguration.title, for: .normal)
-//        nextEpisodButton.setTitle(" "+playerConfiguration.nextButtonText, for: .normal)
-//        nextEpisodButton.applyGradient()
         showsBtn.setTitle("", for: .normal)
-//        if playerConfiguration.isLive {
-//            episodesButton.isHidden = true
-//        } else {
-//            showsBtn.isHidden = true
-//            channelsButton.isHidden = true
-//        }
         if #available(iOS 13.0, *) {
             setSliderThumbTintColor(Colors.mainColor)
         } else {
@@ -398,10 +320,30 @@ class LivePlayerView: UIView {
         playerLayer.videoGravity = .resizeAspect
         videoView.layer.addSublayer(playerLayer)
         layer.insertSublayer(playerLayer, above: videoView.layer)
-//        if !playerConfiguration.isLive {
-//            NotificationCenter.default.addObserver(self, selector: #selector(playerEndedPlaying), name: Notification.Name("AVPlayerItemDidPlayToEndTimeNotification"), object: nil)
-//        }
         addTimeObserver()
+    }
+    
+    open func setBitRate(_ definition: String) {
+       var maxBitRate: Double = 0
+       var width = 0
+       var height = 0
+       switch definition {
+       case "576p":
+           maxBitRate = 2000000
+           width = 720
+           height = 576
+       case "1080p":
+           maxBitRate = 6000000
+           width = 1920
+           height = 1080
+       case playerConfiguration.autoText:
+           maxBitRate = 0
+       default:
+           maxBitRate = 0
+       }
+        self.player.currentItem?.preferredPeakBitRate = maxBitRate
+        self.player.currentItem?.preferredMaximumResolution = CGSize(width: width, height: height)
+        print("Playing in Bit Rate \(String(describing:self.player.currentItem?.preferredPeakBitRate))")
     }
     
     

@@ -92,6 +92,7 @@ import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.getAvailableQualities
 import uz.udevs.udevs_video_player.utils.setVideoQuality
+import uz.udevs.udevs_video_player.utils.sortQuality
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.math.abs
@@ -1178,40 +1179,20 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
             playerConfiguration.qualityText
         val listView = bottomSheetDialog.findViewById<View>(R.id.quality_speed_listview) as ListView
 
-        val availableQualities = player!!.getAvailableQualities(playerConfiguration.autoText)
-        val sortedQualities = mutableListOf<String>()
+        val qualities = player!!.getAvailableQualities(playerConfiguration.autoText)
+            .sortQuality(playerConfiguration.autoText)
 
-        availableQualities.forEach {
-            if (it.substring(0, it.length - 1).toIntOrNull() != null) {
-                sortedQualities.add(it)
-            }
-        }
-        for (i in 0 until sortedQualities.size) {
-            for (j in i until sortedQualities.size) {
-                val first = sortedQualities[i]
-                val second = sortedQualities[j]
-                if (first.substring(0, first.length - 1).toInt() < second.substring(
-                        0, second.length - 1
-                    ).toInt()
-                ) {
-                    val a = sortedQualities[i]
-                    sortedQualities[i] = sortedQualities[j]
-                    sortedQualities[j] = a
-                }
-            }
-        }
-        sortedQualities.add(0, playerConfiguration.autoText)
 
         val adapter = QualitySpeedAdapter(
             currentQuality,
             this,
-            sortedQualities as ArrayList<String>,
+            qualities as ArrayList<String>,
             (object : QualitySpeedAdapter.OnClickListener {
                 override fun onClick(position: Int) {
-                    currentQuality = sortedQualities[position]
+                    currentQuality = qualities[position]
                     qualityText?.text = currentQuality
                     player?.setVideoQuality(
-                        index = position, numberOfQualities = sortedQualities.size, url = url ?: ""
+                        index = position, numberOfQualities = qualities.size, url = url ?: ""
                     )
                     bottomSheetDialog.dismiss()
                 }

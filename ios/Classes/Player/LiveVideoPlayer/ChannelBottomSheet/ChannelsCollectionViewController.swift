@@ -220,16 +220,18 @@ extension ChannelsCollectionViewController: UICollectionViewDelegateFlowLayout, 
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if(collectionView == self.tvView){
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tvCollectionCell.identifier, for: indexPath) as! tvCollectionCell
-//            cell.backgroundColor = .clear
-//            cell.model = tv[indexPath.row]
-//            cell.label.text = tv[indexPath.row].title ?? ""
-//            cell.label.sizeToFit()
-//            let cellWidth = cell.label.frame.width + 24
-//            return CGSize(width: cellWidth, height: 32)
-            return CGSize(width: 104, height: 32)
+            // MARK: set static size if 18
+            if #available(iOS 18.0, *){
+                return CGSize(width: 104, height: 32)
+            }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TvCollectionCell.identifier, for: indexPath) as! TvCollectionCell
+            cell.backgroundColor = .clear
+            cell.model = tv[indexPath.row]
+            cell.label.text = tv[indexPath.row].title ?? ""
+            cell.label.sizeToFit()
+            let cellWidth = cell.label.frame.width + 24
+            return CGSize(width: cellWidth, height: 32)
         } else if (collectionView == self.channelView){
-            
            return CGSize(width: 104, height: 130)
         }
         return CGSize(width: 0, height: 0)

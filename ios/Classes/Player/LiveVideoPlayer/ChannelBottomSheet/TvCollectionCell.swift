@@ -33,7 +33,9 @@ class TvCollectionCell: UICollectionViewCell {
     func setupUI(){
         label.snp.makeConstraints { make in
             make.height.equalTo(32)
-            make.width.equalTo(104)
+            if #available(iOS 18.0, *) {
+                make.width.equalTo(104)
+            }
         }
     }
     

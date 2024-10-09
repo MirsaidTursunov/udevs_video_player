@@ -186,7 +186,7 @@ class _MainPageState extends State<MainPage> {
               speedText: 'Скорость',
               lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
-              isSerial: false,
+              isSerial: true,
               episodeButtonText: 'Эпизоды',
               nextButtonText: 'След.эпизод',
               seasons: [

@@ -8,7 +8,7 @@ let kPrefAppVersion = "app_version"
 let kPrefSDKVersion = "sdk_version"
 let kPrefEnableMediaNotifications = "enable_media_notifications"
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     
     let kReceiverAppID = "7B356178"

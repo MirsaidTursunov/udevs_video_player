@@ -6,7 +6,8 @@
 //
 import UIKit
 
-class tvCollectionCell: UICollectionViewCell {
+class TvCollectionCell: UICollectionViewCell {
+    static let identifier = "tvCollectionCell_identifier"
     
     var model : TvCategories? {
         didSet{
@@ -32,7 +33,7 @@ class tvCollectionCell: UICollectionViewCell {
     func setupUI(){
         label.snp.makeConstraints { make in
             make.height.equalTo(32)
-//            make.width.equalTo(104)
+            make.width.equalTo(104)
         }
     }
     

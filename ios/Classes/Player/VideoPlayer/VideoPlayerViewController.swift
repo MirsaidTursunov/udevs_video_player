@@ -480,7 +480,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     
     //MARK: - ****** Channels *******
     func channelsButtonPressed(){
-        let episodeVC = CollectionViewController()
+        let episodeVC = ChannelsCollectionViewController()
         episodeVC.modalPresentationStyle = .custom
         episodeVC.channels = self.playerConfiguration.tvCategories[selectTvCategoryIndex].channels
         episodeVC.tv = self.playerConfiguration.tvCategories

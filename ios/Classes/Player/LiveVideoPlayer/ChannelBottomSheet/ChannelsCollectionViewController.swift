@@ -10,11 +10,10 @@ import SDWebImage
 
 protocol ChannelTappedDelegate {
     func onChannelTapped(channelIndex: Int, tvCategoryIndex: Int)
-    
     func onTvCategoryTapped(tvCategoryIndex: Int)
 }
 
-class CollectionViewController: UIViewController {
+class ChannelsCollectionViewController: UIViewController {
     
     var tvCategoryIndex: Int = 0
     var delegate : ChannelTappedDelegate?
@@ -43,7 +42,7 @@ class CollectionViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.register(channelCollectionCell.self, forCellWithReuseIdentifier: "collectionView")
+        collectionView.register(ChannelCollectionCell.self, forCellWithReuseIdentifier: ChannelCollectionCell.identifier)
         collectionView.backgroundColor = .clear
         collectionView.reloadData()
         return collectionView
@@ -56,7 +55,7 @@ class CollectionViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.register(tvCollectionCell.self, forCellWithReuseIdentifier: "tvView")
+        collectionView.register(TvCollectionCell.self, forCellWithReuseIdentifier: TvCollectionCell.identifier)
         collectionView.backgroundColor = .clear
         collectionView.reloadData()
         return collectionView
@@ -167,7 +166,7 @@ class CollectionViewController: UIViewController {
 
 
 
-extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension ChannelsCollectionViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -183,7 +182,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if (collectionView == self.tvView){
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "tvView", for: indexPath) as! tvCollectionCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TvCollectionCell.identifier, for: indexPath) as! TvCollectionCell
             cell.backgroundColor = .clear
             cell.model = tv[indexPath.row]
             cell.label.text = tv[indexPath.row].title ?? ""
@@ -192,14 +191,13 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
             return cell
         } else if collectionView == self.channelView {
             let cell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: "collectionView", for: indexPath)
-            as! channelCollectionCell
+                .dequeueReusableCell(withReuseIdentifier: ChannelCollectionCell.identifier, for: indexPath)
+            as! ChannelCollectionCell
             cell.backgroundColor = .clear
             cell.layer.cornerRadius = 8
             cell.model = channels[indexPath.row]
             let url = URL(string: channels[indexPath.row].image ?? "")
             cell.channelImage.sd_setImage(with: url, completed: nil)
-//            cell.checkSubForUI()
             return cell
         }
         return UICollectionViewCell()
@@ -214,21 +212,22 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
             self.channelView.reloadData()
         } else {
             delegate?.onChannelTapped(channelIndex: indexPath.row, tvCategoryIndex: tvCategoryIndex)
-//            self.tvView.reloadData()
-//            self.channelView.reloadData()
+            self.tvView.reloadData()
+            self.channelView.reloadData()
             dismiss(animated: true, completion: nil)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if(collectionView == self.tvView){
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "tvView", for: indexPath) as! tvCollectionCell
-            cell.backgroundColor = .clear
-            cell.model = tv[indexPath.row]
-            cell.label.text = tv[indexPath.row].title ?? ""
-            cell.label.sizeToFit()
-            let cellWidth = cell.label.frame.width + 24
-            return CGSize(width: cellWidth, height: 32)
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: tvCollectionCell.identifier, for: indexPath) as! tvCollectionCell
+//            cell.backgroundColor = .clear
+//            cell.model = tv[indexPath.row]
+//            cell.label.text = tv[indexPath.row].title ?? ""
+//            cell.label.sizeToFit()
+//            let cellWidth = cell.label.frame.width + 24
+//            return CGSize(width: cellWidth, height: 32)
+            return CGSize(width: 104, height: 32)
         } else if (collectionView == self.channelView){
             
            return CGSize(width: 104, height: 130)
@@ -243,7 +242,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout, UICollec
 
 
 //MARK: Transition animation
-extension CollectionViewController: UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning  {
+extension ChannelsCollectionViewController: UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning  {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return self
     }

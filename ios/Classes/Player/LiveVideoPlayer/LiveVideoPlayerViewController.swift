@@ -430,7 +430,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     
     //MARK: - ****** Channels *******
     func channelsButtonPressed(){
-        let episodeVC = CollectionViewController()
+        let episodeVC = ChannelsCollectionViewController()
         episodeVC.modalPresentationStyle = .custom
         episodeVC.channels = self.playerConfiguration.tvCategories[selectTvCategoryIndex].channels
         episodeVC.tv = self.playerConfiguration.tvCategories
@@ -440,15 +440,7 @@ class LiveVideoPlayerViewController: UIViewController, AVPictureInPictureControl
     }
     
     //MARK: - ****** SEASONS *******
-    func episodesButtonPressed(){
-//        let episodeVC = EpisodeCollectionUI()
-//        episodeVC.modalPresentationStyle = .custom
-//        episodeVC.seasons = self.seasons
-//        episodeVC.delegate = self
-//        episodeVC.seasonIndex = selectedSeason
-//        episodeVC.episodeIndex = selectSesonNum
-//        self.present(episodeVC, animated: true, completion: nil)
-    }
+    func episodesButtonPressed(){}
     
     
     func settingsPressed() {

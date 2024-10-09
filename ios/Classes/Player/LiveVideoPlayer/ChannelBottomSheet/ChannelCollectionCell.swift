@@ -8,7 +8,8 @@ import UIKit
 import SnapKit
 import SDWebImage
 
-class channelCollectionCell: UICollectionViewCell {
+class ChannelCollectionCell: UICollectionViewCell {
+    static let identifier = "channelCollectionCell_identifier"
     
     var model : Channel? {
         didSet{
@@ -27,15 +28,12 @@ class channelCollectionCell: UICollectionViewCell {
         lock.setImage(Svg.lock.uiImage, for: .normal)
         lock.translatesAutoresizingMaskIntoConstraints = false
         fadeBackground.addSubview(lock)
-        /// center lock logog
-        let leftConstraint = lock.leftAnchor.constraint(equalTo: fadeBackground.leftAnchor)
-        leftConstraint.isActive = true
-        let rightConstraint = lock.rightAnchor.constraint(equalTo: fadeBackground.rightAnchor)
-        rightConstraint.isActive = true
-        let topConstraint = lock.topAnchor.constraint(equalTo: fadeBackground.topAnchor)
-        topConstraint.isActive = true
-        let bottomConstraint = lock.bottomAnchor.constraint(equalTo: fadeBackground.bottomAnchor)
-        bottomConstraint.isActive = true
+        
+        // MARK: center lock logo
+        lock.leftAnchor.constraint(equalTo: fadeBackground.leftAnchor).isActive = true
+        lock.rightAnchor.constraint(equalTo: fadeBackground.rightAnchor).isActive = true
+        lock.topAnchor.constraint(equalTo: fadeBackground.topAnchor).isActive = true
+        lock.bottomAnchor.constraint(equalTo: fadeBackground.bottomAnchor).isActive = true
         
         fadeBackground.isHidden = true
         return fadeBackground

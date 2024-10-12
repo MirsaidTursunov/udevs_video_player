@@ -427,13 +427,19 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     }
     
     func share() {
-        if let link = NSURL(string: playerConfiguration.movieShareLink)
-        {
-            let objectsToShare = [link] as [Any]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
-            self.present(activityVC, animated: true, completion: nil)
+        let text = "\(playerConfiguration.shareText): \(playerConfiguration.movieShareLink)"
+        let textToShare = [text]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        // for that iPads won't crash
+        activityViewController.popoverPresentationController?.sourceView = self.view
+        // when share completed
+        activityViewController.completionWithItemsHandler = { _, __, ___, ____ in
+            self.playerView.playIfPaused()
         }
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: {
+            self.playerView.pauseIfPlaying()
+        })
     }
     
     func subtitleButtonPressed(){

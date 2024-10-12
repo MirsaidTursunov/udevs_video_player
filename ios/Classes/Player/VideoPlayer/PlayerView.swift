@@ -201,7 +201,7 @@ class PlayerView: UIView {
         return button
     }()
 
-    private var shareButton: IconButton = {
+    private lazy var shareButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.share.uiImage, for: .normal)
         button.addTarget(self, action: #selector(share(_ :)), for: .touchUpInside)
@@ -633,6 +633,25 @@ class PlayerView: UIView {
             }
         } else {
             delegate?.playButtonPressed()
+        }
+    }
+    
+    public func pauseIfPlaying(){
+        if player.isPlaying {
+            playButton.setImage(Svg.play.uiImage, for: .normal)
+            player.pause()
+            timer?.invalidate()
+            showControls()
+        }
+    }
+    
+    public func playIfPaused(){
+        if !player.isPlaying {
+            player.play()
+            playButton.setImage(Svg.pause.uiImage, for: .normal)
+            self.player.preroll(atRate: Float(self.playerRate), completionHandler: nil)
+            self.player.rate = Float(self.playerRate)
+            resetTimer()
         }
     }
     

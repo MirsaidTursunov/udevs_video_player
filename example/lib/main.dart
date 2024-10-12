@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
-import 'package:udevs_video_player/models/advertisement_response.dart';
 import 'package:udevs_video_player/models/live_player_configuration.dart';
 import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player_example/second_page.dart';
@@ -164,6 +163,7 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
+              shareText: 'Check this out',
               defaultText: 'defaultText',
               audioText: 'audioText',
               noneText: 'noneText',

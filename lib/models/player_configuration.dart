@@ -43,6 +43,7 @@ class PlayerConfiguration {
     required this.subtitleText,
     required this.audioText,
     required this.defaultText,
+    required this.shareText,
     this.seasons = const [],
     this.isLive = false,
     this.tvProgramsText = 'Tv Programs',
@@ -94,6 +95,7 @@ class PlayerConfiguration {
   final String audioText;
   final String defaultText;
   final bool sendMovieTrack;
+  final String shareText;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -137,6 +139,7 @@ class PlayerConfiguration {
     map['audioText'] = audioText;
     map['defaultText'] = defaultText;
     map['sendMovieTrack'] = sendMovieTrack;
+    map['shareText'] = shareText;
     return map;
   }
 
@@ -181,5 +184,6 @@ class PlayerConfiguration {
       'audioText: $audioText'
       'defaultText: $defaultText'
       'sendMovieTrack: $sendMovieTrack'
+      'shareText: $shareText'
       '}';
 }

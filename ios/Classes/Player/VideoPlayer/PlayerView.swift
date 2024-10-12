@@ -201,7 +201,7 @@ class PlayerView: UIView {
         return button
     }()
 
-    private lazy var shareButton: IconButton = {
+    private var shareButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.share.uiImage, for: .normal)
         button.addTarget(self, action: #selector(share(_ :)), for: .touchUpInside)

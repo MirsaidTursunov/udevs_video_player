@@ -223,6 +223,15 @@ extension UIButton{
 
 extension Double{
     func toInt()->Int{
-        return Int(self)
+        if self.isNaN {
+            return 0
+        }
+                
+        // Check if the double value is within the range of Int
+        if self >= Double(Int.min) && self <= Double(Int.max) {
+            return Int(self)
+        } else {
+            return 0
+        }
     }
 }

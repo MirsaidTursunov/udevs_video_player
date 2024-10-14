@@ -163,7 +163,7 @@ class _MainPageState extends State<MainPage> {
     try {
       final s = await _udevsVideoPlayerPlugin.playVideo(
             playerConfig: PlayerConfiguration(
-              shareText: 'Check this out',
+              shareText: 'Check this out text',
               defaultText: 'defaultText',
               audioText: 'audioText',
               noneText: 'noneText',
@@ -172,7 +172,7 @@ class _MainPageState extends State<MainPage> {
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
               initialResolution: {
                 'Автонастройка':
-                    'https://cdn.uzd.udevs.io/uzdigital/videos/bbc795b69faf3c4d1063777f2b220144/master.m3u8'
+                    'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
               },
               resolutions: {
                 // 'Auto':

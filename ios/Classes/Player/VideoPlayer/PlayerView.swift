@@ -331,7 +331,12 @@ class PlayerView: UIView {
     /// Track functions
     
     public func getAvailableAudios() -> [String]{
-        return player.currentItem?.tracks(type: .audio) ?? [playerConfiguration.defaultText]
+        let availableAudios = player.currentItem?.tracks(type: .audio)
+        let defaultTracks = [playerConfiguration.defaultText]
+        if  availableAudios == nil || availableAudios?.isEmpty == true || (availableAudios?.count == 1 && availableAudios?[0]=="Unknown") {
+            return defaultTracks
+        }
+        return availableAudios!
     }
     
     func getAvailableSubtitles() -> [String]{

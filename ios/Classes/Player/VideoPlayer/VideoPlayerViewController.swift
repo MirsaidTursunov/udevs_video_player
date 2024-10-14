@@ -635,7 +635,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
            let selectedAudio = self.playerView.getSelectedAudio()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = audios
-        bottomSheetVC.labelText = playerConfiguration.audioText
+           bottomSheetVC.labelText = playerConfiguration.audioText
            bottomSheetVC.bottomSheetType = .audio
            bottomSheetVC.selectedIndex = audios.firstIndex(of: selectedAudio)
            bottomSheetVC.cellDelegate = self

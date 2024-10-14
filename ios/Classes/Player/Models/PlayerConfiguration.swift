@@ -46,8 +46,11 @@ struct PlayerConfiguration{
     var userID:String
     var sendMovieTrack:Bool
     var shareText:String
+    var subtitleText:String
+    var audioText:String
     
-    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],noneText:String,defaultText:String,profileID:String,userID:String,sendMovieTrack:Bool,shareText:String) {
+    init(initialResolution: [String : String], resolutions: [String : String], qualityText: String, speedText: String, lastPosition: Int, title: String, isSerial: Bool, episodeButtonText: String, nextButtonText: String, seasons: [Season], isLive: Bool, tvProgramsText: String, programsInfoList: [ProgramInfo], showController: Bool, playVideoFromAsset: Bool, assetPath: String? = nil, seasonIndex: Int, episodeIndex: Int, isMegogo: Bool, isPremier: Bool, isMoreTv: Bool, videoId: String, sessionId: String, megogoAccessToken: String, authorization: String, autoText: String, baseUrl: String,url: String,movieShareLink: String, ip : String, selectChannelIndex: Int, selectTvCategoryIndex: Int, tvCategories: [TvCategories],noneText:String,defaultText:String,profileID:String,userID:String,sendMovieTrack:Bool,shareText:String,subtitleText:String,
+     audioText:String) {
         self.initialResolution = initialResolution
         self.resolutions = resolutions
         self.qualityText = qualityText
@@ -87,6 +90,8 @@ struct PlayerConfiguration{
         self.userID = userID
         self.sendMovieTrack = sendMovieTrack
         self.shareText = shareText
+        self.subtitleText = subtitleText
+        self.audioText = audioText
     }
     
     static func fromMap(map : [String:Any])->PlayerConfiguration {
@@ -149,7 +154,9 @@ struct PlayerConfiguration{
                                    profileID: map["profileId"] as! String,
                                    userID: map["userId"] as! String,
                                    sendMovieTrack: map["sendMovieTrack"] as! Bool,
-                                   shareText: map["shareText"] as! String
+                                   shareText: map["shareText"] as! String,
+                                   subtitleText: map["subtitleText"] as! String,
+                                   audioText: map["audioText"] as! String
         )
     }
 }

@@ -182,8 +182,8 @@ class _MainPageState extends State<MainPage> {
                 // '1080p':
                 //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880'
               },
-              qualityText: 'Качество',
-              speedText: 'Скорость',
+              qualityText: 'QualityText',
+              speedText: 'SpeedText',
               lastPosition: 0,
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
               isSerial: true,
@@ -312,8 +312,8 @@ class _MainPageState extends State<MainPage> {
               //       'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'
               // ),
               baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
-              qualityText: 'Качество',
-              speedText: 'Скорость',
+              qualityText: 'QualityText',
+              speedText: 'SpeedText',
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],

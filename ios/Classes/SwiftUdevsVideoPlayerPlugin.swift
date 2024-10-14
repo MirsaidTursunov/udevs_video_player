@@ -88,15 +88,12 @@ public class SwiftUdevsVideoPlayerPlugin: NSObject, FlutterPlugin, VideoPlayerDe
             vc.modalPresentationStyle = .fullScreen
             vc.delegate = self
             vc.playerConfiguration = playerConfiguration
-            vc.qualityLabelText = playerConfiguration.qualityText
-            vc.speedLabelText = playerConfiguration.speedText
             vc.resolutions = sortedResolutions
             vc.selectedQualityText = playerConfiguration.autoText
             vc.seasons = playerConfiguration.seasons
             vc.selectChannelIndex = playerConfiguration.selectChannelIndex
             vc.selectTvCategoryIndex = playerConfiguration.selectTvCategoryIndex
             SwiftUdevsVideoPlayerPlugin.viewController.present(vc, animated: true, completion: nil)
-//            wait3MinsAndClose(playerConfiguration: playerConfiguration)
         case "playLiveVideo":
             guard let args = call.arguments else { return }
             guard let json = convertStringToDictionary(text: (args as! [String: String])["livePlayerConfigJsonString"] ?? "") else { return }

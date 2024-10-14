@@ -46,10 +46,6 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
     ///
     weak var delegate: VideoPlayerDelegate?
     private var url: String?
-    var qualityLabelText = ""
-    var speedLabelText = ""
-    var subtitleLabelText = "Субтитле"
-    var audioLabelText = "Язык аудио"
     var selectedSeason: Int = 0
     var selectSesonNum: Int = 0
     var selectChannelIndex: Int = 0
@@ -519,11 +515,11 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         vc.audioDelegate = self
         selectedAudioLanguage = self.playerView.getSelectedAudio()
         vc.settingModel = [
-            SettingModel(leftIcon: Svg.settings.uiImage, title: qualityLabelText, configureLabel: selectedQualityText),
-            SettingModel(leftIcon: Svg.playSpeed.uiImage, title: speedLabelText, configureLabel:  selectedSpeedText),
-            SettingModel(leftIcon: Svg.subtitle.uiImage, title: subtitleLabelText, configureLabel: selectedSubtitle),
+            SettingModel(leftIcon: Svg.settings.uiImage, title: playerConfiguration.qualityText, configureLabel: selectedQualityText),
+            SettingModel(leftIcon: Svg.playSpeed.uiImage, title: playerConfiguration.speedText, configureLabel:  selectedSpeedText),
+            SettingModel(leftIcon: Svg.subtitle.uiImage, title: playerConfiguration.subtitleText, configureLabel: selectedSubtitle),
             SettingModel(
-                leftIcon: Svg.audioTrack.uiImage, title: audioLabelText,
+                leftIcon: Svg.audioTrack.uiImage, title: playerConfiguration.audioText,
                 configureLabel: selectedAudioLanguage)
         ]
         self.present(vc, animated: true, completion: nil)
@@ -624,7 +620,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
            let bottomSheetVC = BottomSheetViewController()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = subtitles
-           bottomSheetVC.labelText = subtitleLabelText
+        bottomSheetVC.labelText = playerConfiguration.subtitleText
            bottomSheetVC.bottomSheetType = .subtitle
            bottomSheetVC.selectedIndex = subtitles.firstIndex(of: selectedSubtitle) ?? 0
            bottomSheetVC.cellDelegate = self
@@ -639,7 +635,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
            let selectedAudio = self.playerView.getSelectedAudio()
            bottomSheetVC.modalPresentationStyle = .overCurrentContext
            bottomSheetVC.items = audios
-           bottomSheetVC.labelText = audioLabelText
+        bottomSheetVC.labelText = playerConfiguration.audioText
            bottomSheetVC.bottomSheetType = .audio
            bottomSheetVC.selectedIndex = audios.firstIndex(of: selectedAudio)
            bottomSheetVC.cellDelegate = self
@@ -655,7 +651,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             let bottomSheetVC = BottomSheetViewController()
             bottomSheetVC.modalPresentationStyle = .overCurrentContext
             bottomSheetVC.items = autoResolutions
-            bottomSheetVC.labelText = qualityLabelText
+            bottomSheetVC.labelText = playerConfiguration.qualityText
             bottomSheetVC.cellDelegate = self
             bottomSheetVC.bottomSheetType = .quality
             bottomSheetVC.selectedIndex = autoResolutions.firstIndex(of: selectedQualityText) ?? 0
@@ -677,7 +673,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
             let bottomSheetVC = BottomSheetViewController()
             bottomSheetVC.modalPresentationStyle = .overCurrentContext
             bottomSheetVC.items = listOfQuality
-            bottomSheetVC.labelText = qualityLabelText
+            bottomSheetVC.labelText = playerConfiguration.qualityText
             bottomSheetVC.cellDelegate = self
             bottomSheetVC.bottomSheetType = .quality
             bottomSheetVC.selectedIndex = listOfQuality.firstIndex(of: selectedQualityText) ?? 0
@@ -691,7 +687,7 @@ class VideoPlayerViewController: UIViewController, AVPictureInPictureControllerD
         let bottomSheetVC = BottomSheetViewController()
         bottomSheetVC.modalPresentationStyle = .custom
         bottomSheetVC.items = speedList
-        bottomSheetVC.labelText = speedLabelText
+        bottomSheetVC.labelText = playerConfiguration.speedText
         bottomSheetVC.cellDelegate = self
         bottomSheetVC.bottomSheetType = .speed
         bottomSheetVC.selectedIndex = speedList.firstIndex(of: "\(self.playerRate)") ?? 0

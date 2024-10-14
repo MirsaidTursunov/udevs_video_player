@@ -201,7 +201,7 @@ class PlayerView: UIView {
         return button
     }()
 
-    private var shareButton: IconButton = {
+    private lazy var shareButton: IconButton = {
         let button = IconButton()
         button.setImage(Svg.share.uiImage, for: .normal)
         button.addTarget(self, action: #selector(share(_ :)), for: .touchUpInside)
@@ -334,6 +334,18 @@ class PlayerView: UIView {
         return player.currentItem?.tracks(type: .audio) ?? [playerConfiguration.defaultText]
     }
     
+    func getAvailableSubtitles() -> [String]{
+        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? []
+        subtitles.insert(playerConfiguration.noneText, at: 0)
+        subtitles.removeAll(where: {val in val == "CC"})
+        
+        return subtitles
+    }
+    
+    func setSubtitle(selectedSubtitleLabel: String){
+       let _ = player.currentItem?.select(type: .subtitle, name: selectedSubtitleLabel)
+    }
+    
     func setAudioLang(name: String) {
         let _ = player.currentItem?.select(type: TrackType.audio, name: name)
     }
@@ -346,17 +358,8 @@ class PlayerView: UIView {
       return player.currentItem?.selected(type: .subtitle) ?? playerConfiguration.noneText
     }
     
-    func getAvailableSubtitles() -> [String]{
-        var subtitles = player.currentItem?.tracks(type: .subtitle) ?? []
-        subtitles.insert(playerConfiguration.noneText, at: 0)
-        subtitles.removeAll(where: {val in val == "CC"})
-        
-        return subtitles
-    }
     
-    func setSubtitle(selectedSubtitleLabel: String){
-       let _ = player.currentItem?.select(type: .subtitle, name: selectedSubtitleLabel)
-    }
+    
     
     open func setBitRate(_ definition: String) {
        var maxBitRate: Double = 0

@@ -14,6 +14,7 @@ data class LivePlayerConfiguration(
     @SerializedName("programsInfoList") val programsInfoList: List<ProgramsInfo>,
     @SerializedName("showController") val showController: Boolean,
     @SerializedName("authorization") val authorization: String,
+    @SerializedName("sessionId") val sessionId: String,
     @SerializedName("autoText") val autoText: String,
     @SerializedName("baseUrl") val baseUrl: String,
     @SerializedName("tvCategories") val tvCategories: List<TvCategories>,

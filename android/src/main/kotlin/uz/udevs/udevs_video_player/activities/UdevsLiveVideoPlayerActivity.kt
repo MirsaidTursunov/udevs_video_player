@@ -175,6 +175,7 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
         setContent {
             AppTheme {
                 AdvertisementPage(
+                    playerConfiguration = playerConfiguration,
                     advertisement = advertisement,
                     skipText = playerConfiguration.skipText,
                     retrofitService = retrofitService,
@@ -852,7 +853,9 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun getAdvertisement(channel: TvChannel) {
         retrofitService?.getAdvertisement(
-            AdvertisementRequest(
+            authorization = playerConfiguration.authorization.ifEmpty { null },
+            sessionId = playerConfiguration.sessionId.ifEmpty { null },
+            request = AdvertisementRequest(
                 age = playerConfiguration.age,
                 gender = playerConfiguration.gender,
                 paymentType = channel.paymentType,
@@ -876,7 +879,8 @@ class UdevsLiveVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGest
 
     private fun getSingleTvChannel(channel: TvChannel, advertisement: AdvertisementResponse?) {
         retrofitService?.getSingleTvChannel(
-            playerConfiguration.authorization,
+            playerConfiguration.authorization.ifEmpty { null },
+            playerConfiguration.sessionId.ifEmpty { null },
             channel.id,
             playerConfiguration.ip,
         )?.enqueue(object : Callback<TvChannelResponse> {

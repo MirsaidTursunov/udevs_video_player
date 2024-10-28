@@ -58,9 +58,11 @@ import retrofit2.Response
 import uz.udevs.udevs_video_player.advertisement.components.LoadingIndicator
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementAnalyticsRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
+import uz.udevs.udevs_video_player.models.configuration.LivePlayerConfiguration
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
 
 class AdvertisementPage(
+    private val playerConfiguration: LivePlayerConfiguration,
     private val advertisement: AdvertisementResponse,
     private val skipText: String,
     private val retrofitService: RetrofitService?,
@@ -101,7 +103,9 @@ class AdvertisementPage(
 
     private fun sendAnalytics(interested: Boolean) {
         retrofitService?.sendAdvertisementAnalytics(
-            AdvertisementAnalyticsRequest(
+            authorization = playerConfiguration.authorization.ifEmpty { null },
+            sessionId = playerConfiguration.sessionId.ifEmpty { null },
+            request = AdvertisementAnalyticsRequest(
                 id = advertisement.id.toString(),
                 click = isClicked,
                 interested = isClicked || interested,
@@ -162,7 +166,7 @@ class AdvertisementPage(
                 onFinish = {
                     sendAnalytics(true)
                     onFinish.invoke()
-                } ,
+                },
             )
             Box(
                 modifier = Modifier
@@ -207,7 +211,7 @@ class AdvertisementPage(
                     onClick = {
                         sendAnalytics(false)
                         onFinish.invoke()
-                    } ,
+                    },
                     colors = ButtonDefaults.buttonColors().copy(
                         containerColor = MaterialTheme.colorScheme.secondary
                     ),

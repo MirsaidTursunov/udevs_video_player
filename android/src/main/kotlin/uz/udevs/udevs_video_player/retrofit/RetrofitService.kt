@@ -8,10 +8,10 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementAnalyticsRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementRequest
 import uz.udevs.udevs_video_player.models.advertisement.AdvertisementResponse
-import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.response.MegogoStreamResponse
 import uz.udevs.udevs_video_player.models.response.MoreTvStreamResponse
 import uz.udevs.udevs_video_player.models.response.PremierStreamResponse
@@ -59,18 +59,23 @@ interface RetrofitService {
 
     @GET("tv/channel/{id}")
     fun getSingleTvChannel(
-        @Header("Authorization") authorization: String,
+        @Header("Authorization") authorization: String?,
+        @Header("SessionId") sessionId: String?,
         @Path("id") id: String,
         @Query("client_ip") clientIp: String,
     ): Call<TvChannelResponse>
 
     @POST("advertisingTest")
     fun getAdvertisement(
+        @Header("Authorization") authorization: String?,
+        @Header("SessionId") sessionId: String?,
         @Body request: AdvertisementRequest
     ): Call<AdvertisementResponse>
 
     @PUT("advertisingTest")
     fun sendAdvertisementAnalytics(
+        @Header("Authorization") authorization: String?,
+        @Header("SessionId") sessionId: String?,
         @Body request: AdvertisementAnalyticsRequest
     ): Call<Any>
 

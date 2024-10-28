@@ -145,7 +145,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
     private var nextText: TextView? = null
     private var tvProgramsButton: ImageView? = null
     private var tvChannels: ImageView? = null
-//    private var tvChannelsButton: LinearLayout? = null
+
+    //    private var tvChannelsButton: LinearLayout? = null
     private var zoom: ImageView? = null
     private var orientation: ImageView? = null
     private var subtitleButton: ImageView? = null
@@ -1196,7 +1197,8 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
         tvCategoryIndex = tvCIndex
         channelIndex = cIndex
         retrofitService?.getSingleTvChannel(
-            playerConfiguration.authorization,
+            playerConfiguration.authorization.ifEmpty { null },
+            playerConfiguration.sessionId.ifEmpty { null },
             playerConfiguration.tvCategories[tvCIndex].channels[cIndex].id,
             playerConfiguration.ip,
         )?.enqueue(object : Callback<TvChannelResponse> {

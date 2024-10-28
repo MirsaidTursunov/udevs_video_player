@@ -58,8 +58,8 @@ struct Networking {
         components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.setValue(token, forHTTPHeaderField: "Authorization")
-        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+        request.setValue(token.ifEmptyReturnNull(), forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId.ifEmptyReturnNull(), forHTTPHeaderField: "SessionId")
         
         var result: Result<ChannelResponse, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)
@@ -85,7 +85,7 @@ struct Networking {
     }
     
     func sendMovieTrack(_ baseUrl: String, token: String, sessionId: String, trackRequest: MovieTrackRequest) -> Result<Any, NetworkError> {
-        var components = URLComponents(string: baseUrl)!
+        let components = URLComponents(string: baseUrl)!
         var request = URLRequest(url: components.url!)
         request.httpMethod = "POST"
         request.setValue(token, forHTTPHeaderField: "Authorization")
@@ -124,8 +124,8 @@ struct Networking {
         components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
         var request = URLRequest(url: components.url!)
         request.httpMethod = "POST"
-        request.setValue(token, forHTTPHeaderField: "Authorization")
-        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+        request.setValue(token.ifEmptyReturnNull(), forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId.ifEmptyReturnNull(), forHTTPHeaderField: "SessionId")
         let jsonRequest = advRequest.toMap()
         let jsonData = try? JSONSerialization.data(withJSONObject: jsonRequest)
         print("requestJson: \(jsonRequest)")
@@ -161,13 +161,13 @@ struct Networking {
     }
     
     func sendAdvertisementAnalytics(_ baseUrl: String, token: String, sessionId: String, analytics: AdvertisementAnalyticsRequest) -> Result<Any, NetworkError> {
-        var components = URLComponents(string: baseUrl)!
+        let components = URLComponents(string: baseUrl)!
         var request = URLRequest(url: components.url!)
         request.httpMethod = "PUT"
-        request.setValue(token, forHTTPHeaderField: "Authorization")
-        request.setValue(sessionId, forHTTPHeaderField: "SessionId")
+        request.setValue(token.ifEmptyReturnNull(), forHTTPHeaderField: "Authorization")
+        request.setValue(sessionId.ifEmptyReturnNull(), forHTTPHeaderField: "SessionId")
         let requestBody = try? JSONSerialization.data(withJSONObject: analytics.toMap())
-        print("requestJson: \(requestBody)")
+        print("requestJson: \(String(describing: requestBody))")
         request.httpBody = requestBody
         var result: Result<Any, NetworkError>!
         let semaphore = DispatchSemaphore(value: 0)

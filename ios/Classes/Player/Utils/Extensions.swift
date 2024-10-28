@@ -207,6 +207,10 @@ extension String {
     var floatValue: Float {
         return (self as NSString).floatValue
     }
+    func ifEmptyReturnNull()-> String? {
+        if(self.isEmpty){ return nil}
+        return self
+    }
 }
 
 extension UIButton{

@@ -7,6 +7,8 @@ import 'package:udevs_video_player/udevs_video_player.dart';
 import 'package:udevs_video_player_example/second_page.dart';
 import 'package:udevs_video_player_example/video_view_page.dart';
 
+import 'keys.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -169,18 +171,22 @@ class _MainPageState extends State<MainPage> {
               noneText: 'noneText',
               subtitleText: 'subtitleText',
               movieShareLink: 'https://uzd.udevs.io/movie/7963?type=premier',
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: Keys.baseUrl,
               initialResolution: {
-                'Автонастройка':
-                    'https://st13.allmovies.uz/map/hls/MjYwNzQ1OjIzMjg5NjAyMDU6MQ--/master.m3u8?t=6XFMQdrAqff-puHvpFIplg&e=1702379926'
+                'no time to die':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/768e4f3e66a73dde24b785389309d679/master.m3u8'
               },
               resolutions: {
-                // 'Auto':
-                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880',
-                // '720p':
-                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880',
-                // '1080p':
-                //     'https://st21.allmovies.uz/proxy/3/map/hls/MTExOjE3MTk2ODMxNDg6MQ--/master.m3u8?t=_jCzFAoIZScf5DiSeoVhIQ&e=1702319880'
+                'dolce':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/768e4f3e66a73dde24b785389309d679/master.m3u8',
+                'dolce 240p':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/768e4f3e66a73dde24b785389309d679/240p/index.m3u8',
+                'ptichniy karob':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/a616d50a72a7c86c5d0d4e86430266c3/master.m3u8',
+                'tri mushkitor':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/a616d50a72a7c86c5d0d4e86430266c3/master.m3u8',
+                'no time to die':
+                    'https://cdn.uzd.udevs.io/uzdigital/videos/4adc1ddc4419d8d5b712bab46ff4ad33/master.m3u8'
               },
               qualityText: 'QualityText',
               speedText: 'SpeedText',
@@ -237,26 +243,29 @@ class _MainPageState extends State<MainPage> {
                     resolutions: {},
                   ),
                 ]),
-                Season(title: 'Сезон 2', movies: [
-                  Movie(
-                    id: 260812.toString(),
-                    title: 'title',
-                    description: 'description  ',
-                    image:
-                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
-                    duration: 2894,
-                    resolutions: {},
-                  ),
-                  Movie(
-                    id: 260813.toString(),
-                    title: 'title',
-                    description: 'description  ',
-                    image:
-                        'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
-                    duration: 2894,
-                    resolutions: {},
-                  ),
-                ])
+                Season(
+                  title: 'Сезон 2',
+                  movies: [
+                    Movie(
+                      id: 260812.toString(),
+                      title: 'title',
+                      description: 'description  ',
+                      image:
+                          'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                      duration: 2894,
+                      resolutions: {},
+                    ),
+                    Movie(
+                      id: 260813.toString(),
+                      title: 'title',
+                      description: 'description  ',
+                      image:
+                          'https://i.allmovies.uz/i/544726/eyJ3IjozNDAsImgiOjE5MiwiYyI6dHJ1ZX0/image.jpg?t=BJiYKMZv4_WT8yio9YJK_Q',
+                      duration: 2894,
+                      resolutions: {},
+                    ),
+                  ],
+                )
               ],
               tvProgramsText: 'Телеканалы',
               programsInfoList: [],
@@ -265,7 +274,7 @@ class _MainPageState extends State<MainPage> {
               assetPath: '',
               seasonIndex: 0,
               episodeIndex: 0,
-              isMegogo: false,
+              isMegogo: true,
               isPremier: false,
               isMoreTv: false,
               videoId: 'vremya-vernutsya',
@@ -311,7 +320,7 @@ class _MainPageState extends State<MainPage> {
               //   video:
               //       'https://test.cdn.uzdigital.tv/uzdigital/images/8cb238ae-bd88-4734-84f5-6bedc0f4c194.mp4'
               // ),
-              baseUrl: 'https://api.spec.uzd.udevs.io/v1/',
+              baseUrl: Keys.baseUrl,
               qualityText: 'QualityText',
               speedText: 'SpeedText',
               title: 'S1 E1  "Женщина-Халк: Адвокат" ',

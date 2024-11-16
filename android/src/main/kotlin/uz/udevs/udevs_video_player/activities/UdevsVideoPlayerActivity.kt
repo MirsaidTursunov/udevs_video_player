@@ -47,6 +47,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
@@ -87,6 +88,7 @@ import uz.udevs.udevs_video_player.adapters.EpisodePagerAdapter
 import uz.udevs.udevs_video_player.adapters.QualitySpeedAdapter
 import uz.udevs.udevs_video_player.adapters.TvCategoryPagerAdapter
 import uz.udevs.udevs_video_player.adapters.TvProgramsPagerAdapter
+import uz.udevs.udevs_video_player.data_source.CustomHlsDataSourceFactory
 import uz.udevs.udevs_video_player.domain.BottomSheet
 import uz.udevs.udevs_video_player.models.AnalyticsRequest
 import uz.udevs.udevs_video_player.models.configuration.PlayerConfiguration
@@ -97,12 +99,10 @@ import uz.udevs.udevs_video_player.models.response.TvChannelResponse
 import uz.udevs.udevs_video_player.models.track.TrackRequest
 import uz.udevs.udevs_video_player.retrofit.Common
 import uz.udevs.udevs_video_player.retrofit.RetrofitService
-import uz.udevs.udevs_video_player.services.DownloadUtil
 import uz.udevs.udevs_video_player.services.NetworkChangeReceiver
 import uz.udevs.udevs_video_player.utils.MyHelper
 import uz.udevs.udevs_video_player.utils.changeAudioLanguage
 import uz.udevs.udevs_video_player.utils.changeSubtitle
-import uz.udevs.udevs_video_player.utils.setVideoQuality
 import uz.udevs.udevs_video_player.utils.getAvailableAudioLanguages
 import uz.udevs.udevs_video_player.utils.getAvailableQualities
 import uz.udevs.udevs_video_player.utils.getAvailableSubtitles
@@ -110,6 +110,7 @@ import uz.udevs.udevs_video_player.utils.hideSubtitle
 import uz.udevs.udevs_video_player.utils.isAutoQuality
 import uz.udevs.udevs_video_player.utils.isUzdMovie
 import uz.udevs.udevs_video_player.utils.removeSeasonEpisode
+import uz.udevs.udevs_video_player.utils.setVideoQuality
 import uz.udevs.udevs_video_player.utils.toHttps
 import java.util.Timer
 import kotlin.math.abs
@@ -536,11 +537,19 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
 
     private fun playVideo() {
 
-        val dataSourceFactory: DataSource.Factory =
-            if (!playerConfiguration.fromCache) DefaultHttpDataSource.Factory()
-            else DownloadUtil.getDataSourceFactory(this)
-        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+        val hlsMediaSource = HlsMediaSource.Factory(
+            CustomHlsDataSourceFactory(
+                this,
+                DefaultDataSource.Factory(this)
+            )
+        ).createMediaSource(MediaItem.fromUri(Uri.parse(url)))
+
+
+//        val dataSourceFactory: DataSource.Factory =
+//            if (!playerConfiguration.fromCache) DefaultHttpDataSource.Factory()
+//            else DownloadUtil.getDataSourceFactory(this)
+//        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory)
+//            .createMediaSource(MediaItem.fromUri(Uri.parse(url)))
 
         player = ExoPlayer.Builder(this).build()
         playerView?.player = player

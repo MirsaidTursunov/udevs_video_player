@@ -1074,7 +1074,7 @@ class UdevsVideoPlayerActivity : AppCompatActivity(), GestureDetector.OnGestureL
             isMegogo = playerConfiguration.isMegogo,
             isPremier = playerConfiguration.isPremier,
             userId = playerConfiguration.userId,
-            duration = player?.duration?.toInt() ?: 0,
+            duration = player?.duration?.toInt() ?: 0 / 1000,
         )
         Log.i("SEND TRACK", "request: $request")
         retrofitService?.sendMovieTrack(
